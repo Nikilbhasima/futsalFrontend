@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+:root{
+    --primary-font-family:'poppins';
+    --secondary-font-family:'open sans';
+
+    --primary-color:#212121;
+    --secondary-color:#27D483;
+    --tertery-color:#333333;
+
+    --font-color-one:#333333;
+    --font-color-two:#FFFFFF;
+    --font-color-three:#27D483;
+
+   
+    --font-size-heading:40px;
+    --font-size-sub-heading:20px;
+     --font-size:16px;
+
+}

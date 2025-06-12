@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+:root {
+  --primary-font-family: "poppins";
+  --secondary-font-family: "open sans";
+
+  --primary-color: #212121;
+  --secondary-color: #27d483;
+  --tertery-color: #333333;
+
+  --font-color-one: #333333;
+  --font-color-two: #ffffff;
+  --font-color-three: #27d483;
+
+  --font-size-heading: 40px;
+  --font-size-sub-heading: 20px;
+  --font-size: 16px;
+}
+p {
+  margin: 0;
+  padding: 0;
+}
+.navbar-main-body {
+  position: relative;
+  position: sticky;
+  top: 0;
+  left: 0;
+}
+
+.futsalName {
+  color: var(--secondary-color);
+  font-size: 32px;
+  font-family: var(--primary-font-family);
+  font-weight: 600;
+}
+
+li {
+  font-size: 16px;
+  font-family: var(--primary-font-family);
+  position: relative;
+  width: fit-content;
+  transition: color 1s ease-out;
+}
+li:hover {
+  color: var(--font-color-three);
+}
+
+li::after {
+  content: "";
+  display: block;
+  position: absolute;
+  background-color: #27d483;
+  height: 2px;
+  width: 100%;
+  border-radius: 10px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  transition: transform 1s ease-out;
+}
+li:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+@media (max-width: 949px) {
+  .links-contain {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 12px 32px;
+    z-index: 100;
+    height: 100vh;
+    gap: 32px;
+    background-color: var(--tertery-color);
+  }
+
+  .link-ul {
+    display: flex;
+    flex-direction: column !important;
+    margin: 0px !important;
+  }
+}
+
+.active::after {
+  content: "";
+  width: 100%;
+  height: 2px;
+  display: block;
+  position: absolute;
+  background-color: #27d483;
+  border-radius: 10px;
+}

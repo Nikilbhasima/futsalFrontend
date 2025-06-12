@@ -1,0 +1,77 @@
+@media (max-width: 1258px) {
+  .hero-content {
+    padding: 0 5rem;
+  }
+
+  .hero {
+    height: 570px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  h4 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 1130px) {
+  .hero-content {
+    padding: 0 3rem;
+  }
+  .hero {
+    height: 550px;
+  }
+  h1 {
+    font-size: 28px;
+  }
+
+  h4 {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 1005px) {
+  .hero-content {
+    padding: 2rem;
+  }
+  .hero {
+    height: 500px;
+  }
+}
+
+@media (max-width: 656px) {
+  .hero-img {
+    display: none;
+  }
+}
+
+/* this part is for responsive font */
+@media (max-width: 940px) {
+  h1 {
+    font-size: 28px;
+  }
+  h4 {
+    font-size: 24px;
+  }
+}
+@media (max-width: 713px) {
+  h1 {
+    font-size: 26px;
+  }
+  h4 {
+    font-size: 18px;
+  }
+}
+@media (max-width: 660px) {
+  h1 {
+    font-size: 24px;
+  }
+  h4 {
+    font-size: 16px;
+  }
+  .hero {
+    height: 450px;
+  }
+}
