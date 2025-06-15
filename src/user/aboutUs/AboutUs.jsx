@@ -6,7 +6,7 @@ import Footer from "../footer/Footer";
 function AboutUs() {
   return (
     <div className="lg:max-w-[1327px] mx-auto sm:px-[10px]">
-      <div className="grid sm:grid md:grid-cols-2 lg:px-[1rem] my-[80px] sm:px-[10px] lg:gap-[32px] sm:gap-[24px] gap-[12px]">
+      <div className="grid sm:grid md:grid-cols-2 lg:px-[1rem] py-[80px] sm:px-[10px] lg:gap-[32px] sm:gap-[24px] gap-[12px]">
         <div
           style={{ backgroundImage: `url("./images/about_ground.png")` }}
           className="min-h-[15rem] bg-center bg-no-repeat bg-cover sm:rounded-[10px] min-h-[200px] lg:h-[400px]"
@@ -15,15 +15,15 @@ function AboutUs() {
           <h1 className="text-[20px] sm:text-[25px] md:text-[30px] text-[#27D483] font-semibold">
             Welcome To Lets Play
           </h1>
-          <div className="flex flex-col gap-[20px]">
-            <p className="text-[12px] sm:text-[16px] md-[16px] font-light lg:leading-[2rem] md:leading-[1.5rem] ">
+          <div className="flex flex-col gap-[20px] pt-[12px]">
+            <p className=" sm:text-[16px] md-[16px] font-light lg:leading-[2rem] md:leading-[1.5rem] ">
               Lets Play Futsal was initially created to proivde all futsal's
               information like name, location, phone number along with exact
               location of map. We not only provide information of futsal but
               also real time slot of availability or booked of all futsal
               ground.
             </p>
-            <p className="text-[12px] sm:text-[16px] md-[16px] font-light lg:leading-[2rem] md:leading-[1.5rem]">
+            <p className=" sm:text-[16px] md-[16px] font-light lg:leading-[2rem] md:leading-[1.5rem]">
               We are intended to reduce time consuming process while one is
               willing to get information about timing of futsal. We have planned
               to provide exact timing with status of all futsal ground in a
@@ -32,7 +32,7 @@ function AboutUs() {
           </div>
         </div>
       </div>
-      <div className="my-[80px]">
+      <div className="py-[80px]">
         <h1 className="text-center text-[40px] font-semibold text-[#27D483]">
           What we Provide?
         </h1>
@@ -57,7 +57,7 @@ function AboutUs() {
           </div>
         </div>
       </div>
-      <div className="mt-[80px] grid gap-[32px] place-items-center">
+      <div className="py-[80px] grid gap-[32px] place-items-center px-[16px]">
         <h1 className="text-[40px] font-semibold text-[#27D483]">
           Our Performance
         </h1>

@@ -1,7 +1,31 @@
 import React from "react";
+import { NavLink, Outlet } from "react-router-dom";
 
 function Venue() {
-  return <div>view venue</div>;
+  return (
+    <>
+      <div className="pt-[40px] px-[20px] ">
+        <div>
+          <ul className="flex flex-cols gap-[32px] ">
+            <li>
+              <NavLink className="navbar-list" to="browse">
+                Browse Match
+              </NavLink>
+            </li>
+
+            <li>
+              {" "}
+              <NavLink className="navbar-list" to="match">
+                Play Match
+              </NavLink>
+            </li>
+          </ul>
+        </div>
+
+        <Outlet />
+      </div>
+    </>
+  );
 }
 
 export default Venue;

@@ -39,20 +39,20 @@ function Navbar() {
         <>
           <div className="links-contain flex flex-row grow  items-center  ">
             <ul className=" link-ul flex flex-row m-auto gap-[32px] p-[16px]">
-              <li>
+              <li className="navbar-list">
                 <NavLink to="/">Home</NavLink>
               </li>
-              <li>
+              <li className="navbar-list">
                 <NavLink to="/venue">Venue</NavLink>
               </li>
               {true ? (
                 <>
-                  <li>MyBookings</li>
-                  <li>MyChallenge</li>
+                  <li className="navbar-list">MyBookings</li>
+                  <li className="navbar-list">MyChallenge</li>
                 </>
               ) : null}
 
-              <li>
+              <li className="navbar-list">
                 <NavLink to="/about">AboutUs</NavLink>
               </li>
             </ul>
