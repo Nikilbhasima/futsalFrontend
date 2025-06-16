@@ -4,7 +4,7 @@ import { NavLink, Outlet } from "react-router-dom";
 function Venue() {
   return (
     <>
-      <div className="pt-[40px] px-[20px] ">
+      <div className="pt-[40px] px-[20px] max-w-[1320px] m-auto ">
         <div>
           <ul className="flex flex-cols gap-[32px] ">
             <li>
