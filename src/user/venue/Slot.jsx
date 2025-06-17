@@ -1,6 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 function Slot() {
+  const [selectDate, setSelectDate] = useState("");
+  const handleChangeDate = (e) => {
+    const pickedDate = e.target.value;
+    setSelectDate(pickedDate);
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0];
+
+    console.log(selectDate);
+    if (pickedDate < formattedDate) {
+      alert("Please Select the Valid Date to book Futsal");
+    } else {
+      console.log("lets call the api");
+      console.log("selected date", pickedDate);
+    }
+  };
   return (
     <div>
       <h2 className="pt-[20px] text-[40px] font-semibold">
@@ -13,17 +28,16 @@ function Slot() {
         <p>Selected date:</p>
         <div className="flex ">
           <input
-            type="text"
+            type="date"
             placeholder="Search"
-            className="text-[#39908F] border-none  outline-none placeholder:text-[#39908F] bg-white text-[16px] py-[12px] px-[32px] rounded-l-[10px]  "
+            value={selectDate}
+            name="selectDate"
+            onChange={handleChangeDate}
+            className="text-[#39908F] border-none  outline-none placeholder:text-[#39908F] bg-white text-[16px] py-[12px] px-[32px] rounded-[10px]   "
           />
-          <button className="group bg-white py-[12px] px-[32px] rounded-r-[10px] hover:bg-[#27D483] ease-in transition-all duration-300">
-            <IoSearchOutline className="text-[#39908F] text-[25px] group-hover:text-[#212121] " />
-          </button>
         </div>
       </div>
-
-      <div className="mt-[60px] mx-[1rem]  flex gap-[20px] justify-center md:justify-start flex-wrap">
+      <div className="mt-[60px]  flex md:gap-[20px] gap-[10px]  md:justify-start flex-wrap">
         <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
           00AM-00PM
         </div>
@@ -82,7 +96,9 @@ function Slot() {
           00AM-00PM
         </div>
       </div>
-      <h1>Futsal Location</h1>
+      <div className="mt-[60px]">
+        <h2 className="text-[40px] font-semibold">Futsal Location</h2>
+      </div>
     </div>
   );
 }

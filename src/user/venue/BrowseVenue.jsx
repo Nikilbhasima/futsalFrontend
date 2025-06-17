@@ -34,7 +34,7 @@ function BrowseVenue() {
         </button>
       </div>
       <div className="mt-[60px] w-full  overflow-hidden grid md:grid-cols-[2fr_3fr_1fr] items-center md:items-start rounded-[10px] bg-[#333333] pb-[20px] md:pb-[0px] md:pr-[10px]">
-        <div className="  h-[6rem] sm:h-[8rem] md:h-[14rem] bg-[url(/images/futsalGround.png)] bg-cover bg-center"></div>
+        <div className="  h-[7rem] sm:h-[8rem] md:h-[14rem] bg-[url(/images/futsalGround.png)] bg-cover bg-center"></div>
         <div className="bg-[#333333]  p-[15px] lg:p-[20px] lg:pl-[32px] grid gap-[12px]">
           <p className="text-[20px] font-semibold mb-[12px]">Description</p>
           <p className="text-[14px] p-[10px]">
