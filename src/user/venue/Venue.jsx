@@ -14,7 +14,6 @@ function Venue() {
             </li>
 
             <li>
-              {" "}
               <NavLink className="navbar-list" to="match">
                 Play Match
               </NavLink>

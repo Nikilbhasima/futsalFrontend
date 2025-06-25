@@ -10,7 +10,7 @@ function BrowseVenue() {
   const navigate = useNavigate();
   return (
     <div>
-      <h2 className="pt-[20px] text-[40px] font-semibold">
+      <h2 className="pt-[20px] text-[40px] text-[#27D483] font-semibold">
         Search Venue For Match
       </h2>
       <p className="font-light">

@@ -47,7 +47,9 @@ function Navbar() {
               </li>
               {true ? (
                 <>
-                  <li className="navbar-list">MyBookings</li>
+                  <li className="navbar-list">
+                    <NavLink to="/bookings"> MyBookings</NavLink>
+                  </li>
                   <li className="navbar-list">MyChallenge</li>
                 </>
               ) : null}
@@ -59,8 +61,14 @@ function Navbar() {
             <div className=" flex gap-[16px] ">
               {true ? (
                 <>
-                  <PrimaryButton buttonName="Sign in" />
-                  <SecondaryButton buttonName="Sign up" />
+                  <PrimaryButton
+                    buttonName="Sign in"
+                    navTo="authenticate/login"
+                  />
+                  <SecondaryButton
+                    buttonName="Sign up"
+                    navTo="/authenticate/registration"
+                  />
                 </>
               ) : (
                 <PrimaryButton buttonName="Logout" />
