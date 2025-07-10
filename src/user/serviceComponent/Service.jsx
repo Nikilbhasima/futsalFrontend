@@ -13,12 +13,14 @@ function Service() {
           header="Book Venue"
           detail="Browse different venues to book a spot for your team"
           button="View Venue"
+          bookingType="book"
         />
         <Card
           img="./images/service2.jpg"
           header="Match"
           detail="Look for or accept matches to play against other teams"
           button="Find Match"
+          bookingType="challenge"
         />
         <Card
           img="./images/service1.png"

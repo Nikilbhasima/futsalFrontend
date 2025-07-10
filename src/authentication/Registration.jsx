@@ -8,7 +8,10 @@ function Registration() {
   return (
     <div className="text-white w-full sm:w-[400px] ">
       <div className="flex items-center gap-[10px]">
-        <FaArrowLeft className="text-[20px] text-[#27D483] font-light" />
+        <FaArrowLeft
+          className="text-[20px] text-[#27D483] font-light"
+          onClick={() => navigate("/authenticate/login")}
+        />
 
         <div className="relative flex m-auto text-[16px] w-[400px] bg-[#212121] gap-[1rem]   py-[12px] rounded-[30px]">
           <div

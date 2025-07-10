@@ -43,9 +43,9 @@ function Navbar() {
                 <NavLink to="/">Home</NavLink>
               </li>
               <li className="navbar-list">
-                <NavLink to="/venue">Venue</NavLink>
+                <NavLink to={`/venue/${"book"}`}>Venue</NavLink>
               </li>
-              {true ? (
+              {false ? (
                 <>
                   <li className="navbar-list">
                     <NavLink to="/bookings"> MyBookings</NavLink>

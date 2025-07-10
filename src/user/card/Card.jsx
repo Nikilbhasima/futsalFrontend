@@ -1,7 +1,7 @@
 import React from "react";
 import "./card.css";
 import TerteryButton from "../buttonComponent/TerteryButton";
-function Card({ img, header, detail, button, nav }) {
+function Card({ img, header, detail, button, nav, bookingType }) {
   return (
     <div className="card bg-[#333333] max-w-[300px] rounded-[10px]  overflow-hidden hover:-translate-y-2 duration-1000 ease-in-out">
       <div className="car-img h-[200px] overflow-hidden">
@@ -18,7 +18,7 @@ function Card({ img, header, detail, button, nav }) {
         <p className="card-detail-description text-[#27D483] text-[14px]">
           {detail}
         </p>
-        <TerteryButton buttonName={button} />
+        <TerteryButton buttonName={button} goTo={bookingType} />
       </div>
     </div>
   );

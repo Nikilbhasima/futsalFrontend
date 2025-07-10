@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
-import { GiSettingsKnobs } from "react-icons/gi";
-import { FaStar } from "react-icons/fa6";
-import { FaRegStarHalfStroke } from "react-icons/fa6";
 import { GiSoccerKick } from "react-icons/gi";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-
+import { RiArrowDropDownLine } from "react-icons/ri";
 function Match() {
+  const [filter, setFilter] = useState(true);
+  const handleFilter = () => {
+    setFilter(!filter);
+  };
   return (
     <div>
       <h2 className="pt-[20px] text-[40px] text-[#27D483] font-semibold">
@@ -26,11 +27,54 @@ function Match() {
             <IoSearchOutline className="text-[#39908F] text-[25px] group-hover:text-[#212121] " />
           </button>
         </div>
-
-        <button className="group flex gap-[10px] text-[#39908F] bg-white p-[12px] rounded-[10px] hover:bg-[#27D483] hover:text-[#212121] ease-in transition-all duration-300">
-          <GiSettingsKnobs className="text-[#39908F] text-[25px] group-hover:text-[#212121] text-[16px] " />
-          Filter
-        </button>
+        {/* this part is for sorting and filtering futsal ground */}
+        <div className="relative">
+          <button
+            onClick={handleFilter}
+            className="group flex gap-[10px] text-[#39908F] bg-white p-[12px] rounded-[10px] hover:bg-[#27D483] hover:text-[#212121] ease-in transition-all duration-300"
+          >
+            {/* <GiSettingsKnobs className="text-[#39908F] text-[25px] group-hover:text-[#212121] text-[16px] " /> */}
+            Sort & Filter
+            <RiArrowDropDownLine
+              className={
+                filter
+                  ? "text-[#39908F] text-[25px] group-hover:text-[#212121] text-[25px] "
+                  : "text-[#39908F] text-[25px] group-hover:text-[#212121] text-[25px] rotate-180"
+              }
+            />
+          </button>
+          <ul
+            role="menu"
+            className={`bg-white absolute left-0 w-[200%] rounded-[10px] py-[10px] shadow-lg overflow-hidden transition-all duration-300 ease-in-out origin-top z-10 ${
+              filter
+                ? "opacity-0 scale-y-0 h-0 -translate-y-2 pointer-events-none"
+                : "opacity-100 scale-y-100 h-auto translate-y-1 pointer-events-auto"
+            }`}
+          >
+            <span className="text-[black] px-[12px] text-[16px] font-bold">
+              Filter By
+            </span>
+            <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+              Price (Low to High)
+            </li>
+            <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+              Rating (Low to High)
+            </li>
+            <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+              Rating (High to Low)
+            </li>
+            <span className="text-[black] py-[12px] px-[12px] text-[16px] font-bold">
+              Filter By Ground
+            </span>
+            <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+              5A Ground
+            </li>
+            <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+              7A Ground
+            </li>
+          </ul>
+        </div>
+        {/* end of sorting and filtering */}
       </div>
       <div className="mt-[60px] w-full  overflow-hidden grid md:grid-cols-[2fr_3fr_1fr] items-center md:items-start rounded-[10px] bg-[#333333] pb-[20px] md:pb-[0px] md:pr-[10px]">
         <div className="  h-[7rem] sm:h-[8rem] md:h-[14rem] bg-[url(/images/futsalGround.png)] bg-cover bg-center"></div>

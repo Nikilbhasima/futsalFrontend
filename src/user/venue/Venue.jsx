@@ -1,14 +1,20 @@
 import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useParams } from "react-router-dom";
 
 function Venue() {
+  const param = useParams();
+  const bookingType = param.bookingType;
+  console.log("form venue", bookingType);
   return (
     <>
       <div className="pt-[40px] px-[20px] max-w-[1320px] m-auto ">
         <div>
           <ul className="flex flex-cols gap-[32px] ">
             <li>
-              <NavLink className="navbar-list" to="browse">
+              <NavLink
+                className="navbar-list"
+                to={`/venue/${bookingType}/browse`}
+              >
                 Browse Match
               </NavLink>
             </li>
@@ -21,7 +27,7 @@ function Venue() {
           </ul>
         </div>
 
-        <Outlet />
+        <Outlet context={{ bookingType }} />
       </div>
     </>
   );

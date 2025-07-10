@@ -40,7 +40,7 @@ function Login() {
       <div className="flex justify-between  items-center text-[20px] mb-8">
         <h1 className=" text-[#27D483] text-3xl font-bold ">Let's Play</h1>
         <div className=" py-[0.6rem] px-[1.5rem] rounded-[10px] bg-[#27D483] text-[#212121] hover:bg-[#22bb74] transition-colors duration-300">
-          <FaArrowLeft />
+          <FaArrowLeft onClick={() => navigate("/")} />
         </div>
       </div>
 

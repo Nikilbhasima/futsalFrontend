@@ -21,7 +21,7 @@ function HomeNavbar() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<AboutUs />} />
-        <Route path="/venue" element={<Venue />}>
+        <Route path="/venue/:bookingType" element={<Venue />}>
           <Route index element={<BrowseVenue />} />
           <Route path="browse" element={<BrowseVenue />} />
           <Route path="match" element={<Match />} />
