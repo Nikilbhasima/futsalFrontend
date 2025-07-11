@@ -5,6 +5,9 @@ import { RxCross2 } from "react-icons/rx";
 import SecondaryButton from "../buttonComponent/SecondaryButton";
 import PrimaryButton from "../buttonComponent/PrimaryButton";
 import { NavLink } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi";
+import { IoSettingsOutline } from "react-icons/io5";
+import { CgProfile } from "react-icons/cg";
 
 function Navbar() {
   const [screenSize, setScreenSize] = useState(window.innerWidth);
@@ -32,8 +35,13 @@ function Navbar() {
   const changeWidth = () => {
     setScreenSize(window.innerWidth);
   };
+
+  const [filter, setFilter] = useState(true);
+  const handleFilter = () => {
+    setFilter(!filter);
+  };
   return (
-    <div className=" navbar-main-body flex flex-row justify-between px-[32px] py-[12px] bg-[#212121]  z-110">
+    <nav className=" navbar-main-body flex flex-row justify-between px-[32px] py-[12px] bg-[#212121]  z-110">
       <p className="futsalName flex-none">KickStart</p>
       {changeWidths ? (
         <>
@@ -59,7 +67,7 @@ function Navbar() {
               </li>
             </ul>
             <div className=" flex gap-[16px] ">
-              {true ? (
+              {false ? (
                 <>
                   <PrimaryButton
                     buttonName="Sign in"
@@ -71,7 +79,37 @@ function Navbar() {
                   />
                 </>
               ) : (
-                <PrimaryButton buttonName="Logout" />
+                <div className="relative">
+                  {/* <PrimaryButton buttonName="Logout" /> */}
+                  <div
+                    className="bg-cover bg-no-repeat bg-center rounded-[50%] h-[3rem] w-[3rem] bg-[url(/images/messi.png)] "
+                    onClick={handleFilter}
+                  ></div>
+                  <ul
+                    role="menu"
+                    className={` w-[300%] bg-white absolute -right-2 w-[200%] rounded-[10px]  shadow-lg overflow-hidden transition-all duration-300 ease-in-out origin-top z-10 ${
+                      filter
+                        ? "opacity-0 scale-y-0 h-0 -translate-y-2 pointer-events-none"
+                        : "opacity-100 scale-y-100 h-auto translate-y-2 pointer-events-auto"
+                    }`}
+                  >
+                    <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center">
+                      Edit Profile
+                      <CgProfile className="text-[16px]" />
+                    </li>
+                    <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center">
+                      Setting
+                      <IoSettingsOutline className="text-[16px]" />
+                    </li>
+                    <li
+                      className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center"
+                      onClick={() => console.log("logout")}
+                    >
+                      Logout
+                      <FiLogOut className="text-[16px]" />
+                    </li>
+                  </ul>
+                </div>
               )}
             </div>
           </div>
@@ -99,7 +137,7 @@ function Navbar() {
           )}
         </div>
       ) : null}
-    </div>
+    </nav>
   );
 }
 

@@ -11,13 +11,11 @@ const style = {
   width: 430,
   bgcolor: "#333333",
   border: "2px solid #000",
-  boxShadow: 24,
-  p: "32px",
+  p: "24px",
   borderRadius: "10px",
 };
 function Slot() {
   const { bookingType } = useOutletContext();
-  console.log("this is booking type", bookingType);
   const [selectDate, setSelectDate] = useState("");
   const [time, setTime] = useState({
     starting: "",
@@ -153,19 +151,30 @@ function Slot() {
               Match Detail
             </h1>
             {Custome ? (
-              <div className="grid gap-[20px]">
-                <p>
-                  Match Price:<span className="ml-[5px]">Rs 1000</span>
-                </p>
-                <p>
-                  Match Time:<span className="ml-[5px]">10AM - 11AM</span>
-                </p>
-                <p>
-                  Ground Type: <span className="ml-[5px]">5A</span>
-                </p>
-                <p>
-                  Total Price: <span className="ml-[5px]">Rs1000</span>
-                </p>
+              <div className="grid gap-[15px]">
+                <div className="flex justify-between">
+                  <span className="text-[16px] font-medium">Match Price:</span>
+                  <span className="font-thin">Rs 1000</span>
+                </div>
+
+                <div className="h-[2px] w-full bg-[#27D483] rounded-[10px]"></div>
+
+                <div className="flex justify-between">
+                  <span className="text-[16px] font-medium">Match Time:</span>
+                  <span className="font-thin">10AM - 11AM</span>
+                </div>
+                <div className="h-[2px] w-full bg-[#27D483] rounded-[10px]"></div>
+
+                <div className="flex justify-between">
+                  <span className="text-[16px] font-medium">Ground Type:</span>
+                  <span className="font-thin">5A</span>
+                </div>
+                <div className="h-[2px] w-full bg-[#27D483] rounded-[10px]"></div>
+
+                <div className="flex justify-between">
+                  <span className="text-[16px] font-medium">Total Price:</span>
+                  <span className="font-thin">Rs 1000</span>
+                </div>
               </div>
             ) : (
               <div className="flex flex-col gap-[1rem]">
@@ -225,35 +234,28 @@ function Slot() {
               Inviter Detail
             </h1>
             <div className="grid gap-[20px]">
-              <div className="grid grid-cols-[1fr_2fr]  items-center">
-                <p>Inviter Name:</p>
-                <input
-                  className="py-[10px] px-[24px] bg-[white] text-[#333333] rounded-[5px] border-none outline-none"
-                  type="text"
-                  placeholder="Inviter Name"
-                />
+              <div className="flex justify-between">
+                <span className="text-[16px] font-medium">Inviter Name:</span>
+                <span className="font-thin">Nikil Bhasima</span>
               </div>
-              <div className="grid grid-cols-[1fr_2fr]  items-center">
-                <p>Phone:</p>{" "}
-                <input
-                  className="py-[10px] px-[24px] bg-[white] text-[#333333] rounded-[5px] border-none outline-none"
-                  type="text"
-                  placeholder="Phone Number"
-                />
+              <div className="h-[2px] w-full bg-[#27D483] "></div>
+              <div className="flex justify-between">
+                <span className="text-[16px] font-medium">Team Format:</span>
+                <span className="font-thin">5A</span>
               </div>
 
-              <div className="grid grid-cols-[1fr_2fr]  items-center">
-                <p>Team Format:</p>
-                <select
-                  name=""
-                  id=""
-                  className="py-[10px] px-[24px] bg-[white] text-[#333333] rounded-[5px] border-none outline-none  "
-                >
-                  <option value="5v5">5v5</option>
-                </select>
+              <div className="h-[2px] w-full bg-[#27D483] "></div>
+              <div className="grid grid-cols-[1fr_1fr]  items-center">
+                <span className="text-[16px] font-medium ">Add Phone:</span>
+                <input
+                  type="text"
+                  placeholder="Phone Number"
+                  className="w-full py-[10px] px-[24px] bg-[white] text-[#333333] rounded-[5px] border-none outline-none "
+                />
               </div>
-              <div className="grid grid-cols-[1fr_2fr]  items-center">
-                <p>Payment Type:</p>
+              <div className="h-[2px] w-full bg-[#27D483] "></div>
+              <div className="grid grid-cols-[1fr_1fr]  items-center">
+                <p className="">Payment Type:</p>
                 <select
                   name=""
                   id=""
@@ -269,7 +271,7 @@ function Slot() {
               className=" px-[32px] py-[12px] bg-[#27D483] text-[#212121] rounded-[10px] w-fit m-auto"
               onClick={() => navigate("/bookings")}
             >
-              Book Now
+              Challenge
             </button>
           </div>
         </Box>
