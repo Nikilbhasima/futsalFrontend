@@ -11,279 +11,232 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { HiOutlineUser } from "react-icons/hi2";
-import { MdOutlineLocalPhone } from "react-icons/md";
-import { MdOutlineEmail } from "react-icons/md";
+import { MdOutlineLocalPhone, MdOutlineEmail } from "react-icons/md";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+// === Shared Styles ===
+const inputSx = {
+  color: "white",
+  "&:before": { borderBottomColor: "white" },
+  "&:hover:not(.Mui-disabled):before": { borderBottomColor: "#27D483" },
+  "&:after": { borderBottomColor: "#27D483" },
+};
+const iconColor = { color: "#27D483" };
+const formControlSx = {
+  "& label": { color: "white" },
+  "& label.Mui-focused": { color: "white" },
+  "& .MuiInputBase-input": { color: "white" },
+  "& .MuiInput-underline:before": { borderBottom: "1px solid white" },
+  "& .MuiInput-underline:hover:before": { borderBottom: "1px solid #27D483" },
+  "& .MuiInput-underline:after": { borderBottom: "2px solid #27D483" },
+  // Removed the line below to prevent overriding icon colors to white
+  // "& .MuiSvgIcon-root": { color: "white" },
+};
 
+// === Reusable Components ===
+const IconTextField = ({ id, label, name, value, onChange, icon }) => (
+  <TextField
+    id={id}
+    label={label}
+    name={name}
+    value={value}
+    onChange={onChange}
+    variant="standard"
+    fullWidth
+    InputLabelProps={{ style: { color: "white" } }}
+    InputProps={{
+      endAdornment: <InputAdornment position="end">{icon}</InputAdornment>,
+      sx: inputSx,
+    }}
+    sx={{
+      "& .MuiInput-underline:before": { borderBottomColor: "white" },
+      "& .MuiInput-underline:after": { borderBottomColor: "#27D483" },
+    }}
+  />
+);
+
+const PasswordField = ({ label, name, value, onChange, show, toggleShow }) => (
+  <FormControl variant="standard" fullWidth sx={formControlSx}>
+    <InputLabel>{label}</InputLabel>
+    <Input
+      type={show ? "text" : "password"}
+      name={name}
+      value={value}
+      onChange={onChange}
+      endAdornment={
+        <InputAdornment position="end">
+          <IconButton onClick={toggleShow} edge="end">
+            {show ? (
+              <VisibilityOff sx={{ color: "#27D483", fontSize: 24 }} />
+            ) : (
+              <Visibility sx={{ color: "#27D483", fontSize: 24 }} />
+            )}
+          </IconButton>
+        </InputAdornment>
+      }
+    />
+  </FormControl>
+);
+// validating user registration data
+const phoneRegex = /^[0-9]{10}$/;
+
+const validationSchema = Yup.object({
+  username: Yup.string()
+    .max(25, "Maximum 25 characters allowed")
+    .required("Username is required"),
+
+  phoneNumber: Yup.string()
+    .matches(phoneRegex, "Phone number must be 10 digits")
+    .required("Phone number is required"),
+
+  email: Yup.string()
+    .email("Invalid email format")
+    .required("Email is required"),
+
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+
+  password2: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Please re-enter your password"),
+});
+// === Main Component ===
 function BusinessRegistration() {
-  const [registrationData, setRestistrationData] = useState({
-    username: "",
-    email: "",
-    phoneNumber: "",
-    password: "",
-    password2: "",
-    accountType: "",
-  });
+  // const [formData, setFormData] = useState({
+  //   username: "",
+  //   email: "",
+  //   phoneNumber: "",
+  //   password: "",
+  //   password2: "",
+  //   accountType: "",
+  // });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    console.log(name, value);
-    setRestistrationData((data) => ({ ...registrationData, [name]: value }));
-  };
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event) => event.preventDefault();
-
   const [showPassword2, setShowPassword2] = useState(false);
-  const handleClickShowPassword2 = () => setShowPassword2((show) => !show);
-  const handleMouseDownPassword2 = (event) => event.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  // };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   console.log(formData);
+  // };
+
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 mt-[10px]">
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 3,
-            width: "100%",
-          }}
-        >
-          {/* Email or Phone Input */}
+      <Formik
+        initialValues={{
+          role: "owner",
+          username: "",
+          phoneNumber: "",
+          email: "",
+          password: "",
+          password2: "",
+        }}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          console.log("user registration data", values);
+        }}
+      >
+        {({ values, handleChange }) => (
+          <Form className="flex flex-col mt-[10px]">
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <IconTextField
+                id="username"
+                label="Futsal Name"
+                name="username"
+                value={values.username}
+                onChange={handleChange}
+                icon={
+                  <HiOutlineUser style={{ color: "#27D483", fontSize: 25 }} />
+                }
+              />
+              <ErrorMessage
+                name="username"
+                component="div"
+                className="text-red-500 text-sm "
+              />
+              <IconTextField
+                id="phoneNumber"
+                label="Phone Number"
+                name="phoneNumber"
+                value={values.phoneNumber}
+                onChange={handleChange}
+                icon={
+                  <MdOutlineLocalPhone
+                    style={{ color: "#27D483", fontSize: 25 }}
+                  />
+                }
+              />
+              <ErrorMessage
+                name="phoneNumber"
+                component="div"
+                className="text-red-500 text-sm  "
+              />
+              <IconTextField
+                id="email"
+                label="Futsal Gmail"
+                name="email"
+                value={values.email}
+                onChange={handleChange}
+                icon={
+                  <MdOutlineEmail style={{ color: "#27D483", fontSize: 25 }} />
+                }
+              />
+              <ErrorMessage
+                name="email"
+                component="div"
+                className="text-red-500 text-sm  "
+              />
+              <PasswordField
+                label="Password"
+                name="password"
+                value={values.password}
+                onChange={handleChange}
+                show={showPassword}
+                toggleShow={() => setShowPassword((prev) => !prev)}
+              />
+              <ErrorMessage
+                name="password"
+                component="div"
+                className="text-red-500 text-sm "
+              />
+              <PasswordField
+                label="Re-enter Password"
+                name="password2"
+                value={values.password2}
+                onChange={handleChange}
+                show={showPassword2}
+                toggleShow={() => setShowPassword2((prev) => !prev)}
+              />
+              <ErrorMessage
+                name="password2"
+                component="div"
+                className="text-red-500 text-sm  "
+              />
+            </Box>
 
-          <TextField
-            id="username"
-            label="Futsal Name"
-            variant="standard"
-            name="username"
-            value={registrationData.username}
-            onChange={handleChange}
-            fullWidth
-            InputLabelProps={{ style: { color: "white" } }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <HiOutlineUser className="text-[#27D483] text-[25px]" />
-                </InputAdornment>
-              ),
-              sx: {
-                color: "white",
-                "&:before": {
-                  borderBottomColor: "white",
-                },
-                "&:hover:not(.Mui-disabled):before": {
-                  borderBottomColor: "#27D483",
-                },
-                "&:after": {
-                  borderBottomColor: "#27D483",
-                },
-              },
-            }}
-            sx={{
-              "& .MuiInput-underline:before": { borderBottomColor: "white" },
-              "& .MuiInput-underline:after": { borderBottomColor: "#27D483" },
-            }}
-          />
-
-          <TextField
-            id="phone_number"
-            label="Phone Number"
-            variant="standard"
-            value={registrationData.phoneNumber}
-            onChange={handleChange}
-            name="phoneNumber"
-            InputLabelProps={{ style: { color: "white" } }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <MdOutlineLocalPhone className="text-[#27D483] text-[25px]" />
-                </InputAdornment>
-              ),
-              sx: {
-                color: "white", // input text color
-                "&:before": {
-                  borderBottomColor: "white", // default border
-                },
-                "&:hover:not(.Mui-disabled):before": {
-                  borderBottomColor: "#27D483", // hover border
-                },
-                "&:after": {
-                  borderBottomColor: "#27D483", // active/focus border
-                },
-              },
-            }}
-            sx={{
-              "& .MuiInput-underline:before": { borderBottomColor: "white" },
-              "& .MuiInput-underline:after": { borderBottomColor: "#27D483" },
-            }}
-            fullWidth
-          />
-          <TextField
-            id="email"
-            label="Futsal Gmail "
-            variant="standard"
-            value={registrationData.email}
-            onChange={handleChange}
-            name="email"
-            InputLabelProps={{ style: { color: "white" } }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <MdOutlineEmail className="text-[#27D483] text-[25px]" />
-                </InputAdornment>
-              ),
-              sx: {
-                color: "white", // input text color
-                "&:before": {
-                  borderBottomColor: "white", // default border
-                },
-                "&:hover:not(.Mui-disabled):before": {
-                  borderBottomColor: "#27D483", // hover border
-                },
-                "&:after": {
-                  borderBottomColor: "#27D483", // active/focus border
-                },
-              },
-            }}
-            sx={{
-              "& .MuiInput-underline:before": { borderBottomColor: "white" },
-              "& .MuiInput-underline:after": { borderBottomColor: "#27D483" },
-            }}
-            fullWidth
-          />
-          {/* Password Input */}
-          <FormControl
-            variant="standard"
-            fullWidth
-            sx={{
-              "& label": {
-                color: "white",
-              },
-              "& label.Mui-focused": {
-                color: "white", // Ensure label stays white when input is focused
-              },
-              "& .MuiInputBase-input": {
-                color: "white", // input text
-              },
-              "& .MuiInput-underline:before": {
-                borderBottom: "1px solid white", // default underline
-              },
-              "& .MuiInput-underline:hover:before": {
-                borderBottom: "1px solid #27D483", // underline on hover
-              },
-              "& .MuiInput-underline:after": {
-                borderBottom: "2px solid #27D483", // underline on focus
-              },
-              "& .MuiSvgIcon-root": {
-                color: "white", // icon color
-              },
-              "&:hover:not(.Mui-disabled):before": {
-                borderBottomColor: "#27D483", // hover border
-              },
-            }}
-          >
-            <InputLabel htmlFor="standard-adornment-password">
-              Password
-            </InputLabel>
-            <Input
-              id="standard-adornment-password"
-              type={showPassword ? "text" : "password"}
-              value={registrationData.password}
-              onChange={handleChange}
-              name="password"
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? (
-                      <VisibilityOff className="text-[#27D483] text-[25px]" />
-                    ) : (
-                      <Visibility className="text-[#27D483] text-[25px]" />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-          {/* re-enter password */}
-          <FormControl
-            variant="standard"
-            fullWidth
-            sx={{
-              "& label": {
-                color: "white",
-              },
-              "& label.Mui-focused": {
-                color: "white", // Ensure label stays white when input is focused
-              },
-              "& .MuiInputBase-input": {
-                color: "white", // input text
-              },
-              "& .MuiInput-underline:before": {
-                borderBottom: "1px solid white", // default underline
-              },
-              "& .MuiInput-underline:hover:before": {
-                borderBottom: "1px solid #27D483", // underline on hover
-              },
-              "& .MuiInput-underline:after": {
-                borderBottom: "2px solid #27D483", // underline on focus
-              },
-              "& .MuiSvgIcon-root": {
-                color: "white", // icon color
-              },
-              "&:hover:not(.Mui-disabled):before": {
-                borderBottomColor: "#27D483", // hover border
-              },
-            }}
-          >
-            <InputLabel htmlFor="standard-adornment-password">
-              Re-enter Password
-            </InputLabel>
-            <Input
-              id="standard-adornment-password"
-              type={showPassword2 ? "text" : "password"}
-              value={registrationData.password2}
-              onChange={handleChange}
-              name="password2"
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={handleClickShowPassword2}
-                    onMouseDown={handleMouseDownPassword2}
-                    edge="end"
-                  >
-                    {showPassword2 ? (
-                      <VisibilityOff className="text-[#27D483] text-[25px]" />
-                    ) : (
-                      <Visibility className="text-[#27D483] text-[25px]" />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-        </Box>
-
-        <button
-          type="submit"
-          className="bg-[#27D483] text-[#212121] font-semibold py-3 rounded-lg hover:bg-[#22bb74] transition-colors duration-300 "
-        >
-          Sign Up
-        </button>
-      </form>
+            <button
+              type="submit"
+              className="bg-[#27D483] text-[#212121] font-semibold py-3 rounded-lg hover:bg-[#22bb74] transition-colors duration-300 mt-10"
+            >
+              Sign Up
+            </button>
+          </Form>
+        )}
+      </Formik>
       <div className="flex items-center justify-between mt-[20px]">
         <div className="h-[2px] w-[43%] bg-[#27D483]"></div>
         <p className="text-[#39908F]">or</p>
         <div className="h-[2px] w-[43%] bg-[#27D483]"></div>
       </div>
+
       <div className="text-[black] bg-[white] py-[12px] rounded-[10px] font-semibold flex justify-center mt-[20px] gap-[10px]">
         <FcGoogle className="text-[25px]" />
-        Sign up with google
+        Sign up with Google
       </div>
     </>
   );

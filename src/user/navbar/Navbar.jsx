@@ -67,7 +67,8 @@ function Navbar() {
               </li>
             </ul>
             <div className=" flex gap-[16px] ">
-              {false ? (
+              {/* this is non login part */}
+              {true ? (
                 <>
                   <PrimaryButton
                     buttonName="Sign in"
@@ -79,43 +80,49 @@ function Navbar() {
                   />
                 </>
               ) : (
+                // this is login part
                 <div className="relative">
-                  {/* <PrimaryButton buttonName="Logout" /> */}
-                  <div
-                    className="bg-cover bg-no-repeat bg-center rounded-[50%] h-[3rem] w-[3rem] bg-[url(/images/messi.png)] "
-                    onClick={handleFilter}
-                  ></div>
-                  <ul
-                    role="menu"
-                    className={` w-[300%] bg-white absolute -right-2 w-[200%] rounded-[10px]  shadow-lg overflow-hidden transition-all duration-300 ease-in-out origin-top z-10 ${
-                      filter
-                        ? "opacity-0 scale-y-0 h-0 -translate-y-2 pointer-events-none"
-                        : "opacity-100 scale-y-100 h-auto translate-y-2 pointer-events-auto"
-                    }`}
-                  >
-                    <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center">
-                      Edit Profile
-                      <CgProfile className="text-[16px]" />
-                    </li>
-                    <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center">
-                      Setting
-                      <IoSettingsOutline className="text-[16px]" />
-                    </li>
-                    <li
-                      className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center"
-                      onClick={() => console.log("logout")}
-                    >
-                      Logout
-                      <FiLogOut className="text-[16px]" />
-                    </li>
-                  </ul>
+                  {displayIcon ? (
+                    <PrimaryButton buttonName="Logout" />
+                  ) : (
+                    <>
+                      <div
+                        className="bg-cover bg-no-repeat bg-center rounded-[50%] h-[3rem] w-[3rem] bg-[url(/images/messi.png)] "
+                        onClick={handleFilter}
+                      ></div>
+                      <ul
+                        role="menu"
+                        className={` w-[300%] bg-white absolute -right-2 w-[200%] rounded-[10px]  shadow-lg overflow-hidden transition-all duration-300 ease-in-out origin-top z-10 ${
+                          filter
+                            ? "opacity-0 scale-y-0 h-0 -translate-y-2 pointer-events-none"
+                            : "opacity-100 scale-y-100 h-auto translate-y-2 pointer-events-auto"
+                        }`}
+                      >
+                        <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center">
+                          Edit Profile
+                          <CgProfile className="text-[16px]" />
+                        </li>
+                        <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center">
+                          Setting
+                          <IoSettingsOutline className="text-[16px]" />
+                        </li>
+                        <li
+                          className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center"
+                          onClick={() => console.log("logout")}
+                        >
+                          Logout
+                          <FiLogOut className="text-[16px]" />
+                        </li>
+                      </ul>
+                    </>
+                  )}
                 </div>
               )}
             </div>
           </div>
         </>
       ) : null}
-
+      {/* this will be display when screen size shrinks */}
       {displayIcon ? (
         <div className="flex items-center justify-center z-110">
           {click ? (

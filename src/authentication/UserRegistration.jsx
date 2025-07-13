@@ -11,279 +11,223 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { HiOutlineUser } from "react-icons/hi2";
-import { MdOutlineLocalPhone } from "react-icons/md";
-import { MdOutlineEmail } from "react-icons/md";
+import { MdOutlineLocalPhone, MdOutlineEmail } from "react-icons/md";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+// Reusable input styles
+const inputStyle = {
+  color: "white",
+  "&:before": { borderBottomColor: "white" },
+  "&:hover:not(.Mui-disabled):before": { borderBottomColor: "#27D483" },
+  "&:after": { borderBottomColor: "#27D483" },
+};
+
+// Reusable form control styles
+const formControlStyle = {
+  "& label": { color: "white" },
+  "& label.Mui-focused": { color: "white" },
+  "& .MuiInputBase-input": { color: "white" },
+  "& .MuiInput-underline:before": { borderBottom: "1px solid white" },
+  "& .MuiInput-underline:hover:before": { borderBottom: "1px solid #27D483" },
+  "& .MuiInput-underline:after": { borderBottom: "2px solid #27D483" },
+};
+
+// Icon color
+const iconColor = { color: "#27D483" };
+
+// Reusable TextField with icon
+const IconTextField = ({ id, label, name, value, onChange, icon }) => (
+  <TextField
+    id={id}
+    label={label}
+    name={name}
+    value={value}
+    onChange={onChange}
+    variant="standard"
+    fullWidth
+    InputLabelProps={{ style: { color: "white" } }}
+    InputProps={{
+      endAdornment: <InputAdornment position="end">{icon}</InputAdornment>,
+      sx: inputStyle,
+    }}
+    sx={{
+      "& .MuiInput-underline:before": { borderBottomColor: "white" },
+      "& .MuiInput-underline:after": { borderBottomColor: "#27D483" },
+    }}
+  />
+);
+
+// Password input component
+const PasswordInput = ({
+  label,
+  value,
+  onChange,
+  name,
+  visible,
+  toggleVisible,
+}) => (
+  <FormControl variant="standard" fullWidth sx={formControlStyle}>
+    <InputLabel>{label}</InputLabel>
+    <Input
+      type={visible ? "text" : "password"}
+      value={value}
+      onChange={onChange}
+      name={name}
+      endAdornment={
+        <InputAdornment position="end">
+          <IconButton onClick={toggleVisible} edge="end">
+            {visible ? (
+              <VisibilityOff sx={iconColor} />
+            ) : (
+              <Visibility sx={iconColor} />
+            )}
+          </IconButton>
+        </InputAdornment>
+      }
+    />
+  </FormControl>
+);
+
+// validating user registration data
+const phoneRegex = /^[0-9]{10}$/;
+
+const validationSchema = Yup.object({
+  username: Yup.string()
+    .max(25, "Maximum 25 characters allowed")
+    .required("Username is required"),
+
+  phoneNumber: Yup.string()
+    .matches(phoneRegex, "Phone number must be 10 digits")
+    .required("Phone number is required"),
+
+  email: Yup.string()
+    .email("Invalid email format")
+    .required("Email is required"),
+
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+
+  password2: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Please re-enter your password"),
+});
 
 function UserRegistration() {
-  const [registrationData, setRestistrationData] = useState({
-    username: "",
-    email: "",
-    phoneNumber: "",
-    password: "",
-    password2: "",
-    accounType: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    console.log(name, value);
-    setRestistrationData((data) => ({ ...registrationData, [name]: value }));
-  };
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event) => event.preventDefault();
-
   const [showPassword2, setShowPassword2] = useState(false);
-  const handleClickShowPassword2 = () => setShowPassword2((show) => !show);
-  const handleMouseDownPassword2 = (event) => event.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 mt-[10px]">
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 3,
-            width: "100%",
-          }}
-        >
-          {/* Email or Phone Input */}
+      <Formik
+        initialValues={{
+          role: "user",
+          username: "",
+          phoneNumber: "",
+          email: "",
+          password: "",
+          password2: "",
+        }}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          console.log("user registration data", values);
+        }}
+      >
+        {({ values, handleChange }) => (
+          <Form className="flex flex-col  mt-[10px]">
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+                width: "100%",
+              }}
+            >
+              <IconTextField
+                id="username"
+                label="Username"
+                name="username"
+                value={values.username}
+                onChange={handleChange}
+                icon={<HiOutlineUser style={iconColor} size={25} />}
+              />
+              <ErrorMessage
+                name="username"
+                component="div"
+                className="text-red-500 text-sm "
+              />
+              <IconTextField
+                id="phone"
+                label="Phone Number"
+                name="phoneNumber"
+                value={values.phoneNumber}
+                onChange={handleChange}
+                icon={<MdOutlineLocalPhone style={iconColor} size={25} />}
+              />
+              <ErrorMessage
+                name="phoneNumber"
+                component="div"
+                className="text-red-500 text-sm  "
+              />
+              <IconTextField
+                id="email"
+                label="Email"
+                name="email"
+                value={values.email}
+                onChange={handleChange}
+                icon={<MdOutlineEmail style={iconColor} size={25} />}
+              />
+              <ErrorMessage
+                name="email"
+                component="div"
+                className="text-red-500 text-sm  "
+              />
+              <PasswordInput
+                label="Password"
+                value={values.password}
+                onChange={handleChange}
+                name="password"
+                visible={showPassword}
+                toggleVisible={() => setShowPassword((v) => !v)}
+              />
+              <ErrorMessage
+                name="password"
+                component="div"
+                className="text-red-500 text-sm "
+              />
+              <PasswordInput
+                label="Re-enter Password"
+                value={values.password2}
+                onChange={handleChange}
+                name="password2"
+                visible={showPassword2}
+                toggleVisible={() => setShowPassword2((v) => !v)}
+              />
+              <ErrorMessage
+                name="password2"
+                component="div"
+                className="text-red-500 text-sm  "
+              />
+            </Box>
 
-          <TextField
-            id="username"
-            label="Username"
-            variant="standard"
-            name="username"
-            value={registrationData.username}
-            onChange={handleChange}
-            fullWidth
-            InputLabelProps={{ style: { color: "white" } }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <HiOutlineUser className="text-[#27D483] text-[25px]" />
-                </InputAdornment>
-              ),
-              sx: {
-                color: "white",
-                "&:before": {
-                  borderBottomColor: "white",
-                },
-                "&:hover:not(.Mui-disabled):before": {
-                  borderBottomColor: "#27D483",
-                },
-                "&:after": {
-                  borderBottomColor: "#27D483",
-                },
-              },
-            }}
-            sx={{
-              "& .MuiInput-underline:before": { borderBottomColor: "white" },
-              "& .MuiInput-underline:after": { borderBottomColor: "#27D483" },
-            }}
-          />
-
-          <TextField
-            id="phone_number"
-            label="Phone Number"
-            variant="standard"
-            value={registrationData.phoneNumber}
-            onChange={handleChange}
-            name="phoneNumber"
-            InputLabelProps={{ style: { color: "white" } }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <MdOutlineLocalPhone className="text-[#27D483] text-[25px]" />
-                </InputAdornment>
-              ),
-              sx: {
-                color: "white", // input text color
-                "&:before": {
-                  borderBottomColor: "white", // default border
-                },
-                "&:hover:not(.Mui-disabled):before": {
-                  borderBottomColor: "#27D483", // hover border
-                },
-                "&:after": {
-                  borderBottomColor: "#27D483", // active/focus border
-                },
-              },
-            }}
-            sx={{
-              "& .MuiInput-underline:before": { borderBottomColor: "white" },
-              "& .MuiInput-underline:after": { borderBottomColor: "#27D483" },
-            }}
-            fullWidth
-          />
-          <TextField
-            id="email"
-            label="Email "
-            variant="standard"
-            value={registrationData.email}
-            onChange={handleChange}
-            name="email"
-            InputLabelProps={{ style: { color: "white" } }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <MdOutlineEmail className="text-[#27D483] text-[25px]" />
-                </InputAdornment>
-              ),
-              sx: {
-                color: "white", // input text color
-                "&:before": {
-                  borderBottomColor: "white", // default border
-                },
-                "&:hover:not(.Mui-disabled):before": {
-                  borderBottomColor: "#27D483", // hover border
-                },
-                "&:after": {
-                  borderBottomColor: "#27D483", // active/focus border
-                },
-              },
-            }}
-            sx={{
-              "& .MuiInput-underline:before": { borderBottomColor: "white" },
-              "& .MuiInput-underline:after": { borderBottomColor: "#27D483" },
-            }}
-            fullWidth
-          />
-          {/* Password Input */}
-          <FormControl
-            variant="standard"
-            fullWidth
-            sx={{
-              "& label": {
-                color: "white",
-              },
-              "& label.Mui-focused": {
-                color: "white", // Ensure label stays white when input is focused
-              },
-              "& .MuiInputBase-input": {
-                color: "white", // input text
-              },
-              "& .MuiInput-underline:before": {
-                borderBottom: "1px solid white", // default underline
-              },
-              "& .MuiInput-underline:hover:before": {
-                borderBottom: "1px solid #27D483", // underline on hover
-              },
-              "& .MuiInput-underline:after": {
-                borderBottom: "2px solid #27D483", // underline on focus
-              },
-              "& .MuiSvgIcon-root": {
-                color: "white", // icon color
-              },
-              "&:hover:not(.Mui-disabled):before": {
-                borderBottomColor: "#27D483", // hover border
-              },
-            }}
-          >
-            <InputLabel htmlFor="standard-adornment-password">
-              Password
-            </InputLabel>
-            <Input
-              id="standard-adornment-password"
-              type={showPassword ? "text" : "password"}
-              value={registrationData.password}
-              onChange={handleChange}
-              name="password"
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? (
-                      <VisibilityOff className="text-[#27D483] text-[25px]" />
-                    ) : (
-                      <Visibility className="text-[#27D483] text-[25px]" />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-          {/* re-enter password */}
-          <FormControl
-            variant="standard"
-            fullWidth
-            sx={{
-              "& label": {
-                color: "white",
-              },
-              "& label.Mui-focused": {
-                color: "white", // Ensure label stays white when input is focused
-              },
-              "& .MuiInputBase-input": {
-                color: "white", // input text
-              },
-              "& .MuiInput-underline:before": {
-                borderBottom: "1px solid white", // default underline
-              },
-              "& .MuiInput-underline:hover:before": {
-                borderBottom: "1px solid #27D483", // underline on hover
-              },
-              "& .MuiInput-underline:after": {
-                borderBottom: "2px solid #27D483", // underline on focus
-              },
-              "& .MuiSvgIcon-root": {
-                color: "white", // icon color
-              },
-              "&:hover:not(.Mui-disabled):before": {
-                borderBottomColor: "#27D483", // hover border
-              },
-            }}
-          >
-            <InputLabel htmlFor="standard-adornment-password">
-              Re-enter Password
-            </InputLabel>
-            <Input
-              id="standard-adornment-password"
-              type={showPassword2 ? "text" : "password"}
-              value={registrationData.password2}
-              onChange={handleChange}
-              name="password2"
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={handleClickShowPassword2}
-                    onMouseDown={handleMouseDownPassword2}
-                    edge="end"
-                  >
-                    {showPassword2 ? (
-                      <VisibilityOff className="text-[#27D483] text-[25px]" />
-                    ) : (
-                      <Visibility className="text-[#27D483] text-[25px]" />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-        </Box>
-
-        <button
-          type="submit"
-          className="bg-[#27D483] text-[#212121] font-semibold py-3 rounded-lg hover:bg-[#22bb74] transition-colors duration-300 "
-        >
-          Sign Up
-        </button>
-      </form>
+            <button
+              type="submit"
+              className="bg-[#27D483] text-[#212121] font-semibold py-3 rounded-lg hover:bg-[#22bb74] transition-colors duration-300  mt-10"
+            >
+              Sign Up
+            </button>
+          </Form>
+        )}
+      </Formik>
       <div className="flex items-center justify-between mt-[20px]">
         <div className="h-[2px] w-[43%] bg-[#27D483]"></div>
         <p className="text-[#39908F]">or</p>
         <div className="h-[2px] w-[43%] bg-[#27D483]"></div>
       </div>
+
       <div className="text-[black] bg-[white] py-[12px] rounded-[10px] font-semibold flex justify-center mt-[20px] gap-[10px]">
         <FcGoogle className="text-[25px]" />
-        Sign up with google
+        Sign up with Google
       </div>
     </>
   );
