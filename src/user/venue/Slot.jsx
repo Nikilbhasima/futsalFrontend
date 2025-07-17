@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import { IoSearchOutline } from "react-icons/io5";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import Map, { Source, Layer, Marker } from "@vis.gl/react-maplibre";
+import "maplibre-gl/dist/maplibre-gl.css";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -14,8 +16,15 @@ const style = {
   p: "24px",
   borderRadius: "10px",
 };
+
+const osrmUrl = "https://router.project-osrm.org/route/v1/foot";
+
+const start = [85.324, 27.7172];
+const end = [85.345, 27.73];
+
 function Slot() {
   const { bookingType } = useOutletContext();
+  const [navigationData, setNavigationData] = useState(null);
   const [selectDate, setSelectDate] = useState("");
   const [time, setTime] = useState({
     starting: "",
@@ -41,7 +50,7 @@ function Slot() {
   };
 
   const handleTimeChange = (e) => {
-    const [name, value] = e.target;
+    const { name, value } = e.target;
     setTime((pre) => ({ ...pre, [name]: value }));
     console.log(name, value);
   };
@@ -57,6 +66,36 @@ function Slot() {
 
   const [Custome, handleCustome] = useState(true);
 
+  // this part is for the map
+  const [routeGeoJson, setRouteGeoJson] = useState(null);
+  useEffect(() => {
+    const getRoute = async () => {
+      const url = `${osrmUrl}/${start.join(",")};${end.join(
+        ","
+      )}?overview=full&geometries=geojson`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const route = data.routes[0].geometry;
+
+      console.log(data.routes[0]);
+      setNavigationData(data.routes[0]);
+      setRouteGeoJson({
+        type: "Feature",
+        geometry: route,
+      });
+    };
+
+    getRoute();
+  }, []);
+
+  const routeLayer = {
+    id: "route",
+    type: "line",
+    paint: {
+      "line-color": "#ff0000",
+      "line-width": 4,
+    },
+  };
   return (
     <div>
       <h2 className="pt-[20px] text-[40px] font-semibold">
@@ -140,8 +179,46 @@ function Slot() {
           00AM-00PM
         </div>
       </div>
-      <div className="mt-[60px]">
-        <h2 className="text-[40px] font-semibold">Futsal Location</h2>
+
+      <div className="mt-[60px] mb-[1rem]">
+        <h2 className="text-[40px] font-semibold mb-6">Futsal Location</h2>
+        {navigationData && (
+          <div className="py-[1rem] flex gap-5">
+            <p className="text-[20px] font-bold flex gap-4">
+              Distance📏:
+              <span className="font-light">
+                {(navigationData.distance / 1000).toFixed(2)} km
+              </span>
+            </p>
+            <p className="text-[20px] font-bold flex gap-4">
+              Duration⏱:
+              <span className="font-light">
+                {(navigationData.duration / 60).toFixed(1)} minutes
+              </span>
+            </p>
+          </div>
+        )}
+        <div style={{ height: "500px", width: "100%" }}>
+          <Map
+            initialViewState={{
+              longitude: 85.334,
+              latitude: 27.724,
+              zoom: 14,
+            }}
+            mapStyle="https://api.maptiler.com/maps/streets/style.json?key=G0JzaoaaWpzTHgeOAjWx"
+          >
+            {/* Start and End Markers */}
+            <Marker longitude={start[0]} latitude={start[1]} />
+            <Marker longitude={end[0]} latitude={end[1]} />
+
+            {/* Route Line */}
+            {routeGeoJson && (
+              <Source id="route" type="geojson" data={routeGeoJson}>
+                <Layer {...routeLayer} />
+              </Source>
+            )}
+          </Map>
+        </div>
       </div>
 
       <Modal open={open} onClose={handleClose}>
