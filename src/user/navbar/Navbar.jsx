@@ -53,12 +53,14 @@ function Navbar() {
               <li className="navbar-list">
                 <NavLink to={`/venue/${"book"}`}>Venue</NavLink>
               </li>
-              {false ? (
+              {true ? (
                 <>
                   <li className="navbar-list">
                     <NavLink to="/bookings"> MyBookings</NavLink>
                   </li>
-                  <li className="navbar-list">MyChallenge</li>
+                  <li className="navbar-list">
+                    <NavLink to="/challenge">MyChallenge</NavLink>
+                  </li>
                 </>
               ) : null}
 

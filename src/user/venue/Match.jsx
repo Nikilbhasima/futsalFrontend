@@ -7,6 +7,8 @@ import { IoPersonCircleOutline } from "react-icons/io5";
 import { MdOutlineLocalPhone } from "react-icons/md";
 import { MdOutlineDateRange } from "react-icons/md";
 import { IoLocation } from "react-icons/io5";
+import { FaUsers } from "react-icons/fa";
+import { FaRupeeSign } from "react-icons/fa6";
 
 function Match() {
   const [filter, setFilter] = useState(true);
@@ -133,43 +135,73 @@ function Match() {
               9808029931
             </p>
           </div>
-          <button className="ml-auto bg-[#27D483] hover:bg-[#1c945c] ease-out duration-1000  font-medium ml-[20px] text-[#212121] rounded-[10px] flex items-center gap-[5px] py-[12px] px-[12px] h-fit w-fit text-[14px]">
-            <GiSoccerKick className="font-bold text-[20px]" />
-            Join Match
-          </button>
+          <div className="ml-auto flex flex-row gap-2">
+            <button className="bg-[#27D483] hover:bg-[#1c945c] ease-out duration-1000  font-medium ml-[20px] text-[#212121] rounded-[10px] flex items-center gap-[5px] py-[12px] px-[12px] h-fit w-fit text-[14px] hover:-translate-y-[4px] ease-out duration-1000">
+              <GiSoccerKick className="font-bold text-[20px]" />
+              Join Match
+            </button>
+          </div>
         </div>
         {/* match detail */}
-        <div className="flex flex-col gap-4 px-[1rem]">
-          <div>
-            <div class="flex items-center space-x-3  font-medium">
-              <span>
-                <MdOutlineDateRange className="text-[#27D483]" />
-              </span>
-              <span>2025-07-15 at 6:00 PM</span>
+        <div className="flex flex-col gap-1 px-[15px]">
+          <div className="py-[1rem] flex flex-col gap-3">
+            <div className="grid grid-cols-[1fr_1fr]">
+              <div class="flex items-center space-x-2  font-medium ">
+                <span>
+                  <MdOutlineDateRange className="text-[#27D483] text-[22px]" />
+                </span>
+                <div className="flex flex-col">
+                  <span>2025-07-15 </span>
+                  <span className="font-light opacity-60 text-[14px]">
+                    6:00 PM
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2 font-medium ">
+                <span>
+                  <IoLocation className="text-[#27D483] text-[22px]" />
+                </span>
+                <div className="flex flex-col">
+                  <span>Kathmandu Futsal </span>
+                  <span className="font-light opacity-60 text-[14px]">
+                    Venue
+                  </span>
+                </div>
+              </div>
             </div>
-            <div class="flex items-center space-x-3 font-medium ">
-              <span>
-                <IoLocation className="text-[#27D483]" />
-              </span>
-              <span>Kathmandu Futsal Arena</span>
+            <div className="grid grid-cols-[1fr_1fr]">
+              <div className="flex items-center space-x-2">
+                <span>
+                  <FaUsers className="text-[#27D483] text-[22px]" />
+                </span>
+                <div className="flex flex-col">
+                  <span>5A</span>
+                  <span className="font-light opacity-60 text-[14px]">
+                    Team Format
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span>
+                  <FaRupeeSign className="text-[#27D483] text-[22px]" />
+                </span>
+                <div className="flex flex-col">
+                  <span> 50-50</span>
+                  <span className="font-light opacity-60 text-[14px]">
+                    Payment
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-          <div>
+
+          <div className="border-[2px] border-[#212121] rounded-[10px] p-[1rem] bg-[#212121]">
             <div>
-              <strong>Team Format:</strong> 5A
+              <p> Looking for a competitive match this Monday evening!</p>
             </div>
-            <div>
-              <strong>Payment:</strong> 50-50
-            </div>
-          </div>
-          <div className="border-[2px] border-[#27D483] rounded-[10px] p-[1rem] bg-[#5FE1A5]">
             <div>
               <strong className="mr-[12px]">Sent:</strong>
               2025-07-14 10:30 AM
-            </div>
-            <div>
-              <strong className="mr-[12px]">Opponent:</strong>
-              Waiting for opponent's response...
             </div>
           </div>
         </div>

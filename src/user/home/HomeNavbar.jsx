@@ -13,6 +13,7 @@ import Login from "../../authentication/Login";
 import Registration from "../../authentication/Registration";
 import UserRegistration from "../../authentication/UserRegistration";
 import BusinessRegistration from "../../authentication/BusinessRegistration";
+import Challenge from "../challenge/Challenge";
 
 function HomeNavbar() {
   return (
@@ -39,6 +40,7 @@ function HomeNavbar() {
           <Route path="*" element={<Login />} />
           <Route index element={<Login />} />
         </Route>
+        <Route path="/challenge" element={<Challenge />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </>
