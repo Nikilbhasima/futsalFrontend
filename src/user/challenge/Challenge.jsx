@@ -57,9 +57,9 @@ const matchDetail = [
 function Challenge() {
   const [filterMatch, setFilterMatch] = useState("");
   const [navbarStatus, setNavbarStatus] = useState(1);
-  console.log(navbarStatus);
+
   return (
-    <div className="max-w-[1320px] pt-[40px] px-[10px] md:px-[20px] mx-auto">
+    <div className="max-w-[1320px] pt-[40px] md:px-[20px] mx-auto">
       <h2 className="pt-[20px] text-[40px] font-semibold">My Challenges</h2>
       <ul className="flex flex-row gap-5 mt-[12px]">
         <li
