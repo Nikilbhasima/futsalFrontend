@@ -8,4 +8,6 @@
 body {
   background-color: #212121;
   color: #ffffff;
+  padding: 0 1rem;
+  max-width: 100%;
 }

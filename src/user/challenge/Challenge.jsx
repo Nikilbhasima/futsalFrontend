@@ -78,7 +78,7 @@ function Challenge() {
             navbarStatus === 2 ? "text-[#27D483]" : ""
           }`}
           onClick={() => {
-            setFilterMatch("opponent");
+            setFilterMatch("playing");
             setNavbarStatus(2);
           }}
         >
@@ -102,8 +102,8 @@ function Challenge() {
           if (filterMatch === "pending") {
             return data.status === "pending";
           }
-          if (filterMatch === "opponent") {
-            return data.request === "opponent";
+          if (filterMatch === "playing") {
+            return data.status === "playing";
           }
           if (!filterMatch) {
             return true;

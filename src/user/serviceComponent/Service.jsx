@@ -7,7 +7,7 @@ function Service() {
       <h1 className="text-center text-[40px] text-[#27D483] font-semibold">
         Our Services
       </h1>
-      <div className="card-container   mt-[40px] ">
+      <div className="card-container mt-[40px]  ">
         <Card
           img="./images/service1.png"
           header="Book Venue"

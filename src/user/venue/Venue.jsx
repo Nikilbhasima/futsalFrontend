@@ -7,7 +7,7 @@ function Venue() {
   console.log("form venue", bookingType);
   return (
     <>
-      <div className="pt-[40px] px-[20px] max-w-[1320px] m-auto ">
+      <div className="pt-[40px] px-[5px]  md:px-[20px] max-w-[1320px] m-auto ">
         <div>
           <ul className="flex flex-cols gap-[32px] ">
             <li>

@@ -4,7 +4,7 @@ import { MdOutlineMenu } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import SecondaryButton from "../buttonComponent/SecondaryButton";
 import PrimaryButton from "../buttonComponent/PrimaryButton";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
@@ -14,6 +14,7 @@ function Navbar() {
   const [changeWidths, setChangeWidths] = useState(true);
   const [click, setClick] = useState(true);
   const [displayIcon, setDisplayIcon] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (screenSize < 998) {
@@ -45,27 +46,37 @@ function Navbar() {
       <p className="futsalName flex-none">KickStart</p>
       {changeWidths ? (
         <>
-          <div className="links-contain flex flex-row grow  items-center  ">
-            <ul className=" link-ul flex flex-row m-auto gap-[32px] p-[16px]">
-              <li className="navbar-list">
-                <NavLink to="/">Home</NavLink>
+          <div className="links-contain flex flex-row grow  items-center ">
+            <ul className=" link-ul flex flex-row  gap-[32px] m-auto">
+              <li>
+                <NavLink to="/" className="navbar-list">
+                  Home
+                </NavLink>
               </li>
-              <li className="navbar-list">
-                <NavLink to={`/venue/${"book"}`}>Venue</NavLink>
+              <li>
+                <NavLink to={`/venue/${"book"}`} className="navbar-list">
+                  Venue
+                </NavLink>
               </li>
               {true ? (
                 <>
-                  <li className="navbar-list">
-                    <NavLink to="/bookings"> MyBookings</NavLink>
+                  <li>
+                    <NavLink to="/bookings" className="navbar-list">
+                      MyBookings
+                    </NavLink>
                   </li>
-                  <li className="navbar-list">
-                    <NavLink to="/challenge">MyChallenge</NavLink>
+                  <li>
+                    <NavLink to="/challenge" className="navbar-list">
+                      MyChallenge
+                    </NavLink>
                   </li>
                 </>
               ) : null}
 
-              <li className="navbar-list">
-                <NavLink to="/about">AboutUs</NavLink>
+              <li>
+                <NavLink to="/about" className="navbar-list">
+                  AboutUs
+                </NavLink>
               </li>
             </ul>
             <div className=" flex gap-[16px] ">
@@ -100,7 +111,10 @@ function Navbar() {
                             : "opacity-100 scale-y-100 h-auto translate-y-2 pointer-events-auto"
                         }`}
                       >
-                        <li className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center">
+                        <li
+                          className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center"
+                          onClick={() => navigate("/profile")}
+                        >
                           Edit Profile
                           <CgProfile className="text-[16px]" />
                         </li>

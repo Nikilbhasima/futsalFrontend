@@ -36,6 +36,8 @@ p {
   position: relative;
   width: fit-content;
   transition: color 1s ease-out;
+
+  padding: 8px;
 }
 .navbar-list:hover {
   color: var(--font-color-three);
@@ -90,6 +92,5 @@ p {
   display: block;
   position: absolute;
   background-color: #27d483;
-
   border-radius: 10px;
 }

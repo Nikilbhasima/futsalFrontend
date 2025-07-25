@@ -103,27 +103,8 @@ const validationSchema = Yup.object({
 });
 // === Main Component ===
 function BusinessRegistration() {
-  // const [formData, setFormData] = useState({
-  //   username: "",
-  //   email: "",
-  //   phoneNumber: "",
-  //   password: "",
-  //   password2: "",
-  //   accountType: "",
-  // });
-
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
-
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prev) => ({ ...prev, [name]: value }));
-  // };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   console.log(formData);
-  // };
 
   return (
     <>

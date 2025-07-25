@@ -3,10 +3,10 @@ import "./card.css";
 import TerteryButton from "../buttonComponent/TerteryButton";
 function Card({ img, header, detail, button, nav, bookingType }) {
   return (
-    <div className="card bg-[#333333] max-w-[300px] rounded-[10px]  overflow-hidden hover:-translate-y-2 duration-1000 ease-in-out">
-      <div className="car-img h-[200px] overflow-hidden">
+    <div className="card bg-[#333333] max-w-[400px] md:max-w-[300px] rounded-[10px]  overflow-hidden hover:-translate-y-2 duration-1000 ease-in-out ">
+      <div className=" h-[200px] overflow-hidden  bg-white">
         <img
-          className="hover:scale-[1.1] h-[200px] transition duration-1000 ease-in-out object-cover"
+          className="hover:scale-[1.1] h-[200px] w-full transition duration-1000 ease-in-out object-cover"
           src={img}
           alt=""
         />
