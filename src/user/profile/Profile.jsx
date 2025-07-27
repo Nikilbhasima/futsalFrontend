@@ -2,17 +2,24 @@ import React, { useState } from "react";
 import { TbEdit } from "react-icons/tb";
 import { FiEdit } from "react-icons/fi";
 import EditForm from "./EditForm";
+import { MdLockOutline } from "react-icons/md";
+import PasswordUpdate from "./PasswordUpdate";
 
 function Profile() {
   const [open, setOpen] = useState(false);
-
+  const [open2, setOpen2] = useState(false);
   const handleClickOpen = () => {
-    console.log("hello everyone");
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleClickOpen2 = () => {
+    console.log("open password update modal");
+    setOpen2(true);
+  };
+  const handleClose2 = () => {
+    setOpen2(false);
   };
   return (
     <section className="pt-[40px] md:px-[20px] max-w-[1320px] m-auto ">
@@ -33,7 +40,7 @@ function Profile() {
       </div>
 
       {/* <hr class="border-t-2 border-dashed border-[#27D483] my-4" /> */}
-      <div className="grid lg:grid-cols-[1fr_2fr] gap-[20px] lg:gap-[32px] col-start-1 mt-4">
+      <div className="grid lg:grid-cols-[1fr_2fr] gap-[20px] lg:gap-[20px]  mt-4">
         <div className="flex bg-[#333333] relative rounded-[24px] min-h-[10rem] py-[1rem]">
           <img
             src="./images/messi.png"
@@ -82,8 +89,22 @@ function Profile() {
             </div>
           </div>
         </div>
+        <div className="bg-[#333333]  p-[16px] rounded-[10px] security md:col-span-2 flex flex-col gap-[10px]">
+          <h2 className="flex gap-2 text-[20px] font-semibold items-center text-[#27D483]">
+            <MdLockOutline className="text-[20px]" />
+            Security Setting
+          </h2>
+          <span>Change Password</span>
+          <button
+            className="px-[32px] py-[12px] rounded-[10px] bg-[#27D483] "
+            onClick={handleClickOpen2}
+          >
+            Update Password
+          </button>
+        </div>
       </div>
       <EditForm open={open} handleClose={handleClose} />
+      <PasswordUpdate open={open2} handleClose={handleClose2} />
     </section>
   );
 }
