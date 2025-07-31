@@ -1,15 +1,6 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import {
-  Box,
-  TextField,
-  IconButton,
-  Input,
-  InputLabel,
-  InputAdornment,
-  FormControl,
-} from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Box } from "@mui/material";
 import { FaArrowLeft } from "react-icons/fa";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -17,18 +8,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../redux/authSlice/AuthThunks";
-
-const inputSx = {
-  color: "white",
-  "&:before": { borderBottomColor: "white" },
-  "&:hover:not(.Mui-disabled):before": { borderBottomColor: "#27D483" },
-  "&:after": { borderBottomColor: "#27D483" },
-};
-
-const labelSx = {
-  color: "white",
-  "&.Mui-focused": { color: "white" },
-};
+import TextFieldComponent from "../ReusedComponent/TextFieldComponent";
+import PasswordFieldComponent from "../ReusedComponent/PasswordFieldComponent";
 
 const validationSchema = Yup.object({
   emailOrMobile: Yup.string()
@@ -80,52 +61,31 @@ function Login() {
         {({ values, handleChange }) => (
           <Form className="flex flex-col  mt-8">
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <TextField
+              <TextFieldComponent
+                id="emailOrMobile"
                 label="Email or Phone Number"
-                variant="standard"
                 name="emailOrMobile"
                 value={values.emailOrMobile}
                 onChange={handleChange}
-                InputLabelProps={{ sx: labelSx }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <MdOutlineMailOutline
-                        style={{ color: "#27D483", fontSize: "25px" }}
-                      />
-                    </InputAdornment>
-                  ),
-                  sx: inputSx,
-                }}
-                fullWidth
+                icon={
+                  <MdOutlineMailOutline
+                    style={{ color: "#27D483", fontSize: "25px" }}
+                  />
+                }
               />
               <ErrorMessage
                 name="emailOrMobile"
                 component="div"
                 className="text-red-500 text-sm  rounded shadow"
               />
-
-              <FormControl variant="standard" fullWidth>
-                <InputLabel sx={labelSx}>Password</InputLabel>
-                <Input
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  value={values.password}
-                  onChange={handleChange}
-                  sx={inputSx}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword((p) => !p)}
-                        onMouseDown={(e) => e.preventDefault()}
-                        sx={{ color: "#27D483" }}
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-              </FormControl>
+              <PasswordFieldComponent
+                label="Password"
+                name="password"
+                value={values.password}
+                onChange={handleChange}
+                visible={showPassword}
+                toggleVisible={() => setShowPassword((prev) => !prev)}
+              />
               <ErrorMessage
                 name="password"
                 component="div"

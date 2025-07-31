@@ -41,11 +41,11 @@ function MyBooking() {
   const { jwt } = useSelector((state) => state.auth);
   console.log("check value:", jwt);
 
-  useEffect(() => {
-    if (jwt === null) {
-      navigate("/");
-    }
-  }, [jwt]);
+  // useEffect(() => {
+  //   if (jwt === null) {
+  //     navigate("/");
+  //   }
+  // }, [jwt]);
 
   console.log(navbarStatus);
   return (

@@ -1,15 +1,6 @@
 import React, { use, useEffect, useRef, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import {
-  Box,
-  TextField,
-  IconButton,
-  Input,
-  InputLabel,
-  InputAdornment,
-  FormControl,
-} from "@mui/material";
-import { Clear, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Box } from "@mui/material";
 import { HiOutlineUser } from "react-icons/hi2";
 import { MdOutlineLocalPhone, MdOutlineEmail } from "react-icons/md";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -17,81 +8,9 @@ import * as Yup from "yup";
 import { registerUser } from "../redux/authSlice/AuthThunks";
 import { useDispatch, useSelector } from "react-redux";
 import { clearSuccess, setSuccess } from "../redux/authSlice/AuthSlice";
-// Reusable input styles
-const inputStyle = {
-  color: "white",
-  "&:before": { borderBottomColor: "white" },
-  "&:hover:not(.Mui-disabled):before": { borderBottomColor: "#27D483" },
-  "&:after": { borderBottomColor: "#27D483" },
-};
+import TextFieldComponent from "../ReusedComponent/TextFieldComponent";
+import PasswordFieldComponent from "../ReusedComponent/PasswordFieldComponent";
 
-// Reusable form control styles
-const formControlStyle = {
-  "& label": { color: "white" },
-  "& label.Mui-focused": { color: "white" },
-  "& .MuiInputBase-input": { color: "white" },
-  "& .MuiInput-underline:before": { borderBottom: "1px solid white" },
-  "& .MuiInput-underline:hover:before": { borderBottom: "1px solid #27D483" },
-  "& .MuiInput-underline:after": { borderBottom: "2px solid #27D483" },
-};
-
-// Icon color
-const iconColor = { color: "#27D483" };
-
-// Reusable TextField with icon
-const IconTextField = ({ id, label, name, value, onChange, icon }) => (
-  <TextField
-    id={id}
-    label={label}
-    name={name}
-    value={value}
-    onChange={onChange}
-    variant="standard"
-    fullWidth
-    InputLabelProps={{ style: { color: "white" } }}
-    InputProps={{
-      endAdornment: <InputAdornment position="end">{icon}</InputAdornment>,
-      sx: inputStyle,
-    }}
-    sx={{
-      "& .MuiInput-underline:before": { borderBottomColor: "white" },
-      "& .MuiInput-underline:after": { borderBottomColor: "#27D483" },
-    }}
-  />
-);
-
-// Password input component
-const PasswordInput = ({
-  label,
-  value,
-  onChange,
-  name,
-  visible,
-  toggleVisible,
-}) => (
-  <FormControl variant="standard" fullWidth sx={formControlStyle}>
-    <InputLabel>{label}</InputLabel>
-    <Input
-      type={visible ? "text" : "password"}
-      value={value}
-      onChange={onChange}
-      name={name}
-      endAdornment={
-        <InputAdornment position="end">
-          <IconButton onClick={toggleVisible} edge="end">
-            {visible ? (
-              <VisibilityOff sx={iconColor} />
-            ) : (
-              <Visibility sx={iconColor} />
-            )}
-          </IconButton>
-        </InputAdornment>
-      }
-    />
-  </FormControl>
-);
-
-// validating user registration data
 const phoneRegex = /^[0-9]{10}$/;
 
 const validationSchema = Yup.object({
@@ -115,6 +34,8 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Please re-enter your password"),
 });
+// Icon color
+const iconColor = { color: "#27D483" };
 
 function UserRegistration() {
   const dispatch = useDispatch();
@@ -157,7 +78,7 @@ function UserRegistration() {
                 gap: 1,
               }}
             >
-              <IconTextField
+              <TextFieldComponent
                 id="username"
                 label="Username"
                 name="username"
@@ -170,7 +91,7 @@ function UserRegistration() {
                 component="div"
                 className="text-red-500 text-sm "
               />
-              <IconTextField
+              <TextFieldComponent
                 id="phone"
                 label="Phone Number"
                 name="phoneNumber"
@@ -183,7 +104,7 @@ function UserRegistration() {
                 component="div"
                 className="text-red-500 text-sm  "
               />
-              <IconTextField
+              <TextFieldComponent
                 id="email"
                 label="Email"
                 name="email"
@@ -196,7 +117,7 @@ function UserRegistration() {
                 component="div"
                 className="text-red-500 text-sm  "
               />
-              <PasswordInput
+              <PasswordFieldComponent
                 label="Password"
                 value={values.password}
                 onChange={handleChange}
@@ -209,7 +130,7 @@ function UserRegistration() {
                 component="div"
                 className="text-red-500 text-sm "
               />
-              <PasswordInput
+              <PasswordFieldComponent
                 label="Re-enter Password"
                 value={values.password2}
                 onChange={handleChange}

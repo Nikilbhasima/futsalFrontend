@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import {
-  Box,
-  TextField,
-  IconButton,
-  Input,
-  InputLabel,
-  InputAdornment,
-  FormControl,
-} from "@mui/material";
+import { Box } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { HiOutlineUser } from "react-icons/hi2";
 import { MdOutlineLocalPhone, MdOutlineEmail } from "react-icons/md";
@@ -16,12 +8,9 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../redux/authSlice/AuthThunks";
-const inputSx = {
-  color: "white",
-  "&:before": { borderBottomColor: "white" },
-  "&:hover:not(.Mui-disabled):before": { borderBottomColor: "#27D483" },
-  "&:after": { borderBottomColor: "#27D483" },
-};
+import TextFieldComponent from "../ReusedComponent/TextFieldComponent";
+import PasswordFieldComponent from "../ReusedComponent/PasswordFieldComponent";
+
 const iconColor = { color: "#27D483" };
 const formControlSx = {
   "& label": { color: "white" },
@@ -34,50 +23,6 @@ const formControlSx = {
   // "& .MuiSvgIcon-root": { color: "white" },
 };
 
-// === Reusable Components ===
-const IconTextField = ({ id, label, name, value, onChange, icon }) => (
-  <TextField
-    id={id}
-    label={label}
-    name={name}
-    value={value}
-    onChange={onChange}
-    variant="standard"
-    fullWidth
-    InputLabelProps={{ style: { color: "white" } }}
-    InputProps={{
-      endAdornment: <InputAdornment position="end">{icon}</InputAdornment>,
-      sx: inputSx,
-    }}
-    sx={{
-      "& .MuiInput-underline:before": { borderBottomColor: "white" },
-      "& .MuiInput-underline:after": { borderBottomColor: "#27D483" },
-    }}
-  />
-);
-
-const PasswordField = ({ label, name, value, onChange, show, toggleShow }) => (
-  <FormControl variant="standard" fullWidth sx={formControlSx}>
-    <InputLabel>{label}</InputLabel>
-    <Input
-      type={show ? "text" : "password"}
-      name={name}
-      value={value}
-      onChange={onChange}
-      endAdornment={
-        <InputAdornment position="end">
-          <IconButton onClick={toggleShow} edge="end">
-            {show ? (
-              <VisibilityOff sx={{ color: "#27D483", fontSize: 24 }} />
-            ) : (
-              <Visibility sx={{ color: "#27D483", fontSize: 24 }} />
-            )}
-          </IconButton>
-        </InputAdornment>
-      }
-    />
-  </FormControl>
-);
 // validating user registration data
 const phoneRegex = /^[0-9]{10}$/;
 
@@ -102,6 +47,7 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Please re-enter your password"),
 });
+
 // === Main Component ===
 function BusinessRegistration() {
   const [showPassword, setShowPassword] = useState(false);
@@ -134,7 +80,7 @@ function BusinessRegistration() {
         {({ values, handleChange }) => (
           <Form className="flex flex-col mt-[10px]">
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <IconTextField
+              <TextFieldComponent
                 id="username"
                 label="Futsal Name"
                 name="username"
@@ -149,7 +95,7 @@ function BusinessRegistration() {
                 component="div"
                 className="text-red-500 text-sm "
               />
-              <IconTextField
+              <TextFieldComponent
                 id="phoneNumber"
                 label="Phone Number"
                 name="phoneNumber"
@@ -166,7 +112,7 @@ function BusinessRegistration() {
                 component="div"
                 className="text-red-500 text-sm  "
               />
-              <IconTextField
+              <TextFieldComponent
                 id="email"
                 label="Futsal Gmail"
                 name="email"
@@ -181,26 +127,27 @@ function BusinessRegistration() {
                 component="div"
                 className="text-red-500 text-sm  "
               />
-              <PasswordField
+
+              <PasswordFieldComponent
                 label="Password"
                 name="password"
                 value={values.password}
                 onChange={handleChange}
-                show={showPassword}
-                toggleShow={() => setShowPassword((prev) => !prev)}
+                visible={showPassword}
+                toggleVisible={() => setShowPassword((prev) => !prev)}
               />
               <ErrorMessage
                 name="password"
                 component="div"
                 className="text-red-500 text-sm "
               />
-              <PasswordField
+              <PasswordFieldComponent
                 label="Re-enter Password"
                 name="password2"
                 value={values.password2}
                 onChange={handleChange}
-                show={showPassword2}
-                toggleShow={() => setShowPassword2((prev) => !prev)}
+                visible={showPassword2}
+                toggleVisible={() => setShowPassword2((prev) => !prev)}
               />
               <ErrorMessage
                 name="password2"
