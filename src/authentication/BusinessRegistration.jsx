@@ -14,7 +14,8 @@ import { HiOutlineUser } from "react-icons/hi2";
 import { MdOutlineLocalPhone, MdOutlineEmail } from "react-icons/md";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-// === Shared Styles ===
+import { useDispatch } from "react-redux";
+import { registerUser } from "../redux/authSlice/AuthThunks";
 const inputSx = {
   color: "white",
   "&:before": { borderBottomColor: "white" },
@@ -105,12 +106,12 @@ const validationSchema = Yup.object({
 function BusinessRegistration() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
-
+  const dispatch = useDispatch();
   return (
     <>
       <Formik
         initialValues={{
-          role: "owner",
+          role: "ROLE_OWNER",
           username: "",
           phoneNumber: "",
           email: "",
@@ -118,8 +119,16 @@ function BusinessRegistration() {
           password2: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          console.log("user registration data", values);
+        onSubmit={async (values, { resetForm }) => {
+          try {
+            const response = await dispatch(registerUser(values));
+            console.log("user registration data", response);
+            if (response.meta.requestStatus === "fulfilled") {
+              resetForm();
+            }
+          } catch (error) {
+            console.error("Registration error:", error);
+          }
         }}
       >
         {({ values, handleChange }) => (

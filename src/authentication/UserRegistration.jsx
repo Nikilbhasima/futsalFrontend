@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import {
   Box,
@@ -9,11 +9,14 @@ import {
   InputAdornment,
   FormControl,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Clear, Visibility, VisibilityOff } from "@mui/icons-material";
 import { HiOutlineUser } from "react-icons/hi2";
 import { MdOutlineLocalPhone, MdOutlineEmail } from "react-icons/md";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { registerUser } from "../redux/authSlice/AuthThunks";
+import { useDispatch, useSelector } from "react-redux";
+import { clearSuccess, setSuccess } from "../redux/authSlice/AuthSlice";
 // Reusable input styles
 const inputStyle = {
   color: "white",
@@ -114,6 +117,8 @@ const validationSchema = Yup.object({
 });
 
 function UserRegistration() {
+  const dispatch = useDispatch();
+  const { loading, error, jwt, success } = useSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
 
@@ -121,7 +126,7 @@ function UserRegistration() {
     <>
       <Formik
         initialValues={{
-          role: "user",
+          role: "ROLE_USER",
           username: "",
           phoneNumber: "",
           email: "",
@@ -129,8 +134,18 @@ function UserRegistration() {
           password2: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          console.log("user registration data", values);
+        onSubmit={async (values, { resetForm }) => {
+          try {
+            const result = await dispatch(registerUser(values));
+            console.log("result:", result);
+            if (result.meta.requestStatus === "fulfilled") {
+              resetForm();
+              dispatch(clearSuccess());
+              console.log("loading:", success);
+            }
+          } catch (error) {
+            console.error("Registration error:", error);
+          }
         }}
       >
         {({ values, handleChange }) => (

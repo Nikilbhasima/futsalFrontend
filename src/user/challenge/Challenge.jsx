@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { MdOutlineLocalPhone } from "react-icons/md";
 import { MdOutlineDateRange } from "react-icons/md";
 import { IoLocation } from "react-icons/io5";
 import { GiSoccerKick } from "react-icons/gi";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const matchDetail = [
   {
@@ -57,6 +59,15 @@ const matchDetail = [
 function Challenge() {
   const [filterMatch, setFilterMatch] = useState("");
   const [navbarStatus, setNavbarStatus] = useState(1);
+  const navigate = useNavigate();
+  const { jwt } = useSelector((state) => state.auth);
+  console.log("check values:", jwt);
+
+  useEffect(() => {
+    if (jwt === null) {
+      navigate("/");
+    }
+  }, [jwt]);
 
   return (
     <div className="max-w-[1320px] pt-[40px] md:px-[20px] mx-auto">

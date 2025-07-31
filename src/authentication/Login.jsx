@@ -15,6 +15,8 @@ import { MdOutlineMailOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../redux/authSlice/AuthThunks";
 
 const inputSx = {
   color: "white",
@@ -29,7 +31,7 @@ const labelSx = {
 };
 
 const validationSchema = Yup.object({
-  emailOrPhone: Yup.string()
+  emailOrMobile: Yup.string()
     .required("Required")
     .test(
       "is-email-or-phone",
@@ -46,6 +48,7 @@ const validationSchema = Yup.object({
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   return (
     <div className="text-white w-full sm:w-[400px]">
@@ -59,10 +62,19 @@ function Login() {
       </p>
 
       <Formik
-        initialValues={{ emailOrPhone: "", password: "" }}
+        initialValues={{ emailOrMobile: "", password: "" }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
+        onSubmit={async (values, { resetForm }) => {
           console.log("Login Data:", values);
+          try {
+            const response = await dispatch(loginUser(values));
+            if (response.meta.requestStatus === "fulfilled") {
+              resetForm();
+              navigate("/");
+            }
+          } catch (error) {
+            console.error("Login error:", error);
+          }
         }}
       >
         {({ values, handleChange }) => (
@@ -71,8 +83,8 @@ function Login() {
               <TextField
                 label="Email or Phone Number"
                 variant="standard"
-                name="emailOrPhone"
-                value={values.emailOrPhone}
+                name="emailOrMobile"
+                value={values.emailOrMobile}
                 onChange={handleChange}
                 InputLabelProps={{ sx: labelSx }}
                 InputProps={{
@@ -88,7 +100,7 @@ function Login() {
                 fullWidth
               />
               <ErrorMessage
-                name="emailOrPhone"
+                name="emailOrMobile"
                 component="div"
                 className="text-red-500 text-sm  rounded shadow"
               />

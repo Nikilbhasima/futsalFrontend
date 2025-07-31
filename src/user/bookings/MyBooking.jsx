@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const bookingList = [
   {
@@ -35,6 +37,16 @@ const bookingList = [
 function MyBooking() {
   const [filterMatch, setFilterMatch] = useState("");
   const [navbarStatus, setNavbarStatus] = useState(1);
+  const navigate = useNavigate();
+  const { jwt } = useSelector((state) => state.auth);
+  console.log("check value:", jwt);
+
+  useEffect(() => {
+    if (jwt === null) {
+      navigate("/");
+    }
+  }, [jwt]);
+
   console.log(navbarStatus);
   return (
     <div className="max-w-[1320px] pt-[40px] px-[10px] md:px-[20px] mx-auto">

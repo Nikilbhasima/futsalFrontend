@@ -8,6 +8,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/authSlice/AuthSlice";
 
 function Navbar() {
   const [screenSize, setScreenSize] = useState(window.innerWidth);
@@ -15,7 +17,10 @@ function Navbar() {
   const [click, setClick] = useState(true);
   const [displayIcon, setDisplayIcon] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  const { success } = useSelector((state) => state.auth);
+  console.log(success);
   useEffect(() => {
     if (screenSize < 998) {
       setChangeWidths(false);
@@ -58,7 +63,7 @@ function Navbar() {
                   Venue
                 </NavLink>
               </li>
-              {true ? (
+              {success ? (
                 <>
                   <li>
                     <NavLink to="/bookings" className="navbar-list">
@@ -81,19 +86,7 @@ function Navbar() {
             </ul>
             <div className=" flex gap-[16px] ">
               {/* this is non login part */}
-              {true ? (
-                <>
-                  <PrimaryButton
-                    buttonName="Sign in"
-                    navTo="authenticate/login"
-                  />
-                  <SecondaryButton
-                    buttonName="Sign up"
-                    navTo="/authenticate/registration"
-                  />
-                </>
-              ) : (
-                // this is login part
+              {success ? (
                 <div className="relative">
                   {displayIcon ? (
                     <PrimaryButton buttonName="Logout" />
@@ -127,12 +120,26 @@ function Navbar() {
                           onClick={() => console.log("logout")}
                         >
                           Logout
-                          <FiLogOut className="text-[16px]" />
+                          <FiLogOut
+                            className="text-[16px]"
+                            onClick={() => dispatch(logout())}
+                          />
                         </li>
                       </ul>
                     </>
                   )}
                 </div>
+              ) : (
+                <>
+                  <PrimaryButton
+                    buttonName="Sign in"
+                    navTo="authenticate/login"
+                  />
+                  <SecondaryButton
+                    buttonName="Sign up"
+                    navTo="/authenticate/registration"
+                  />
+                </>
               )}
             </div>
           </div>
