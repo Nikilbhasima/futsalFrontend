@@ -9,6 +9,7 @@ export const registerUser = createAsyncThunk(
         "http://localhost:8080/api/v1/auth/register",
         registrationData
       );
+
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
@@ -24,12 +25,13 @@ export const registerUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (loginData, { rejectWithValue }) => {
-    console.log("this is login credentials", loginData);
     try {
       const response = await axios.post(
         "http://localhost:8080/api/v1/auth/login",
         loginData
       );
+      console.log("get Token", response.data.token);
+      localStorage.setItem("JWT_TOKEN", response.data.token);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;

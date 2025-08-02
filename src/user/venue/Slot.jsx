@@ -4,6 +4,10 @@ import Modal from "@mui/material/Modal";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import Map, { Source, Layer, Marker } from "@vis.gl/react-maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { useDispatch, useSelector } from "react-redux";
+import { futsalById } from "../../redux/futsalSlice/FutsalThunks";
+import { generateTimeSlots } from "../../uitls/TimeSlotGenerator";
+import { CallMerge } from "@mui/icons-material";
 
 const style = {
   position: "absolute",
@@ -23,7 +27,12 @@ const start = [85.324, 27.7172];
 const end = [85.345, 27.73];
 
 function Slot() {
+  const [futsalData, setFutsalData] = useState(null);
+  const [futsalList, setFutsalList] = useState([]);
+  const [slot, setSlot] = useState([]);
   const { bookingType } = useOutletContext();
+  const param = useParams();
+  const idData = param.futsalId;
   const [navigationData, setNavigationData] = useState(null);
   const [selectDate, setSelectDate] = useState("");
   const [time, setTime] = useState({
@@ -31,6 +40,7 @@ function Slot() {
     ending: "",
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // handle change date function
   const handleChangeDate = (e) => {
@@ -96,90 +106,91 @@ function Slot() {
       "line-width": 4,
     },
   };
+
+  // fetching data from backend
+
+  useEffect(() => {
+    getFutsalDataById(idData);
+  }, []);
+
+  const getFutsalDataById = async (idData) => {
+    try {
+      const data = await dispatch(futsalById(idData));
+      console.log("futsal data::", data.payload);
+      setFutsalList(data.payload.futsalGroundList);
+      setFutsalData(data.payload);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // generating time slot
+  useEffect(() => {
+    if (futsalData != null) {
+      console.log("futsal list", futsalData);
+      const slot = generateTimeSlots(
+        futsalData?.futsalOpeningHours,
+        futsalData?.futsalClosingHours,
+        60
+      );
+      setSlot(slot);
+      console.log("slot aare:", slot);
+    }
+  }, [futsalList]);
   return (
     <div>
-      <h2 className="pt-[20px] text-[40px] font-semibold">
-        Search Venue For Match
+      <h2 className="pt-[20px] text-[40px] text-[#27D483] font-semibold">
+        Choose Slot For Match
       </h2>
       <p className="font-light opacity-50 ">
         Choose preferred date and time to play from the below options
       </p>
-      <div className="flex items-center mt-[12px] md:mt-[16px] gap-[12px]">
-        <p>Selected date:</p>
-        <div className="flex ">
-          <input
-            type="date"
-            placeholder="Search"
-            value={selectDate}
-            name="selectDate"
-            onChange={handleChangeDate}
-            className="text-[#39908F] border-none  outline-none placeholder:text-[#39908F] bg-white text-[16px] py-[12px] px-[32px] rounded-[10px]   "
-          />
-        </div>
-      </div>
-      <div className="mt-[60px]  flex md:gap-[20px] gap-[10px]  md:justify-start flex-wrap">
-        <div
-          className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000"
-          onClick={bookingType == "book" ? handleOpen : handleOpen2}
-        >
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-        <div className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000">
-          00AM-00PM
-        </div>
-      </div>
+      <div>
+        <div className="flex justify-between mt-[12px] md:mt-[16px]">
+          <div className="flex items-center  gap-[12px]">
+            <p>Selected date:</p>
+            <div className="flex ">
+              <input
+                type="date"
+                placeholder="Search"
+                value={selectDate}
+                name="selectDate"
+                onChange={handleChangeDate}
+                className="text-[#39908F] border-none  outline-none placeholder:text-[#39908F] bg-white text-[16px] py-[12px] px-[32px] rounded-[10px]   "
+              />
+            </div>
+          </div>
 
+          {/* available Ground */}
+          <div className="flex gap-[12px] items-center">
+            <label>Available Ground:</label>
+            {futsalList?.map((data, index) => {
+              return (
+                <button
+                  key={index}
+                  className="bg-[#27D483] rounded-[10px] py-[12px] px-[24px] hover:-translate-y-3 duration-1000 transition ease-in-out"
+                >
+                  {data.groundType} Ground
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      {/* avaible slot of futsal Ground */}
+      <div className="mt-[60px]  flex md:gap-[20px] gap-[10px]  md:justify-start flex-wrap">
+        {slot.map((data, index) => {
+          return (
+            <div
+              key={index}
+              className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000"
+              onClick={bookingType == "book" ? handleOpen : handleOpen2}
+            >
+              {data.startTimeDisplay}-{data.endTimeDisplay}
+            </div>
+          );
+        })}
+      </div>
+      {/* this part is of map */}
       <div className="mt-[60px] mb-[1rem]">
         <h2 className="text-[40px] font-semibold mb-6">Futsal Location</h2>
         {navigationData && (
@@ -220,7 +231,6 @@ function Slot() {
           </Map>
         </div>
       </div>
-
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <div className="grid gap-[32px]">
@@ -302,7 +312,6 @@ function Slot() {
           </div>
         </Box>
       </Modal>
-
       {/* this is for challenge */}
       <Modal open={open2} onClose={handleClose2}>
         <Box sx={style}>

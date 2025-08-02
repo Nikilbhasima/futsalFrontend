@@ -46,7 +46,6 @@ function Login() {
         initialValues={{ emailOrMobile: "", password: "" }}
         validationSchema={validationSchema}
         onSubmit={async (values, { resetForm }) => {
-          console.log("Login Data:", values);
           try {
             const response = await dispatch(loginUser(values));
             if (response.meta.requestStatus === "fulfilled") {

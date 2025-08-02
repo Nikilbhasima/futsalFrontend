@@ -1,18 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import Futsal from "./Futsal";
+import { useDispatch } from "react-redux";
+import { futsalList } from "../../redux/futsalSlice/FutsalThunks";
 
 function BrowseVenue() {
   const navigate = useNavigate();
   const { bookingType } = useOutletContext();
-  console.log("from browse", bookingType);
   const [filter, setFilter] = useState(true);
+  const [list, setList] = useState([]);
   const handleFilter = () => {
     setFilter(!filter);
   };
+
+  // fetching futsal list from backend
+  const dispatch = useDispatch();
+  useEffect(() => {
+    getFutsalList();
+  }, []);
+
+  const getFutsalList = async () => {
+    try {
+      const data = await dispatch(futsalList());
+      setList(data.payload);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <h2 className="pt-[20px] text-[40px] text-[#27D483] font-semibold">
@@ -83,11 +101,9 @@ function BrowseVenue() {
         {/* end of sorting and filtering */}
       </div>
       <div className="mt-[60px] flex flex-col gap-[32px]">
-        <Futsal bookingType={bookingType} />
-        <Futsal bookingType={bookingType} />
-        <Futsal bookingType={bookingType} />
-        <Futsal bookingType={bookingType} />
-        <Futsal bookingType={bookingType} />
+        {list.map((data, index) => {
+          return <Futsal bookingType={bookingType} key={index} data={data} />;
+        })}
       </div>
     </div>
   );

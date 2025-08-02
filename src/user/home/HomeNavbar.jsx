@@ -27,7 +27,7 @@ function HomeNavbar() {
           <Route index element={<BrowseVenue />} />
           <Route path="browse" element={<BrowseVenue />} />
           <Route path="match" element={<Match />} />
-          <Route path="slot" element={<Slot />} />
+          <Route path="slot/:futsalId" element={<Slot />} />
         </Route>
         <Route path="/bookings" element={<MyBooking />} />
         <Route path="/authenticate" element={<Authentication />}>
