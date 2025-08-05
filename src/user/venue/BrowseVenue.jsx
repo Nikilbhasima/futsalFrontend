@@ -11,7 +11,7 @@ function BrowseVenue() {
   const navigate = useNavigate();
   const { bookingType } = useOutletContext();
   const [filter, setFilter] = useState(true);
-  const [list, setList] = useState([]);
+  const [futsalListData, setList] = useState([]);
   const handleFilter = () => {
     setFilter(!filter);
   };
@@ -25,6 +25,7 @@ function BrowseVenue() {
   const getFutsalList = async () => {
     try {
       const data = await dispatch(futsalList());
+      console.log("list of futsal:", data.payload);
       setList(data.payload);
     } catch (error) {
       console.log(error);
@@ -101,7 +102,7 @@ function BrowseVenue() {
         {/* end of sorting and filtering */}
       </div>
       <div className="mt-[60px] flex flex-col gap-[32px]">
-        {list.map((data, index) => {
+        {futsalListData?.map((data, index) => {
           return <Futsal bookingType={bookingType} key={index} data={data} />;
         })}
       </div>

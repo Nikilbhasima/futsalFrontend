@@ -30,7 +30,6 @@ export const loginUser = createAsyncThunk(
         "http://localhost:8080/api/v1/auth/login",
         loginData
       );
-      console.log("get Token", response.data.token);
       localStorage.setItem("JWT_TOKEN", response.data.token);
       return response.data;
     } catch (error) {

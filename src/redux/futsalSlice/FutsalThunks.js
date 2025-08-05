@@ -2,20 +2,17 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // accessing jwt token
-const token = localStorage.getItem("JWT_TOKEN");
+
 export const futsalList = createAsyncThunk(
   "futsal/futsalList",
   async (_, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("JWT_TOKEN");
       const response = await axios.get(
-        "http://localhost:8080/api/futsal/getAllFutsal",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        "http://localhost:8080/api/futsal/getAllFutsal"
       );
       // Return the data so it can be used in your reducer
+      console.log("list of futsal aare:", response.data);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
@@ -34,9 +31,9 @@ export const futsalById = createAsyncThunk(
   "futsal/futsalById",
   async (id, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("JWT_TOKEN");
       const response = await axios.get(
-        `http://localhost:8080/api/futsal/getFutsalById/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `http://localhost:8080/api/futsal/getFutsalById/${id}`
       );
       return response.data;
     } catch (error) {

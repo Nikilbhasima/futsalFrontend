@@ -6,7 +6,6 @@ const initialState = {
   futsal: null,
   loading: false,
   error: null,
-  success: false,
 };
 
 const futsalSlice = createSlice({
@@ -17,13 +16,10 @@ const futsalSlice = createSlice({
     builder
       .addCase(futsalList.pending, (state) => {
         state.loading = true;
-        state.success = true;
         state.error = null;
       })
       .addCase(futsalList.fulfilled, (state, action) => {
         state.futsal = action.payload;
-        console.log("futsal Data", action.payload);
-        state.success = false;
         state.loading = false;
       })
       .addCase(futsalList.rejected, (state, action) => {
@@ -32,13 +28,10 @@ const futsalSlice = createSlice({
       })
       .addCase(futsalById.pending, (state) => {
         state.loading = true;
-        state.success = true;
         state.error = null;
       })
       .addCase(futsalById.fulfilled, (state, action) => {
         state.futsal = action.payload;
-        console.log("mic check:", action.payload);
-        state.success = false;
         state.loading = false;
       })
       .addCase(futsalById.rejected, (state, action) => {

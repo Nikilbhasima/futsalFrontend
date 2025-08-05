@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { futsalById } from "../../redux/futsalSlice/FutsalThunks";
 import { generateTimeSlots } from "../../uitls/TimeSlotGenerator";
 import { CallMerge } from "@mui/icons-material";
+import GeoLocationMaping from "../../ReusedComponent/GeoLocationMaping";
+import { bookingList } from "../../redux/bookingSlice/BookingThunks";
 
 const style = {
   position: "absolute",
@@ -21,26 +23,23 @@ const style = {
   borderRadius: "10px",
 };
 
-const osrmUrl = "https://router.project-osrm.org/route/v1/foot";
-
-const start = [85.324, 27.7172];
-const end = [85.345, 27.73];
-
 function Slot() {
+  const { success } = useSelector((state) => state.auth);
+  const [listOfBookedGround, setListOfBookedGround] = useState([]);
+  const [Custome, handleCustome] = useState(true);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [futsalData, setFutsalData] = useState(null);
   const [futsalList, setFutsalList] = useState([]);
   const [slot, setSlot] = useState([]);
   const { bookingType } = useOutletContext();
   const param = useParams();
   const idData = param.futsalId;
-  const [navigationData, setNavigationData] = useState(null);
   const [selectDate, setSelectDate] = useState("");
   const [time, setTime] = useState({
     starting: "",
     ending: "",
   });
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   // handle change date function
   const handleChangeDate = (e) => {
@@ -48,8 +47,6 @@ function Slot() {
     setSelectDate(pickedDate);
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0];
-
-    console.log(selectDate);
     if (pickedDate < formattedDate) {
       alert("Please Select the Valid Date to book Futsal");
       setSelectDate("");
@@ -62,52 +59,16 @@ function Slot() {
   const handleTimeChange = (e) => {
     const { name, value } = e.target;
     setTime((pre) => ({ ...pre, [name]: value }));
-    console.log(name, value);
   };
   // this is model part
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // this is for challenge
   const [open2, setOpen2] = useState(false);
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => setOpen2(false);
-
-  const [Custome, handleCustome] = useState(true);
-
-  // this part is for the map
-  const [routeGeoJson, setRouteGeoJson] = useState(null);
-  useEffect(() => {
-    const getRoute = async () => {
-      const url = `${osrmUrl}/${start.join(",")};${end.join(
-        ","
-      )}?overview=full&geometries=geojson`;
-      const res = await fetch(url);
-      const data = await res.json();
-      const route = data.routes[0].geometry;
-
-      console.log(data.routes[0]);
-      setNavigationData(data.routes[0]);
-      setRouteGeoJson({
-        type: "Feature",
-        geometry: route,
-      });
-    };
-
-    getRoute();
-  }, []);
-
-  const routeLayer = {
-    id: "route",
-    type: "line",
-    paint: {
-      "line-color": "#ff0000",
-      "line-width": 4,
-    },
-  };
-
-  // fetching data from backend
+  // this is end for model part
 
   useEffect(() => {
     getFutsalDataById(idData);
@@ -116,9 +77,18 @@ function Slot() {
   const getFutsalDataById = async (idData) => {
     try {
       const data = await dispatch(futsalById(idData));
-      console.log("futsal data::", data.payload);
       setFutsalList(data.payload.futsalGroundList);
       setFutsalData(data.payload);
+      const today = new Date();
+      const localDate = today.toISOString().split("T")[0];
+      const groundId = data?.payload?.futsalGroundList[0]?.id;
+      const listOfData = await dispatch(
+        bookingList({
+          groundId: groundId,
+          bookingDate: localDate,
+        })
+      );
+      setListOfBookedGround(listOfData.payload);
     } catch (error) {
       console.log(error);
     }
@@ -126,16 +96,27 @@ function Slot() {
   // generating time slot
   useEffect(() => {
     if (futsalData != null) {
-      console.log("futsal list", futsalData);
       const slot = generateTimeSlots(
         futsalData?.futsalOpeningHours,
         futsalData?.futsalClosingHours,
         60
       );
       setSlot(slot);
-      console.log("slot aare:", slot);
     }
   }, [futsalList]);
+
+  // compare time
+  const isSlotBooked = (slotStartTime, slotEndTime) => {
+    for (let booking of listOfBookedGround) {
+      const bookingStart = booking.starting_time.substring(0, 5);
+      const bookingEnd = booking.ending_time.substring(0, 5);
+
+      if (bookingStart === slotStartTime && bookingEnd === slotEndTime) {
+        return true;
+      }
+    }
+    return false;
+  };
   return (
     <div>
       <h2 className="pt-[20px] text-[40px] text-[#27D483] font-semibold">
@@ -145,9 +126,9 @@ function Slot() {
         Choose preferred date and time to play from the below options
       </p>
       <div>
-        <div className="flex justify-between mt-[12px] md:mt-[16px]">
+        <div className="flex justify-between mt-[12px] md:mt-[16px] flex-wrap gap-[1rem]">
           <div className="flex items-center  gap-[12px]">
-            <p>Selected date:</p>
+            <label className="text-[14px] sm:text-[16px]">Selected date:</label>
             <div className="flex ">
               <input
                 type="date"
@@ -155,19 +136,21 @@ function Slot() {
                 value={selectDate}
                 name="selectDate"
                 onChange={handleChangeDate}
-                className="text-[#39908F] border-none  outline-none placeholder:text-[#39908F] bg-white text-[16px] py-[12px] px-[32px] rounded-[10px]   "
+                className="text-[#39908F] border-none  outline-none placeholder:text-[#39908F] bg-white text-[16px] p-[12px] sm:py-[12px] sm:px-[32px] rounded-[10px]   "
               />
             </div>
           </div>
 
           {/* available Ground */}
           <div className="flex gap-[12px] items-center">
-            <label>Available Ground:</label>
+            <label className="text-[14px] sm:text-[16px]">
+              Available Ground:
+            </label>
             {futsalList?.map((data, index) => {
               return (
                 <button
                   key={index}
-                  className="bg-[#27D483] rounded-[10px] py-[12px] px-[24px] hover:-translate-y-3 duration-1000 transition ease-in-out"
+                  className={`bg-[#27D483] rounded-[10px] p-[10px] text-[12px] sm:p-[12px] hover:-translate-y-2 duration-1000 transition ease-in-out `}
                 >
                   {data.groundType} Ground
                 </button>
@@ -177,59 +160,35 @@ function Slot() {
         </div>
       </div>
       {/* avaible slot of futsal Ground */}
-      <div className="mt-[60px]  flex md:gap-[20px] gap-[10px]  md:justify-start flex-wrap">
+      <div className="mt-[60px] grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6  gap-[1rem] sm:gap-[2rem] md:justify-start ">
         {slot.map((data, index) => {
           return (
             <div
               key={index}
-              className="bg-[#333333] rounded-[10px] py-[12px] px-[32px] w-fit hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000"
-              onClick={bookingType == "book" ? handleOpen : handleOpen2}
+              className={`bg-[#333333] rounded-[10px] text-[12px] sm:text-[14px] p-[12px] sm:px-[12px] sm-py-[16px]  max-w-[8rem]  sm:max-w-[9rem] hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000 ${
+                isSlotBooked(data.startTime, data.endTime)
+                  ? "bg-red-500 text-white cursor-not-allowed"
+                  : "bg-[#27D483] text-white hover:bg-green-600"
+              }`}
+              onClick={() => {
+                if (success) {
+                  if (!isSlotBooked(data.startTime, data.endTime)) {
+                    bookingType == "book" ? handleOpen() : handleOpen2();
+                  }
+                }
+              }}
             >
               {data.startTimeDisplay}-{data.endTimeDisplay}
             </div>
           );
         })}
       </div>
+
       {/* this part is of map */}
       <div className="mt-[60px] mb-[1rem]">
         <h2 className="text-[40px] font-semibold mb-6">Futsal Location</h2>
-        {navigationData && (
-          <div className="py-[1rem] flex gap-5">
-            <p className="text-[20px] font-bold flex gap-4">
-              Distance📏:
-              <span className="font-light">
-                {(navigationData.distance / 1000).toFixed(2)} km
-              </span>
-            </p>
-            <p className="text-[20px] font-bold flex gap-4">
-              Duration⏱:
-              <span className="font-light">
-                {(navigationData.duration / 60).toFixed(1)} minutes
-              </span>
-            </p>
-          </div>
-        )}
-        <div style={{ height: "500px", width: "100%" }}>
-          <Map
-            initialViewState={{
-              longitude: 85.334,
-              latitude: 27.724,
-              zoom: 14,
-            }}
-            mapStyle="https://api.maptiler.com/maps/streets/style.json?key=G0JzaoaaWpzTHgeOAjWx"
-          >
-            {/* Start and End Markers */}
-            <Marker longitude={start[0]} latitude={start[1]} />
-            <Marker longitude={end[0]} latitude={end[1]} />
 
-            {/* Route Line */}
-            {routeGeoJson && (
-              <Source id="route" type="geojson" data={routeGeoJson}>
-                <Layer {...routeLayer} />
-              </Source>
-            )}
-          </Map>
-        </div>
+        <GeoLocationMaping end={[85.314, 27.7056]} />
       </div>
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>

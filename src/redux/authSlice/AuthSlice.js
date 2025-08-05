@@ -19,11 +19,15 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.jwt = null;
-      state.success = false;
       state.error = null;
+      state.success = false;
+      localStorage.clear();
     },
     clearError: (state) => {
       state.error = null;
+    },
+    setJwt: (state) => {
+      state.jwt = localStorage.getItem("JWT_TOKEN");
     },
     setSuccess: (state) => {
       state.success = true;
@@ -37,7 +41,6 @@ const authSlice = createSlice({
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.success = true;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         console.log(action);
@@ -53,7 +56,7 @@ const authSlice = createSlice({
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.success = false;
+        state.success = true;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
@@ -69,6 +72,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, logout, clearError, clearSuccess, setSuccess } =
+export const { setUser, logout, clearError, clearSuccess, setSuccess, setJwt } =
   authSlice.actions;
 export default authSlice.reducer;

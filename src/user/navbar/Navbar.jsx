@@ -19,8 +19,9 @@ function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { success } = useSelector((state) => state.auth);
-  console.log(success);
+  const { success, jwt } = useSelector((state) => state.auth);
+  console.log(jwt);
+
   useEffect(() => {
     if (screenSize < 998) {
       setChangeWidths(false);
@@ -117,13 +118,14 @@ function Navbar() {
                         </li>
                         <li
                           className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center"
-                          onClick={() => console.log("logout")}
+                          onClick={() => {
+                            console.log("logout");
+                            dispatch(logout());
+                            navigate("/");
+                          }}
                         >
                           Logout
-                          <FiLogOut
-                            className="text-[16px]"
-                            onClick={() => dispatch(logout())}
-                          />
+                          <FiLogOut className="text-[16px]" />
                         </li>
                       </ul>
                     </>
