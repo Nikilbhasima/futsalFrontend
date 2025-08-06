@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { bookingList } from "./BookingThunks";
+import { bookGround, bookingList } from "./BookingThunks";
 
 const initialState = {
   bookings: null,
@@ -25,6 +25,20 @@ const bookingSlice = createSlice({
       .addCase(bookingList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Failed to fetch booking list";
+      })
+      .addCase(bookGround.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(bookGround.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.bookings = action.payload;
+      })
+      .addCase(bookGround.rejected, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.bookings = action.payload;
       });
   },
 });

@@ -10,37 +10,32 @@ import { generateTimeSlots } from "../../uitls/TimeSlotGenerator";
 import { CallMerge } from "@mui/icons-material";
 import GeoLocationMaping from "../../ReusedComponent/GeoLocationMaping";
 import { bookingList } from "../../redux/bookingSlice/BookingThunks";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 430,
-  bgcolor: "#333333",
-  border: "2px solid #000",
-  p: "24px",
-  borderRadius: "10px",
-};
+import TimeSlot from "./TimeSlot";
+import BookingModel from "./venueComponent/BookingModel";
+import ChallengeModel from "./venueComponent/ChallengeModel";
 
 function Slot() {
   const { success } = useSelector((state) => state.auth);
   const [listOfBookedGround, setListOfBookedGround] = useState([]);
-  const [Custome, handleCustome] = useState(true);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [futsalData, setFutsalData] = useState(null);
   const [futsalList, setFutsalList] = useState([]);
-  const [slot, setSlot] = useState([]);
   const { bookingType } = useOutletContext();
   const param = useParams();
   const idData = param.futsalId;
   const [selectDate, setSelectDate] = useState("");
-  const [time, setTime] = useState({
-    starting: "",
-    ending: "",
-  });
+  const [selectGround, setSelectGround] = useState(0);
 
+  // ignor these part
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const [open2, setOpen2] = useState(false);
+  const handleOpen2 = () => setOpen2(true);
+  const handleClose2 = () => setOpen2(false);
   // handle change date function
   const handleChangeDate = (e) => {
     const pickedDate = e.target.value;
@@ -56,19 +51,10 @@ function Slot() {
     }
   };
 
-  const handleTimeChange = (e) => {
-    const { name, value } = e.target;
-    setTime((pre) => ({ ...pre, [name]: value }));
-  };
-  // this is model part
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const [open2, setOpen2] = useState(false);
-  const handleOpen2 = () => setOpen2(true);
-  const handleClose2 = () => setOpen2(false);
-  // this is end for model part
+  const [playingTime, setPlayingTime] = useState({
+    starting_time: "",
+    ending_time: "",
+  });
 
   useEffect(() => {
     getFutsalDataById(idData);
@@ -81,6 +67,7 @@ function Slot() {
       setFutsalData(data.payload);
       const today = new Date();
       const localDate = today.toISOString().split("T")[0];
+      setSelectDate(localDate);
       const groundId = data?.payload?.futsalGroundList[0]?.id;
       const listOfData = await dispatch(
         bookingList({
@@ -93,30 +80,25 @@ function Slot() {
       console.log(error);
     }
   };
-  // generating time slot
+
   useEffect(() => {
-    if (futsalData != null) {
-      const slot = generateTimeSlots(
-        futsalData?.futsalOpeningHours,
-        futsalData?.futsalClosingHours,
-        60
+    getListOfBookedGround();
+  }, [selectDate, selectGround]);
+
+  const getListOfBookedGround = async () => {
+    try {
+      const listOfData = await dispatch(
+        bookingList({
+          groundId: selectGround,
+          bookingDate: selectDate,
+        })
       );
-      setSlot(slot);
+      setListOfBookedGround(listOfData.payload);
+    } catch (error) {
+      console.log(error);
     }
-  }, [futsalList]);
-
-  // compare time
-  const isSlotBooked = (slotStartTime, slotEndTime) => {
-    for (let booking of listOfBookedGround) {
-      const bookingStart = booking.starting_time.substring(0, 5);
-      const bookingEnd = booking.ending_time.substring(0, 5);
-
-      if (bookingStart === slotStartTime && bookingEnd === slotEndTime) {
-        return true;
-      }
-    }
-    return false;
   };
+
   return (
     <div>
       <h2 className="pt-[20px] text-[40px] text-[#27D483] font-semibold">
@@ -150,7 +132,12 @@ function Slot() {
               return (
                 <button
                   key={index}
-                  className={`bg-[#27D483] rounded-[10px] p-[10px] text-[12px] sm:p-[12px] hover:-translate-y-2 duration-1000 transition ease-in-out `}
+                  className={` rounded-[10px] p-[10px] text-[12px] sm:p-[12px] hover:-translate-y-2 duration-1000 transition ease-in-out ${
+                    selectGround === index
+                      ? "bg-[#FACC15] text-[#FFFFFF]"
+                      : "bg-[#27D483]"
+                  } `}
+                  onClick={() => setSelectGround(index)}
                 >
                   {data.groundType} Ground
                 </button>
@@ -159,168 +146,40 @@ function Slot() {
           </div>
         </div>
       </div>
-      {/* avaible slot of futsal Ground */}
+
+      {/* Available slot of futsal Ground */}
       <div className="mt-[60px] grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6  gap-[1rem] sm:gap-[2rem] md:justify-start ">
-        {slot.map((data, index) => {
-          return (
-            <div
-              key={index}
-              className={`bg-[#333333] rounded-[10px] text-[12px] sm:text-[14px] p-[12px] sm:px-[12px] sm-py-[16px]  max-w-[8rem]  sm:max-w-[9rem] hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000 ${
-                isSlotBooked(data.startTime, data.endTime)
-                  ? "bg-red-500 text-white cursor-not-allowed"
-                  : "bg-[#27D483] text-white hover:bg-green-600"
-              }`}
-              onClick={() => {
-                if (success) {
-                  if (!isSlotBooked(data.startTime, data.endTime)) {
-                    bookingType == "book" ? handleOpen() : handleOpen2();
-                  }
-                }
-              }}
-            >
-              {data.startTimeDisplay}-{data.endTimeDisplay}
-            </div>
-          );
-        })}
+        <TimeSlot
+          success={success}
+          bookingType={bookingType}
+          handleOpen={handleOpen}
+          handleOpen2={handleOpen2}
+          setPlayingTime={setPlayingTime}
+          futsalData={futsalData}
+          futsalList={futsalList}
+          listOfBookedGround={listOfBookedGround}
+        />
       </div>
 
       {/* this part is of map */}
       <div className="mt-[60px] mb-[1rem]">
         <h2 className="text-[40px] font-semibold mb-6">Futsal Location</h2>
-
         <GeoLocationMaping end={[85.314, 27.7056]} />
       </div>
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <div className="grid gap-[32px]">
-            <h1 className="text-[#27D483] text-center text-[25px] font-semibold">
-              Match Detail
-            </h1>
-            {Custome ? (
-              <div className="grid gap-[15px]">
-                <div className="flex justify-between">
-                  <span className="text-[16px] font-medium">Match Price:</span>
-                  <span className="font-thin">Rs 1000</span>
-                </div>
+      {/* Booking Modal */}
+      <BookingModel
+        open={open}
+        handleClose={handleClose}
+        ground={selectGround}
+        groundDetail={futsalList}
+        playingTime={playingTime}
+        setPlayingTime={setPlayingTime}
+        selectDate={selectDate}
+        bookingType={bookingType}
+      />
 
-                <div className="h-[2px] w-full bg-[#27D483] rounded-[10px]"></div>
-
-                <div className="flex justify-between">
-                  <span className="text-[16px] font-medium">Match Time:</span>
-                  <span className="font-thin">10AM - 11AM</span>
-                </div>
-                <div className="h-[2px] w-full bg-[#27D483] rounded-[10px]"></div>
-
-                <div className="flex justify-between">
-                  <span className="text-[16px] font-medium">Ground Type:</span>
-                  <span className="font-thin">5A</span>
-                </div>
-                <div className="h-[2px] w-full bg-[#27D483] rounded-[10px]"></div>
-
-                <div className="flex justify-between">
-                  <span className="text-[16px] font-medium">Total Price:</span>
-                  <span className="font-thin">Rs 1000</span>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-[1rem]">
-                <p>Choose Your Time</p>
-                <div className="flex flex-col gap-[10px]">
-                  <label className="opacity-50">Starting</label>
-                  <input
-                    type="time"
-                    className="bg-[white] text-[black] text-[16px] py-[10px] px-[16px] rounded-[10px]"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-[10px]">
-                  <label className="opacity-50">Ending</label>
-                  <input
-                    type="time"
-                    className="bg-[white] text-[black] text-[16px] py-[10px] px-[16px] rounded-[10px]"
-                    value={time.ending}
-                    name="ending"
-                    onChange={handleTimeChange}
-                  />
-                </div>
-              </div>
-            )}
-
-            {Custome ? (
-              <button
-                onClick={() => handleCustome(false)}
-                className=" ml-auto bg-[white] text-[black] w-fit py-[5px] px-[4px] rounded-[10px]"
-              >
-                Custom
-              </button>
-            ) : (
-              <button
-                onClick={() => handleCustome(true)}
-                className=" ml-auto bg-[white] text-[black] w-fit py-[5px] px-[4px] rounded-[10px]"
-              >
-                Select Time
-              </button>
-            )}
-
-            <button
-              className=" px-[32px] py-[12px] bg-[#27D483] text-[#212121] rounded-[10px] w-fit m-auto"
-              onClick={() => navigate("/bookings")}
-            >
-              Book Now
-            </button>
-          </div>
-        </Box>
-      </Modal>
-      {/* this is for challenge */}
-      <Modal open={open2} onClose={handleClose2}>
-        <Box sx={style}>
-          <div className="grid gap-[32px]">
-            <h1 className="text-[#27D483] text-center text-[25px] font-semibold">
-              Inviter Detail
-            </h1>
-            <div className="grid gap-[20px]">
-              <div className="flex justify-between">
-                <span className="text-[16px] font-medium">Inviter Name:</span>
-                <span className="font-thin">Nikil Bhasima</span>
-              </div>
-              <div className="h-[2px] w-full bg-[#27D483] "></div>
-              <div className="flex justify-between">
-                <span className="text-[16px] font-medium">Team Format:</span>
-                <span className="font-thin">5A</span>
-              </div>
-
-              <div className="h-[2px] w-full bg-[#27D483] "></div>
-              <div className="grid grid-cols-[1fr_1fr]  items-center">
-                <span className="text-[16px] font-medium ">Add Phone:</span>
-                <input
-                  type="text"
-                  placeholder="Phone Number"
-                  className="w-full py-[10px] px-[24px] bg-[white] text-[#333333] rounded-[5px] border-none outline-none "
-                />
-              </div>
-              <div className="h-[2px] w-full bg-[#27D483] "></div>
-              <div className="grid grid-cols-[1fr_1fr]  items-center">
-                <p className="">Payment Type:</p>
-                <select
-                  name=""
-                  id=""
-                  className="py-[10px] px-[24px] bg-[white] text-[#333333] rounded-[5px] border-none outline-none "
-                >
-                  <option value="5v5">50-50</option>
-                  <option value="5v5">60-40</option>
-                  <option value="5v5">70-30</option>
-                </select>
-              </div>
-            </div>
-            <button
-              className=" px-[32px] py-[12px] bg-[#27D483] text-[#212121] rounded-[10px] w-fit m-auto"
-              onClick={() => navigate("/bookings")}
-            >
-              Challenge
-            </button>
-          </div>
-        </Box>
-      </Modal>
+      {/* Challenge Modal */}
+      <ChallengeModel open2={open2} handleClose2={handleClose2} />
     </div>
   );
 }

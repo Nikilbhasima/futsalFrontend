@@ -8,7 +8,7 @@ function convertTo12Hour(time24h) {
 }
 
 // Validate Java LocalTime format (HH:mm)
-function isValidLocalTime(timeString) {
+export function isValidLocalTime(timeString) {
   const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
   return timeRegex.test(timeString);
 }
