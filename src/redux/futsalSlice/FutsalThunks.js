@@ -11,8 +11,6 @@ export const futsalList = createAsyncThunk(
       const response = await axios.get(
         "http://localhost:8080/api/futsal/getAllFutsal"
       );
-      // Return the data so it can be used in your reducer
-      console.log("list of futsal aare:", response.data);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;

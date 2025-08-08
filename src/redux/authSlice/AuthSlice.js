@@ -35,6 +35,12 @@ const authSlice = createSlice({
     clearSuccess: (state) => {
       state.success = false;
     },
+    setloading: (state) => {
+      state.loading = true;
+    },
+    clearLoading: (state) => {
+      state.loading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -72,6 +78,14 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, logout, clearError, clearSuccess, setSuccess, setJwt } =
-  authSlice.actions;
+export const {
+  setUser,
+  logout,
+  clearError,
+  clearSuccess,
+  setSuccess,
+  setJwt,
+  setloading,
+  clearLoading,
+} = authSlice.actions;
 export default authSlice.reducer;

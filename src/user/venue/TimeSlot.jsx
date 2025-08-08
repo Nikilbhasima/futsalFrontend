@@ -22,16 +22,18 @@ function TimeSlot({
       setSlot(slot);
     }
   }, [futsalList]);
-  // compare time
   const isSlotBooked = (slotStartTime, slotEndTime) => {
-    for (let booking of listOfBookedGround) {
-      const bookingStart = booking.starting_time.substring(0, 5);
-      const bookingEnd = booking.ending_time.substring(0, 5);
+    if (listOfBookedGround?.length != 0) {
+      for (let booking of listOfBookedGround) {
+        const bookingStart = booking.starting_time.substring(0, 5);
+        const bookingEnd = booking.ending_time.substring(0, 5);
 
-      if (bookingStart === slotStartTime && bookingEnd === slotEndTime) {
-        return true;
+        if (bookingStart === slotStartTime && bookingEnd === slotEndTime) {
+          return true;
+        }
       }
     }
+
     return false;
   };
   return (
@@ -42,10 +44,10 @@ function TimeSlot({
         return (
           <div
             key={index}
-            className={`bg-[#333333] rounded-[10px] text-[12px] sm:text-[14px] p-[12px] sm:px-[12px] sm:py-[16px] max-w-[8rem] sm:max-w-[9rem] hover:bg-[#27D483] hover:text-[#333333] ease-in duration-1000 ${
+            className={`bg-[#333333] rounded-[10px] text-[12px] sm:text-[14px] p-[12px] sm:px-[12px] sm:py-[16px] max-w-[8rem] sm:max-w-[9rem]  ${
               isBooked
                 ? "bg-red-500 text-white cursor-not-allowed"
-                : "bg-[#27D483] text-white hover:bg-green-600 cursor-pointer"
+                : "bg-[#27D483] text-white  cursor-pointer hover:bg-[#27D483] hover:text-[#333333] ease-in duration-300"
             }`}
             onClick={() => {
               if (success && !isBooked) {

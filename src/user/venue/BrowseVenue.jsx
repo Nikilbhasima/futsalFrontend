@@ -25,7 +25,6 @@ function BrowseVenue() {
   const getFutsalList = async () => {
     try {
       const data = await dispatch(futsalList());
-      console.log("list of futsal:", data.payload);
       setList(data.payload);
     } catch (error) {
       console.log(error);

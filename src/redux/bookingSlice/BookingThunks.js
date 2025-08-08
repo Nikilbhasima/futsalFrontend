@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const token = localStorage.getItem("JWT_TOKEN");
 
@@ -10,7 +11,6 @@ export const bookingList = createAsyncThunk(
       const response = await axios.get(
         `http://localhost:8080/api/bookings/getFutsalSlot/${groundId}/${bookingDate}`
       );
-      console.log(response.data);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
@@ -25,12 +25,19 @@ export const bookingList = createAsyncThunk(
 
 export const bookGround = createAsyncThunk(
   "book/bookGround",
-  async ({ bookingDetail, id }, { rejectWithValue }) => {
+  async ({ bookingDetail, groundId }, { rejectWithValue }) => {
+    const token = localStorage.getItem("JWT_TOKEN");
+    console.log(bookingDetail, ":", groundId);
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/bookings/bookFutsal/${id}`
+        `http://localhost:8080/api/bookings/bookFutsal/${groundId}`,
+        bookingDetail,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      console.log("is ground booked:", response);
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
       const errorStatus = error.response?.status;
