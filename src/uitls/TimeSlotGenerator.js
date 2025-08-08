@@ -122,3 +122,8 @@ export const generateFutsalTimeSlots = (
     return [];
   }
 };
+
+// remove last two digit of time
+export function removeSeconds(timeString) {
+  return timeString.length === 8 ? timeString.slice(0, 5) : timeString;
+}

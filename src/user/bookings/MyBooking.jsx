@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { userBookings } from "../../redux/bookingSlice/BookingThunks";
+import {
+  generateFutsalTimeSlots,
+  removeSeconds,
+} from "../../uitls/TimeSlotGenerator";
 
 const bookingList = [
   {
@@ -37,16 +41,28 @@ const bookingList = [
 function MyBooking() {
   const [filterMatch, setFilterMatch] = useState("");
   const [navbarStatus, setNavbarStatus] = useState(1);
-  const navigate = useNavigate();
-  const { jwt } = useSelector((state) => state.auth);
-  console.log("check value:", jwt);
+  const [userBookingList, setUserBookingList] = useState([]);
+  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (jwt === null) {
-  //     navigate("/");
-  //   }
-  // }, [jwt]);
+  useEffect(() => {
+    getUserBooking();
+  }, []);
 
+  const getUserBooking = async () => {
+    try {
+      const response = await dispatch(userBookings("book"));
+      setUserBookingList(response.payload);
+      console.log("book", response.payload);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const numberOfSlot = (starting, ending) => {
+    const data = generateFutsalTimeSlots(starting, ending, 60);
+    console.log("number of time slot:", data);
+    return data.length;
+  };
   console.log(navbarStatus);
   return (
     <div className="max-w-[1320px] pt-[40px] px-[10px] md:px-[20px] mx-auto">
@@ -87,7 +103,7 @@ function MyBooking() {
         </li>
       </ul>
       <div className="mt-[60px]">
-        {bookingList
+        {userBookingList
           .filter((data) => {
             return !filterMatch || data.status === filterMatch;
           })
@@ -98,45 +114,50 @@ function MyBooking() {
                 className="rounded-[10px] bg-[#333333] p-[24px] md:p-[32px] mt-[40px]"
               >
                 <h1 className="text-[20px] text-[#27D483] font-semibold">
-                  {data.futsalVenue}
+                  {/* {data.futsalVenue} */}
                 </h1>
                 <div className="grid md:grid-cols-[3.6fr_1.4fr]">
                   <div className="grid  grid-cols-2 gap-[20px] py-[1rem]">
                     <p className="text-[16px] font-semibold leading-4">
                       Futsal Venue:
                       <span className=" font-light ml-[5px]">
-                        {data.futsalVenue}
+                        {data?.futsalGroundDTO?.futsalDto?.futsalName}
                       </span>
                     </p>
                     <p className="text-[16px] font-semibold leading-4">
                       Location:
                       <span className="font-light ml-[5px]">
-                        {data.location}
+                        {data?.futsalGroundDTO?.futsalDto?.futsalAddress}
                       </span>
                     </p>
                     <p className="text-[16px] font-semibold leading-4">
-                      Booking Date:
+                      Playing Date:
                       <span className="font-light ml-[5px]">
-                        {data.bookingDate}
+                        {data?.booking_date}
                       </span>
                     </p>
 
                     <p className="text-[16px] font-semibold leading-4">
                       Match Time:
                       <span className="font-light ml-[5px]">
-                        {data.matchTime}
+                        {data?.starting_time}-{data?.ending_time}
                       </span>
                     </p>
                     <p className="text-[16px] font-semibold leading-4">
                       Ground Type:
                       <span className="font-light ml-[5px]">
-                        {data.groundType}
+                        {data?.futsalGroundDTO?.groundType}
                       </span>
                     </p>
                     <p className="text-[16px] font-semibold leading-4">
                       Total Price:
                       <span className="font-light ml-[5px]">
-                        Rs {data.totalPrice}
+                        Rs
+                        {data?.futsalGroundDTO?.pricePerHour *
+                          numberOfSlot(
+                            removeSeconds(data?.starting_time),
+                            removeSeconds(data?.ending_time)
+                          )}
                       </span>
                     </p>
                   </div>

@@ -48,3 +48,29 @@ export const bookGround = createAsyncThunk(
     }
   }
 );
+
+export const userBookings = createAsyncThunk(
+  "book/userBookings",
+  async (bookingType, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("JWT_TOKEN");
+      const response = await axios.get(
+        `http://localhost:8080/api/bookings/getBookingsByUserId/${bookingType}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("user bookings response:", response);
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      const errorStatus = error.response?.status;
+      return rejectWithValue({
+        message: errorMessage,
+        status: errorStatus,
+      });
+    }
+  }
+);
