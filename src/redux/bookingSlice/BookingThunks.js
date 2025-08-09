@@ -74,3 +74,27 @@ export const userBookings = createAsyncThunk(
     }
   }
 );
+
+export const cancelFutsalBooking = createAsyncThunk(
+  "book/cancelFutsalBooking",
+  async (futsalById, { rejectWithValue }) => {
+    const token = localStorage.getItem("JWT_TOKEN");
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/api/bookings/cancalFutsalBooking/${futsalById}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      const errorStatus = error.response?.status;
+      return rejectWithValue({
+        message: errorMessage,
+        status: errorStatus,
+      });
+    }
+  }
+);

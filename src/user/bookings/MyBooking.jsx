@@ -1,43 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { userBookings } from "../../redux/bookingSlice/BookingThunks";
+import {
+  cancelFutsalBooking,
+  userBookings,
+} from "../../redux/bookingSlice/BookingThunks";
 import {
   generateFutsalTimeSlots,
   removeSeconds,
 } from "../../uitls/TimeSlotGenerator";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 
-const bookingList = [
-  {
-    id: 1,
-    futsalVenue: "Bode Futsal",
-    location: "Madhyapur, Thimi, Bode",
-    bookingDate: "2025-23-6",
-    matchTime: "10AM-11AM",
-    groundType: "5A",
-    totalPrice: 1000,
-    status: "pending",
-  },
-  {
-    id: 2,
-    futsalVenue: "Kumari Futsal",
-    location: "Kathmandu Thamel",
-    bookingDate: "2025-23-6",
-    matchTime: "10AM-11AM",
-    groundType: "7A",
-    totalPrice: 2000,
-    status: "completed",
-  },
-  {
-    id: 3,
-    futsalVenue: "Propotional Futsal",
-    location: "Madhyapur, Thimi, Gathaghar",
-    bookingDate: "2025-23-6",
-    matchTime: "10AM-11AM",
-    groundType: "5A",
-    totalPrice: 900,
-    status: "completed",
-  },
-];
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 430,
+  bgcolor: "#333333",
+  border: "2px solid #000",
+  p: "24px",
+  borderRadius: "10px",
+  display: "grid",
+  gap: "1rem",
+};
 function MyBooking() {
   const [filterMatch, setFilterMatch] = useState("");
   const [navbarStatus, setNavbarStatus] = useState(1);
@@ -60,10 +46,30 @@ function MyBooking() {
 
   const numberOfSlot = (starting, ending) => {
     const data = generateFutsalTimeSlots(starting, ending, 60);
-    console.log("number of time slot:", data);
     return data.length;
   };
-  console.log(navbarStatus);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [open2, setOpen2] = useState(false);
+  const handleOpen2 = () => setOpen2(true);
+  const handleClose2 = () => setOpen2(false);
+  const [bookindId, setBookingId] = useState(null);
+
+  const cancelBookingById = async (id) => {
+    try {
+      const response = await dispatch(cancelFutsalBooking(id));
+      if (response.meta.requestStatus === "fulfilled") {
+        console.log("i wasn't called", response.payload);
+        handleClose();
+        handleOpen2();
+        await getUserBooking();
+      }
+      console.log("cancelation response:", response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="max-w-[1320px] pt-[40px] px-[10px] md:px-[20px] mx-auto">
       <h2 className="pt-[20px] text-[40px] font-semibold">My Bookings</h2>
@@ -108,14 +114,13 @@ function MyBooking() {
             return !filterMatch || data.status === filterMatch;
           })
           .map((data, index) => {
+            console.log("checking data:", data);
             return (
               <div
                 key={index}
                 className="rounded-[10px] bg-[#333333] p-[24px] md:p-[32px] mt-[40px]"
               >
-                <h1 className="text-[20px] text-[#27D483] font-semibold">
-                  {/* {data.futsalVenue} */}
-                </h1>
+                <h1 className="text-[20px] text-[#27D483] font-semibold"></h1>
                 <div className="grid md:grid-cols-[3.6fr_1.4fr]">
                   <div className="grid  grid-cols-2 gap-[20px] py-[1rem]">
                     <p className="text-[16px] font-semibold leading-4">
@@ -161,18 +166,30 @@ function MyBooking() {
                       </span>
                     </p>
                   </div>
-                  {data.status != "completed" ? (
+                  {data.status === "pending" && (
                     <div className="flex md:flex-col lg:flex-row gap-[32px] mt-[5px] md:justify-center">
                       <button className="py-[12px] px-[32px] rounded-[10px] bg-[#27D483] text-[#333333] font-medium hover:bg-[#1c945c] hover:-translate-y-[4px] ease-out duration-1000 w-fit h-fit text-nowrap">
                         Pay Now
                       </button>
-                      <button className="py-[12px] px-[32px] rounded-[10px] bg-[#E63946] text-[white] font-medium  hover:bg-[#CC0000] hover:-translate-y-[4px] ease-out duration-1000 w-fit h-fit">
+                      <button
+                        className="py-[12px] px-[32px] rounded-[10px] bg-[#E63946] text-[white] font-medium  hover:bg-[#CC0000] hover:-translate-y-[4px] ease-out duration-1000 w-fit h-fit"
+                        onClick={() => {
+                          handleOpen(true);
+                          setBookingId(data.id);
+                        }}
+                      >
                         Cancel
                       </button>
                     </div>
-                  ) : (
+                  )}
+                  {data.status === "completed" && (
                     <div className="bg-yellow flex justify-center items-center">
                       <h3>Completed</h3>
+                    </div>
+                  )}
+                  {data.status === "cancelled" && (
+                    <div className="bg-yellow flex justify-center items-center">
+                      <h3 className="text-[#E63946]">Cancelled</h3>
                     </div>
                   )}
                 </div>
@@ -180,6 +197,26 @@ function MyBooking() {
             );
           })}
       </div>
+      <Modal open={open} onClose={handleClose}>
+        <Box sx={style}>
+          <label className="text-[#27D483]">
+            Do you wanna Cancel you Booking
+          </label>
+          <button
+            className="bg-[#27D483] text-[#333333] p-[12px] rounded-[10px] w-fit hover:-translate-y-1 hover:bg-[#1c945c] hover:text-[#FFFFFF] transition-all duration-300"
+            onClick={() => cancelBookingById(bookindId)}
+          >
+            Cancel Booking
+          </button>
+        </Box>
+      </Modal>
+      <Modal open={open2} onClose={handleClose2}>
+        <Box sx={style}>
+          <label className="text-[#27D483]">
+            Booking Succcessfully Cancelled!
+          </label>
+        </Box>
+      </Modal>
     </div>
   );
 }

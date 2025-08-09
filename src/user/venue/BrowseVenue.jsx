@@ -12,6 +12,8 @@ function BrowseVenue() {
   const { bookingType } = useOutletContext();
   const [filter, setFilter] = useState(true);
   const [futsalListData, setList] = useState([]);
+  const [searchByFutsalName, setSearchByFutsalName] = useState("");
+  const [groundType, setGroundType] = useState("");
   const handleFilter = () => {
     setFilter(!filter);
   };
@@ -42,6 +44,9 @@ function BrowseVenue() {
       <div className="flex mt-[12px] gap-[12px]">
         <div className="flex ">
           <input
+            value={searchByFutsalName}
+            name="searchByFutsalName"
+            onChange={(e) => setSearchByFutsalName(e.target.value)}
             type="text"
             placeholder="Search"
             className="text-[#39908F] border-none  outline-none placeholder:text-[#39908F] bg-white text-[16px] py-[12px] px-[24px] sm:px-[32px] rounded-l-[10px]  "
@@ -90,10 +95,16 @@ function BrowseVenue() {
             <span className="text-[black] py-[12px] px-[5px] sm:px-[12] text-[16px] font-bold">
               Filter By Ground
             </span>
-            <li className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+            <li
+              className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light"
+              onClick={() => setGroundType("5A")}
+            >
               5A Ground
             </li>
-            <li className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+            <li
+              className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light"
+              onClick={() => setGroundType("7A")}
+            >
               7A Ground
             </li>
           </ul>
@@ -101,9 +112,30 @@ function BrowseVenue() {
         {/* end of sorting and filtering */}
       </div>
       <div className="mt-[60px] flex flex-col gap-[32px]">
-        {futsalListData?.map((data, index) => {
-          return <Futsal bookingType={bookingType} key={index} data={data} />;
-        })}
+        {futsalListData
+          ?.filter((data) => {
+            // Match search by name or address
+            const matchesSearch =
+              data.futsalName
+                ?.toLowerCase()
+                .includes(searchByFutsalName.toLowerCase()) ||
+              data.futsalAddress
+                ?.toLowerCase()
+                .includes(searchByFutsalName.toLowerCase());
+
+            // Match ground type (check first element in futsalGroundList)
+            const matchesGround =
+              groundType === "" ||
+              data.futsalGroundList?.some(
+                (ground) => ground.groundType?.toUpperCase() === groundType
+              );
+
+            return matchesSearch && matchesGround;
+          })
+          ?.map((data, index) => {
+            console.log("futsal data:", data);
+            return <Futsal bookingType={bookingType} key={index} data={data} />;
+          })}
       </div>
     </div>
   );
