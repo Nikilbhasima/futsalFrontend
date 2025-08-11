@@ -258,7 +258,16 @@ function Slot() {
       />
 
       {/* Challenge Modal */}
-      <ChallengeModel open2={open2} handleClose2={handleClose2} />
+      <ChallengeModel
+        open2={open2}
+        handleClose2={handleClose2}
+        selectDate={selectDate}
+        groundDetail={futsalList}
+        playingTime={playingTime}
+        bookingType={bookingType}
+        groundId={selectGround}
+        getListOfBookedGround={getListOfBookedGround}
+      />
     </div>
   );
 }

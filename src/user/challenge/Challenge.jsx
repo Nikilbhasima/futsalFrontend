@@ -63,12 +63,6 @@ function Challenge() {
   const { jwt } = useSelector((state) => state.auth);
   console.log("check values:", jwt);
 
-  // useEffect(() => {
-  //   if (jwt === null) {
-  //     navigate("/");
-  //   }
-  // }, [jwt]);
-
   return (
     <div className="max-w-[1320px] pt-[40px] md:px-[20px] mx-auto">
       <h2 className="pt-[20px] text-[40px] font-semibold">My Challenges</h2>
