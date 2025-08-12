@@ -5,64 +5,28 @@ import { MdOutlineLocalPhone } from "react-icons/md";
 import { MdOutlineDateRange } from "react-icons/md";
 import { IoLocation } from "react-icons/io5";
 import { GiSoccerKick } from "react-icons/gi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getListOfChallenges } from "../../redux/bookingSlice/BookingThunks";
 
-const matchDetail = [
-  {
-    id: 1,
-    name: "Nikil Bhasima",
-    phone: "9808029931",
-    date: "2025-07-15",
-    time: "6:00PM",
-    venue: "kathamdu Futsal",
-    teamFromat: "5A",
-    payment: "50-50",
-    status: "pending",
-    request: "me",
-    acceptedDate: null,
-    acceptedTime: null,
-    opponent: null,
-  },
-
-  {
-    id: 2,
-    name: "Nikil Bhasima",
-    phone: "9808029990",
-    date: "2025-07-15",
-    time: "6:00PM",
-    venue: "Bode Futsal",
-    teamFromat: "5A",
-    payment: "70-30",
-    status: "playing",
-    request: "me",
-    acceptedDate: "2025-07-15",
-    acceptedTime: "10:30AM",
-    oppnent: "Bikal Rai",
-  },
-  {
-    id: 3,
-    name: "Saurav Prajapati",
-    phone: "9808029990",
-    date: "2025-07-15",
-    time: "6:00PM",
-    venue: "Bode Futsal",
-    teamFromat: "5A",
-    payment: "50-50",
-    status: "played",
-    request: "opponent",
-    acceptedDate: "2025-07-15",
-    acceptedTime: "10:30AM",
-    oppnent: "Nikil Bhasima",
-  },
-];
 function Challenge() {
   const [filterMatch, setFilterMatch] = useState("");
   const [navbarStatus, setNavbarStatus] = useState(1);
-  const navigate = useNavigate();
-  const { jwt } = useSelector((state) => state.auth);
-  console.log("check values:", jwt);
+  const [challengesData, setChallengesData] = useState([]);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    getListOfChallengesData();
+  }, []);
 
+  const getListOfChallengesData = async () => {
+    try {
+      const response = await dispatch(getListOfChallenges());
+      console.log("challenge data are:", response.payload);
+      setChallengesData(response.payload);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="max-w-[1320px] pt-[40px] md:px-[20px] mx-auto">
       <h2 className="pt-[20px] text-[40px] font-semibold">My Challenges</h2>
@@ -102,8 +66,9 @@ function Challenge() {
         </li>
       </ul>
 
-      {matchDetail
+      {challengesData
         .filter((data) => {
+          console.log("filter data", data);
           if (filterMatch === "pending") {
             return data.status === "pending";
           }
@@ -128,10 +93,13 @@ function Challenge() {
                   <div className="bg-[url(/images/messi.png)] w-[6rem] h-[6rem] bg-cover bg-no-repeat rounded-[50%]"></div>
                 )}
                 <div className="ml-[12px] ">
-                  <p className="font-normal text-[20px]">{data.name}</p>
+                  <p className="font-normal text-[20px]">
+                    {data?.challengerDto?.username}
+                  </p>
                   <p className="flex justify-start justify-center items-center gap-2 font-light">
                     <MdOutlineLocalPhone className="text-[20px] text-[#27D483] " />
-                    {data.phone}
+                    {data?.challengerDto?.phoneNumber}
+                    {data?.contactForMatch && `, ${data.contactForMatch}`}
                   </p>
                 </div>
                 {data.status != "played" && (

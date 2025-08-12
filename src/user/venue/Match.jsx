@@ -1,14 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
-
 import { RiArrowDropDownLine } from "react-icons/ri";
 import MatchDetail from "./MatchDetail";
+import { useDispatch } from "react-redux";
+import { getListOfChallenges } from "../../redux/bookingSlice/BookingThunks";
+import { extractToken } from "../../uitls/ExtractRoleFromJwt";
 
 function Match() {
   const [filter, setFilter] = useState(true);
+  const [challengesData, setChallengesData] = useState([]);
+  const [searchByFutsalName, setSearchByFutsalName] = useState("");
+  const [groundType, setGroundType] = useState("");
+  const [paymentType, setPaymentType] = useState("");
+  const [isUserLogin, setIsUserLogin] = useState("");
+  const dispatch = useDispatch();
+  useEffect(() => {
+    getListOfChallengesData();
+    const token = localStorage.getItem("JWT_TOKEN");
+    const extractedData = extractToken(token);
+    setIsUserLogin(extractedData.sub);
+    console.log("where is user", extractedData);
+    console.log("check data:", challengesData);
+  }, []);
+
+  const getListOfChallengesData = async () => {
+    try {
+      const response = await dispatch(getListOfChallenges());
+      setChallengesData(response.payload);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleFilter = () => {
     setFilter(!filter);
   };
+
   return (
     <div>
       <h2 className="pt-[20px] text-[40px] text-[#27D483] font-semibold">
@@ -21,6 +47,9 @@ function Match() {
         <div className="flex ">
           <input
             type="text"
+            name="searchByFutsalName"
+            value={searchByFutsalName}
+            onChange={(e) => setSearchByFutsalName(e.target.value)}
             placeholder="Search"
             className="text-[#39908F] border-none  outline-none placeholder:text-[#39908F] bg-white text-[16px] py-[12px] px-[24px] sm:px-[32px] rounded-l-[10px]  "
           />
@@ -55,22 +84,37 @@ function Match() {
             <span className="text-[black] px-[5px] sm:px-[12] text-[16px] font-bold">
               Payment Type
             </span>
-            <li className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+            <li
+              className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light"
+              onClick={() => setPaymentType("50-50")}
+            >
               50-50
             </li>
-            <li className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+            <li
+              className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light"
+              onClick={() => setPaymentType("60-40")}
+            >
               60-40
             </li>
-            <li className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+            <li
+              className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light"
+              onClick={() => setPaymentType("70-30")}
+            >
               70-30
             </li>
             <span className="text-[black] py-[12px] px-[5px] sm:px-[12] text-[16px] font-bold">
               Filter By Ground
             </span>
-            <li className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+            <li
+              className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light"
+              onClick={() => setGroundType("5A")}
+            >
               5A Ground
             </li>
-            <li className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+            <li
+              className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light"
+              onClick={() => setGroundType("7A")}
+            >
               7A Ground
             </li>
           </ul>
@@ -115,12 +159,33 @@ function Match() {
         </div>
       </div> */}
       <div className="mt-[60px]">
-        <MatchDetail />
-        <MatchDetail />
-        <MatchDetail />
-        <MatchDetail />
-        <MatchDetail />
-        <MatchDetail />
+        {challengesData
+          ?.filter((data) => {
+            // match venue and futsal name
+            const matchesSearch =
+              data?.futsalGroundDTO?.futsalDto?.futsalName
+                ?.toLowerCase()
+                .includes(searchByFutsalName.toLowerCase()) ||
+              data?.futsalGroundDTO?.futsalDto?.futsalAddress
+                ?.toLowerCase()
+                .includes(searchByFutsalName.toLowerCase());
+
+            // match ground type
+            const matchGround =
+              groundType === "" ||
+              data?.futsalGroundDTO?.groundType === groundType;
+
+            // match payment type
+            const paymentMatch =
+              paymentType === "" || data?.matchPaymentType === paymentType;
+
+            return matchesSearch && matchGround && paymentMatch;
+          })
+          ?.map((data, index) => {
+            return (
+              <MatchDetail key={index} data={data} isUserLogin={isUserLogin} />
+            );
+          })}
       </div>
     </div>
   );

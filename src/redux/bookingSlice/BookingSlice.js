@@ -3,6 +3,7 @@ import {
   bookGround,
   bookingList,
   cancelFutsalBooking,
+  getListOfChallenges,
   userBookings,
 } from "./BookingThunks";
 
@@ -69,6 +70,20 @@ const bookingSlice = createSlice({
       .addCase(cancelFutsalBooking.rejected, (state, action) => {
         action.loading = false;
         state.error = action.payload?.message || "Failed to cancel Booking";
+      })
+      .addCase(getListOfChallenges.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getListOfChallenges.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.bookings = action.payload;
+      })
+      .addCase(getListOfChallenges.rejected, (state, action) => {
+        action.loading = false;
+        state.error =
+          action.payload?.message || "Failed to get list of challenge data";
       });
   },
 });

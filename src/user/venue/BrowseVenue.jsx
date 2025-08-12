@@ -14,9 +14,6 @@ function BrowseVenue() {
   const [futsalListData, setList] = useState([]);
   const [searchByFutsalName, setSearchByFutsalName] = useState("");
   const [groundType, setGroundType] = useState("");
-  const handleFilter = () => {
-    setFilter(!filter);
-  };
 
   // fetching futsal list from backend
   const dispatch = useDispatch();
@@ -31,6 +28,9 @@ function BrowseVenue() {
     } catch (error) {
       console.log(error);
     }
+  };
+  const handleFilter = () => {
+    setFilter(!filter);
   };
 
   return (
