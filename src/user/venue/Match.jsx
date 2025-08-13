@@ -18,7 +18,7 @@ function Match() {
     getListOfChallengesData();
     const token = localStorage.getItem("JWT_TOKEN");
     const extractedData = extractToken(token);
-    setIsUserLogin(extractedData.sub);
+    setIsUserLogin(extractedData?.sub);
     console.log("where is user", extractedData);
     console.log("check data:", challengesData);
   }, []);
@@ -26,6 +26,7 @@ function Match() {
   const getListOfChallengesData = async () => {
     try {
       const response = await dispatch(getListOfChallenges());
+      console.log("====:", response);
       setChallengesData(response.payload);
     } catch (error) {
       console.log(error);
@@ -178,12 +179,21 @@ function Match() {
             // match payment type
             const paymentMatch =
               paymentType === "" || data?.matchPaymentType === paymentType;
+            // opponent slot is still empty
+            const opponentAvailable = !data?.opponentDto;
 
-            return matchesSearch && matchGround && paymentMatch;
+            return (
+              matchesSearch && matchGround && paymentMatch && opponentAvailable
+            );
           })
           ?.map((data, index) => {
             return (
-              <MatchDetail key={index} data={data} isUserLogin={isUserLogin} />
+              <MatchDetail
+                key={index}
+                data={data}
+                isUserLogin={isUserLogin}
+                getListOfChallengesData={getListOfChallengesData}
+              />
             );
           })}
       </div>

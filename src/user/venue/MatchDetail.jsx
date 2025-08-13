@@ -10,6 +10,8 @@ import { IoIosInformationCircleOutline } from "react-icons/io";
 import { removeSeconds } from "../../uitls/TimeSlotGenerator";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import { useDispatch } from "react-redux";
+import { acceptChallenge } from "../../redux/bookingSlice/BookingThunks";
 const style = {
   position: "absolute",
   top: "50%",
@@ -22,15 +24,36 @@ const style = {
   borderRadius: "10px",
   display: "grid",
   gap: "1rem",
+  color: "#27D483",
 };
 
-function MatchDetail({ data, isUserLogin }) {
+function MatchDetail({ data, isUserLogin, getListOfChallengesData }) {
   const [successMessage, setSuccessMessage] = useState(false);
   const handleSuccessMessage = () => setSuccessMessage(true);
   const handleFailMessage = () => setSuccessMessage(false);
 
-  const handleAcceptChallenge = () => {
+  const [successMessage2, setSuccessMessage2] = useState(false);
+  const handleSuccessMessage2 = () => setSuccessMessage2(true);
+  const handleFailMessage2 = () => setSuccessMessage2(false);
+
+  const dispatch = useDispatch();
+
+  const handleAcceptChallenge = async () => {
     console.log("futsal id:", data.id);
+    try {
+      const response = await dispatch(acceptChallenge(data.id));
+      if (response.meta.requestStatus === "fulfilled") {
+        handleFailMessage();
+        handleSuccessMessage2();
+        setTimeout(async () => {
+          await getListOfChallengesData();
+          handleFailMessage2();
+        }, 2000);
+      }
+      console.log("print challenge response:", response);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className=" mt-[32px] bg-[#333333] p-[1rem] rounded-[10px] flex flex-col gap-4">
@@ -115,7 +138,6 @@ function MatchDetail({ data, isUserLogin }) {
               </span>
               <div className="flex flex-col">
                 <span className="text-[14px] md:text-[16px]">
-                  {" "}
                   {data?.matchPaymentType}
                 </span>
                 <span className="font-light opacity-60 text-[12px] md:text-[14px]">
@@ -150,6 +172,9 @@ function MatchDetail({ data, isUserLogin }) {
             Accept Challenge
           </button>
         </Box>
+      </Modal>
+      <Modal open={successMessage2} onClose={handleFailMessage2}>
+        <Box sx={style}>Challenge Has been successfully accepted!</Box>
       </Modal>
     </div>
   );

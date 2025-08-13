@@ -117,3 +117,30 @@ export const getListOfChallenges = createAsyncThunk(
     }
   }
 );
+
+export const acceptChallenge = createAsyncThunk(
+  "book/acceptChallenge",
+  async (id, { rejectWithValue }) => {
+    console.log("which chlenege to accept:", id);
+    try {
+      const token = localStorage.getItem("JWT_TOKEN");
+      const response = await axios.post(
+        `http://localhost:8080/api/bookings/acceptChallenge/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("challenge response:", response);
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      const errorStatus = error.response?.status;
+      return rejectWithValue({
+        message: errorMessage,
+        status: errorStatus,
+      });
+    }
+  }
+);

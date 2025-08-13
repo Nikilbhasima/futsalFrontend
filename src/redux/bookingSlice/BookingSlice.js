@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  acceptChallenge,
   bookGround,
   bookingList,
   cancelFutsalBooking,
@@ -84,6 +85,19 @@ const bookingSlice = createSlice({
         action.loading = false;
         state.error =
           action.payload?.message || "Failed to get list of challenge data";
+      })
+      .addCase(acceptChallenge.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(acceptChallenge.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.bookings = action.payload;
+      })
+      .addCase(acceptChallenge.rejected, (state, action) => {
+        action.loading = false;
+        state.error = action.payload?.message || "Failed to accept challenge";
       });
   },
 });
