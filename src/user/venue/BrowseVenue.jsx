@@ -24,7 +24,12 @@ function BrowseVenue() {
   const getFutsalList = async () => {
     try {
       const data = await dispatch(futsalList());
-      setList(data.payload);
+      if (data.meta.requestStatus === "rejected") {
+        setList([]);
+      }
+      if (data.meta.requestStatus === "fulfilled") {
+        setList(data.payload);
+      }
     } catch (error) {
       console.log(error);
     }

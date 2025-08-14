@@ -48,7 +48,7 @@ function MatchDetail({ data, isUserLogin, getListOfChallengesData }) {
         setTimeout(async () => {
           await getListOfChallengesData();
           handleFailMessage2();
-        }, 2000);
+        }, 1000);
       }
       console.log("print challenge response:", response);
     } catch (error) {

@@ -4,7 +4,9 @@ import {
   bookGround,
   bookingList,
   cancelFutsalBooking,
+  cancelFutsalChallenge,
   getListOfChallenges,
+  getMyChallenge,
   userBookings,
 } from "./BookingThunks";
 
@@ -98,6 +100,32 @@ const bookingSlice = createSlice({
       .addCase(acceptChallenge.rejected, (state, action) => {
         action.loading = false;
         state.error = action.payload?.message || "Failed to accept challenge";
+      })
+      .addCase(getMyChallenge.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMyChallenge.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.bookings = action.payload;
+      })
+      .addCase(getMyChallenge.rejected, (state, action) => {
+        action.loading = false;
+        state.error = action.payload?.message || "Failed to get My Challenge";
+      })
+      .addCase(cancelFutsalChallenge.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(cancelFutsalChallenge.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.bookings = action.payload;
+      })
+      .addCase(cancelFutsalChallenge.rejected, (state, action) => {
+        action.loading = false;
+        state.error = action.payload?.message || "Failed to cancel Challenge";
       });
   },
 });

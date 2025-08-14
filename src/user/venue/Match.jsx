@@ -26,8 +26,12 @@ function Match() {
   const getListOfChallengesData = async () => {
     try {
       const response = await dispatch(getListOfChallenges());
-      console.log("====:", response);
-      setChallengesData(response.payload);
+      if (response.meta.requestStatus === "rejected") {
+        setChallengesData([]);
+      }
+      if (response.meta.requestStatus === "fulfilled") {
+        setChallengesData(response.payload);
+      }
     } catch (error) {
       console.log(error);
     }

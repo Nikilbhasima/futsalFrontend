@@ -37,6 +37,7 @@ export const bookGround = createAsyncThunk(
           },
         }
       );
+      return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
       const errorStatus = error.response?.status;
@@ -61,7 +62,6 @@ export const userBookings = createAsyncThunk(
           },
         }
       );
-      console.log("user bookings response:", response);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
@@ -87,6 +87,7 @@ export const cancelFutsalBooking = createAsyncThunk(
           },
         }
       );
+      return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
       const errorStatus = error.response?.status;
@@ -105,7 +106,6 @@ export const getListOfChallenges = createAsyncThunk(
       const response = await axios.get(
         "http://localhost:8080/api/bookings/getListOfFutsalChallenge"
       );
-      console.log("challenge list:", response.data);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
@@ -121,7 +121,6 @@ export const getListOfChallenges = createAsyncThunk(
 export const acceptChallenge = createAsyncThunk(
   "book/acceptChallenge",
   async (id, { rejectWithValue }) => {
-    console.log("which chlenege to accept:", id);
     try {
       const token = localStorage.getItem("JWT_TOKEN");
       const response = await axios.post(
@@ -133,7 +132,58 @@ export const acceptChallenge = createAsyncThunk(
           },
         }
       );
-      console.log("challenge response:", response);
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      const errorStatus = error.response?.status;
+      return rejectWithValue({
+        message: errorMessage,
+        status: errorStatus,
+      });
+    }
+  }
+);
+
+export const getMyChallenge = createAsyncThunk(
+  "book/getMyChallenge",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("JWT_TOKEN");
+      const response = await axios.get(
+        "http://localhost:8080/api/bookings/getMyChallenge",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      const errorStatus = error.response?.status;
+      return rejectWithValue({
+        message: errorMessage,
+        status: errorStatus,
+      });
+    }
+  }
+);
+
+export const cancelFutsalChallenge = createAsyncThunk(
+  "book/cancelFutsalChallenge",
+  async (id, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("JWT_TOKEN");
+      const response = await axios.delete(
+        `http://localhost:8080/api/bookings/cancelFutsalChallenge/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("challenge cancel response:", response);
+      return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
       const errorStatus = error.response?.status;
