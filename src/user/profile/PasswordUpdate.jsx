@@ -9,10 +9,14 @@ import {
   InputLabel,
   InputAdornment,
   FormControl,
+  Modal,
 } from "@mui/material";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import { changePassword } from "../../redux/accountManagement/AccountManagementThunks";
+import PasswordFieldComponent from "../../ReusedComponent/PasswordFieldComponent";
 
 const inputStyle = {
   color: "white",
@@ -20,19 +24,6 @@ const inputStyle = {
   "&:hover:not(.Mui-disabled):before": { borderBottomColor: "#27D483" },
   "&:after": { borderBottomColor: "#27D483" },
 };
-
-// Reusable form control styles
-const formControlStyle = {
-  "& label": { color: "white" },
-  "& label.Mui-focused": { color: "white" },
-  "& .MuiInputBase-input": { color: "white" },
-  "& .MuiInput-underline:before": { borderBottom: "1px solid white" },
-  "& .MuiInput-underline:hover:before": { borderBottom: "1px solid #27D483" },
-  "& .MuiInput-underline:after": { borderBottom: "2px solid #27D483" },
-};
-
-// Icon color
-const iconColor = { color: "#27D483" };
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -44,50 +35,37 @@ const style = {
 };
 const validationSchema = Yup.object({
   currentPassword: Yup.string()
-    .min(8, "Password must be at least 8 characters")
+    .min(6, "Password must be at least 6 characters")
     .required("Current password is required"),
   newPassword: Yup.string()
-    .min(8, "New password must be at least 8 characters")
+    .min(6, "New password must be at least 6 characters")
     .required("New password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
     .required("Confirm password is required"),
 });
-const PasswordInput = ({
-  label,
-  value,
-  onChange,
-  name,
-  visible,
-  toggleVisible,
-}) => (
-  <FormControl variant="standard" fullWidth sx={formControlStyle}>
-    <InputLabel>{label}</InputLabel>
-    <Input
-      type={visible ? "text" : "password"}
-      value={value}
-      onChange={onChange}
-      name={name}
-      endAdornment={
-        <InputAdornment position="end">
-          <IconButton onClick={toggleVisible} edge="end">
-            {visible ? (
-              <VisibilityOff sx={iconColor} />
-            ) : (
-              <Visibility sx={iconColor} />
-            )}
-          </IconButton>
-        </InputAdornment>
-      }
-    />
-  </FormControl>
-);
+
+const style2 = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 430,
+  bgcolor: "#333333",
+  border: "2px solid #000",
+  p: "24px",
+  borderRadius: "10px",
+};
 function PasswordUpdate({ open, handleClose }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
   const [showPassword3, setShowPassword3] = useState(false);
+  const dispatch = useDispatch();
+  const [displayMessage, setDisplayMessage] = useState(false);
+  const handleOpen = () => setDisplayMessage(true);
+  const handleCloses = () => setDisplayMessage(false);
   return (
-    <Fragment>
+    <>
       <Dialog
         open={open}
         slots={{
@@ -112,8 +90,21 @@ function PasswordUpdate({ open, handleClose }) {
               confirmPassword: "",
             }}
             validationSchema={validationSchema}
-            onSubmit={(values) => {
+            onSubmit={async (values, { resetForm }) => {
               console.log("user registration data", values);
+              try {
+                const response = await dispatch(changePassword(values));
+                console.log("change response::", response);
+                if (response.meta.requestStatus === "fulfilled") {
+                  resetForm();
+                  handleClose();
+                  setTimeout(() => {
+                    handleOpen();
+                  }, 500);
+                }
+              } catch (error) {
+                console.log(error);
+              }
             }}
           >
             {({ values, handleChange }) => {
@@ -127,7 +118,7 @@ function PasswordUpdate({ open, handleClose }) {
                       width: "100%",
                     }}
                   >
-                    <PasswordInput
+                    <PasswordFieldComponent
                       label="Current Password"
                       value={values.currentPassword}
                       onChange={handleChange}
@@ -140,7 +131,8 @@ function PasswordUpdate({ open, handleClose }) {
                       component="div"
                       className="text-red-500 text-sm "
                     />
-                    <PasswordInput
+
+                    <PasswordFieldComponent
                       label="New Password "
                       value={values.newPassword}
                       onChange={handleChange}
@@ -153,7 +145,8 @@ function PasswordUpdate({ open, handleClose }) {
                       component="div"
                       className="text-red-500 text-sm "
                     />
-                    <PasswordInput
+
+                    <PasswordFieldComponent
                       label="Confirm Password"
                       value={values.confirmPassword}
                       onChange={handleChange}
@@ -179,7 +172,12 @@ function PasswordUpdate({ open, handleClose }) {
           </Formik>
         </Box>
       </Dialog>
-    </Fragment>
+      <Modal open={displayMessage} onClose={handleCloses}>
+        <Box sx={{ ...style2, color: "#27D483" }}>
+          Password Change Successfull!
+        </Box>
+      </Modal>
+    </>
   );
 }
 

@@ -30,7 +30,6 @@ export const getUserDetail = createAsyncThunk(
 export const editUserDetail = createAsyncThunk(
   "account/editUserDetail",
   async (editData, { rejectWithValue }) => {
-    console.log("why edit data null:", editData);
     try {
       const token = localStorage.getItem("JWT_TOKEN");
       const response = await axios.post(
@@ -43,6 +42,37 @@ export const editUserDetail = createAsyncThunk(
         }
       );
       console.log("edit response:", response.data);
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      const errorStatus = error.response?.status;
+      return rejectWithValue({
+        message: errorMessage,
+        status: errorStatus,
+      });
+    }
+  }
+);
+
+export const changePassword = createAsyncThunk(
+  "account/changePassword",
+  async (value, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("JWT_TOKEN");
+      const payload = {
+        currentPassword: value.currentPassword,
+        newPassword: value.newPassword,
+      };
+      const response = await axios.post(
+        "http://localhost:8080/api/user/changePassword",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("change password response", response.data);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;

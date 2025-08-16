@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { editUserDetail, getUserDetail } from "./AccountManagementThunks";
+import {
+  changePassword,
+  editUserDetail,
+  getUserDetail,
+} from "./AccountManagementThunks";
 
 const initialState = {
   userDetail: null,
@@ -36,8 +40,21 @@ const accountManagementSlice = createSlice({
         state.userDetail = action.payload;
       })
       .addCase(editUserDetail.rejected, (state, action) => {
+        state.loadingUserData = false;
+        state.error = action.payload?.message || "Failed to edit user detail";
+      })
+      .addCase(changePassword.pending, (state) => {
         state.loadingUserData = true;
         state.error = null;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.loadingUserData = false;
+        state.error = null;
+        state.userDetail = action.payload;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.loadingUserData = false;
+        state.error = action.payload?.message || "Failed to fetch booking list";
       });
   },
 });
