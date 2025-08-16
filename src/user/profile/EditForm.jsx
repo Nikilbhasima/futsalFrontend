@@ -9,6 +9,7 @@ import {
   InputLabel,
   InputAdornment,
   FormControl,
+  Modal,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { HiOutlineUser } from "react-icons/hi2";
@@ -17,6 +18,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { VscLocation } from "react-icons/vsc";
 import { uploadToCloudnary } from "../../uitls/uploadToCoudinary";
+import { useDispatch } from "react-redux";
+import { editUserDetail } from "../../redux/accountManagement/AccountManagementThunks";
 
 const inputStyle = {
   color: "white",
@@ -48,7 +51,10 @@ const IconTextField = ({ id, label, name, value, onChange, icon }) => (
     onChange={onChange}
     variant="standard"
     fullWidth
-    InputLabelProps={{ style: { color: "white" } }}
+    InputLabelProps={{
+      style: { color: "white" },
+      shrink: value !== undefined && value !== null && value !== "",
+    }}
     InputProps={{
       endAdornment: <InputAdornment position="end">{icon}</InputAdornment>,
       sx: inputStyle,
@@ -88,12 +94,25 @@ const style = {
   padding: "20px 28px",
   borderRadius: "10px",
 };
-
-function EditForm({ open, handleClose }) {
+const style2 = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 430,
+  bgcolor: "#333333",
+  border: "2px solid #000",
+  p: "24px",
+  borderRadius: "10px",
+};
+function EditForm({ open, handleClose, userDetail, setUserInformation }) {
   const [selectedImage, setSelectedImage] = useState();
-
+  const dispatch = useDispatch();
+  const [displayMessage, setDisplayMessage] = useState(false);
+  const handleOpen = () => setDisplayMessage(true);
+  const handleCloses = () => setDisplayMessage(false);
   return (
-    <React.Fragment>
+    <>
       <Dialog
         open={open}
         slots={{
@@ -108,16 +127,30 @@ function EditForm({ open, handleClose }) {
       >
         <Box sx={style}>
           <Formik
+            enableReinitialize
             initialValues={{
-              username: "",
-              phoneNumber: "",
-              email: "",
-              address: "",
-              image: null,
+              username: userDetail?.username,
+              phoneNumber: userDetail?.phoneNumber,
+              email: userDetail?.email,
+              address: userDetail?.address,
+              image: userDetail?.image ? userDetail.image : null,
             }}
             validationSchema={validationSchema}
-            onSubmit={(values) => {
-              console.log("user registration data", values);
+            onSubmit={async (values) => {
+              console.log("user edit data", values);
+              try {
+                const response = await dispatch(editUserDetail(values));
+                if (response.payload) {
+                  setUserInformation({ ...userDetail, ...values });
+                  handleClose();
+                  handleOpen();
+                  setTimeout(() => {
+                    handleCloses();
+                  }, 500);
+                }
+              } catch (error) {
+                console.log(error);
+              }
             }}
           >
             {({ values, handleChange, setFieldValue }) => {
@@ -125,7 +158,7 @@ function EditForm({ open, handleClose }) {
               const handleImageChange = async (event) => {
                 const file = event.target.files[0];
                 if (file) {
-                  const uploadedFile = uploadToCloudnary(file);
+                  const uploadedFile = await uploadToCloudnary(file);
                   setSelectedImage(file);
                   setFieldValue("image", uploadedFile);
                 }
@@ -224,7 +257,12 @@ function EditForm({ open, handleClose }) {
           </Formik>
         </Box>
       </Dialog>
-    </React.Fragment>
+      <Modal open={displayMessage} onClose={handleCloses}>
+        <Box sx={{ ...style2, color: "#27D483" }}>
+          You Detail has been successfully updated!
+        </Box>
+      </Modal>
+    </>
   );
 }
 

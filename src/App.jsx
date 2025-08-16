@@ -5,6 +5,7 @@ import LoadingPacmandDesign from "./loader/LoadingPacmandDesign";
 import { useDispatch, useSelector } from "react-redux";
 import { extractToken } from "./uitls/ExtractRoleFromJwt";
 import { setJwt, setSuccess } from "./redux/authSlice/AuthSlice";
+import { getUserDetail } from "./redux/accountManagement/AccountManagementThunks";
 
 function App() {
   const { loading } = useSelector((state) => state.auth);
@@ -20,6 +21,7 @@ function App() {
       setRole(extractedData?.roles || []);
       dispatch(setSuccess());
       dispatch(setJwt());
+      dispatch(getUserDetail());
     } else {
       setRole([]);
     }

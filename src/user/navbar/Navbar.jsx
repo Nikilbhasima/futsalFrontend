@@ -20,7 +20,7 @@ function Navbar() {
   const dispatch = useDispatch();
 
   const { success, jwt } = useSelector((state) => state.auth);
-  console.log(jwt);
+  const { userDetail, loadingUserData } = useSelector((state) => state.account);
 
   useEffect(() => {
     if (screenSize < 998) {
@@ -94,7 +94,12 @@ function Navbar() {
                   ) : (
                     <>
                       <div
-                        className="bg-cover bg-no-repeat bg-center rounded-[50%] h-[3rem] w-[3rem] bg-[url(/images/messi.png)] "
+                        className={`bg-cover bg-no-repeat bg-center rounded-[50%] h-[3rem] w-[3rem] `}
+                        style={{
+                          backgroundImage: `url(${
+                            userDetail?.image || "/images/messi.png"
+                          })`,
+                        }}
                         onClick={handleFilter}
                       ></div>
                       <ul

@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TbEdit } from "react-icons/tb";
 import { FiEdit } from "react-icons/fi";
 import EditForm from "./EditForm";
 import { MdLockOutline } from "react-icons/md";
 import PasswordUpdate from "./PasswordUpdate";
+import { useDispatch } from "react-redux";
+import { getUserDetail } from "../../redux/accountManagement/AccountManagementThunks";
 
 function Profile() {
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
+  const [userInformation, setUserInformation] = useState({});
+  const dispatch = useDispatch();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -20,6 +24,19 @@ function Profile() {
   };
   const handleClose2 = () => {
     setOpen2(false);
+  };
+  useEffect(() => {
+    handleGetUserDetail();
+  }, []);
+
+  const handleGetUserDetail = async () => {
+    try {
+      const response = await dispatch(getUserDetail());
+      setUserInformation(response.payload);
+      console.log("i have got response:", response.payload);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <section className="pt-[40px] md:px-[20px] max-w-[1320px] m-auto ">
@@ -43,7 +60,11 @@ function Profile() {
       <div className="grid lg:grid-cols-[1fr_2fr] gap-[20px] lg:gap-[20px]  mt-4">
         <div className="flex bg-[#333333] relative rounded-[24px] min-h-[10rem] py-[1rem]">
           <img
-            src="./images/messi.png"
+            src={
+              userInformation.image
+                ? userInformation.image
+                : "./images/messi.png"
+            }
             className=" rounded-[10px] md:rounded-[10px] h-[10rem] w-[70%] md:h-[70%] md:w-[70%] m-auto object-cover object-top transition  hover:scale-105 ease-in-out duration-300"
             alt=""
           />
@@ -52,19 +73,23 @@ function Profile() {
           <div>
             <div className="flex justify-between border-b-[1px] border-b-[#27D483] p-[12px] text-[16px]">
               <span className="font-semibold">Username:</span>
-              <span className="font-light">Nikil Bhasima</span>
+              <span className="font-light">{userInformation?.username}</span>
             </div>
             <div className="flex justify-between border-b-[1px] border-b-[#27D483] p-[12px] text-[16px]">
               <span className="font-semibold">Phone Number:</span>
-              <span className="font-light">9808029931</span>
+              <span className="font-light">{userInformation?.phoneNumber}</span>
             </div>
             <div className="flex justify-between border-b-[1px] border-b-[#27D483] p-[12px] text-[16px]">
               <span className="font-semibold">Email:</span>
-              <span className="font-light">nikilbhasima@gmail.com</span>
+              <span className="font-light">{userInformation?.email}</span>
             </div>
             <div className="flex justify-between border-b-[1px] border-b-[#27D483] p-[12px] text-[16px]">
               <span className="font-semibold">Location:</span>
-              <span className="font-light">Madhyapur, Thimi, Pobu</span>
+              <span className="font-light">
+                {userInformation?.address
+                  ? userInformation?.address
+                  : "Please Fill your address"}
+              </span>
             </div>
           </div>
 
@@ -103,7 +128,12 @@ function Profile() {
           </button>
         </div>
       </div>
-      <EditForm open={open} handleClose={handleClose} />
+      <EditForm
+        open={open}
+        handleClose={handleClose}
+        userDetail={userInformation}
+        setUserInformation={setUserInformation}
+      />
       <PasswordUpdate open={open2} handleClose={handleClose2} />
     </section>
   );
