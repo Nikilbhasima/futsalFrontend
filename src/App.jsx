@@ -8,10 +8,13 @@ import { setJwt, setSuccess } from "./redux/authSlice/AuthSlice";
 import { getUserDetail } from "./redux/accountManagement/AccountManagementThunks";
 
 function App() {
-  const { loading } = useSelector((state) => state.auth);
   const [role, setRole] = useState([]);
   const dispatch = useDispatch();
   const { jwt } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.auth);
+  const { resetLoading } = useSelector((state) => state.account);
+  console.log("status of reset loading:", resetLoading);
+  console.log("statu of login :", loading);
 
   const jwtFromLocal = localStorage.getItem("JWT_TOKEN");
 
@@ -32,7 +35,7 @@ function App() {
       {!role || (role.length === 0 && <HomeNavbar />)}
       {Array.isArray(role) && role.includes("ROLE_USER") && <HomeNavbar />}
       {Array.isArray(role) && role.includes("ROLE_owner") && <HomeNavbar />}
-      <LoadingPacmandDesign onLoader={loading} />
+      <LoadingPacmandDesign onLoader={loading} resetLoading={resetLoading} />
     </div>
   );
 }
