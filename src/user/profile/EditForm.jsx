@@ -171,6 +171,8 @@ function EditForm({ open, handleClose, userDetail, setUserInformation }) {
                       src={
                         selectedImage
                           ? URL.createObjectURL(selectedImage)
+                          : values?.image
+                          ? values?.image
                           : "./images/profile.png"
                       }
                       alt="profile picture"

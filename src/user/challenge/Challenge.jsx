@@ -140,10 +140,15 @@ function Challenge() {
               >
                 {/* this is user information */}
                 <div className="flex items-center ">
-                  {false ? (
+                  {data?.challengerDto?.image == null ? (
                     <IoPersonCircleOutline className="text-[5rem]" />
                   ) : (
-                    <div className="bg-[url(/images/messi.png)] w-[6rem] h-[6rem] bg-cover bg-no-repeat rounded-[50%]"></div>
+                    <div
+                      className=" w-[6rem] h-[6rem] bg-cover bg-no-repeat rounded-[50%]"
+                      style={{
+                        backgroundImage: `url(${data?.challengerDto?.image})`,
+                      }}
+                    ></div>
                   )}
                   <div className="ml-[12px] ">
                     <p className="font-normal text-[20px]">

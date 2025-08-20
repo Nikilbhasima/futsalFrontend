@@ -1,8 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { useSelector } from "react-redux";
-
-const token = localStorage.getItem("JWT_TOKEN");
 
 export const bookingList = createAsyncThunk(
   "book/bookingList",
@@ -182,7 +179,6 @@ export const cancelFutsalChallenge = createAsyncThunk(
           },
         }
       );
-      console.log("challenge cancel response:", response);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;

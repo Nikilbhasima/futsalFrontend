@@ -6,7 +6,6 @@ import { IoLocation } from "react-icons/io5";
 import { FaUsers } from "react-icons/fa";
 import { FaRupeeSign } from "react-icons/fa6";
 import { GiSoccerKick } from "react-icons/gi";
-import { IoIosInformationCircleOutline } from "react-icons/io";
 import { removeSeconds } from "../../uitls/TimeSlotGenerator";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -28,6 +27,7 @@ const style = {
 };
 
 function MatchDetail({ data, isUserLogin, getListOfChallengesData }) {
+  console.log("match detail:", data);
   const [successMessage, setSuccessMessage] = useState(false);
   const handleSuccessMessage = () => setSuccessMessage(true);
   const handleFailMessage = () => setSuccessMessage(false);
@@ -59,10 +59,15 @@ function MatchDetail({ data, isUserLogin, getListOfChallengesData }) {
     <div className=" mt-[32px] bg-[#333333] p-[1rem] rounded-[10px] flex flex-col gap-4">
       {/* this is user information */}
       <div className="flex items-center ">
-        {false ? (
+        {data?.challengerDto?.image == null ? (
           <IoPersonCircleOutline className="text-[5rem]" />
         ) : (
-          <div className="bg-[url(/images/messi.png)] w-[4rem] md:w-[6rem] h-[4rem] md:h-[6rem] bg-cover bg-no-repeat rounded-[50%]"></div>
+          <div
+            className="w-[4rem] md:w-[6rem] h-[4rem] md:h-[6rem] bg-cover bg-no-repeat rounded-[50%]"
+            style={{
+              backgroundImage: `url(${data?.challengerDto?.image})`,
+            }}
+          ></div>
         )}
         <div className="ml-[12px] ">
           <p className="font-normal text-[20px]">

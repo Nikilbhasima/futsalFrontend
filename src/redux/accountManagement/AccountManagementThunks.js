@@ -14,7 +14,6 @@ export const getUserDetail = createAsyncThunk(
           },
         }
       );
-      console.log("get user detail:", response.data);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
@@ -41,7 +40,7 @@ export const editUserDetail = createAsyncThunk(
           },
         }
       );
-      console.log("edit response:", response.data);
+
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
@@ -72,7 +71,6 @@ export const changePassword = createAsyncThunk(
           },
         }
       );
-      console.log("change password response", response.data);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;

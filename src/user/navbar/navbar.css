@@ -84,6 +84,7 @@ p {
 
 .active {
   color: #27d483;
+  width: 0;
 }
 .active::after {
   content: "";

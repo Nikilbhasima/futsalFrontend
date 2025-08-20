@@ -10,7 +10,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/authSlice/AuthSlice";
-
+import { IoPersonCircleOutline } from "react-icons/io5";
 function Navbar() {
   const [screenSize, setScreenSize] = useState(window.innerWidth);
   const [changeWidths, setChangeWidths] = useState(true);
@@ -20,7 +20,7 @@ function Navbar() {
   const dispatch = useDispatch();
 
   const { success, jwt } = useSelector((state) => state.auth);
-  const { userDetail, loadingUserData } = useSelector((state) => state.account);
+  const { userDetail } = useSelector((state) => state.account);
 
   useEffect(() => {
     if (screenSize < 998) {
@@ -93,15 +93,18 @@ function Navbar() {
                     <PrimaryButton buttonName="Logout" />
                   ) : (
                     <>
-                      <div
-                        className={`bg-cover bg-no-repeat bg-center rounded-[50%] h-[3rem] w-[3rem] `}
-                        style={{
-                          backgroundImage: `url(${
-                            userDetail?.image || "/images/messi.png"
-                          })`,
-                        }}
-                        onClick={handleFilter}
-                      ></div>
+                      {userDetail?.image ? (
+                        <img
+                          key={userDetail.image}
+                          src={userDetail.image}
+                          alt="profile"
+                          className="rounded-[50%] h-[3rem] w-[3rem] object-cover"
+                          onClick={handleFilter}
+                        />
+                      ) : (
+                        <IoPersonCircleOutline className="text-[5rem]" />
+                      )}
+
                       <ul
                         role="menu"
                         className={` w-[300%] bg-white absolute -right-2 w-[200%] rounded-[10px]  shadow-lg overflow-hidden transition-all duration-300 ease-in-out origin-top z-10 ${

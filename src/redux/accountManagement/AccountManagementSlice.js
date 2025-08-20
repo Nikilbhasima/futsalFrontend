@@ -37,7 +37,7 @@ const accountManagementSlice = createSlice({
       .addCase(editUserDetail.fulfilled, (state, action) => {
         state.loadingUserData = false;
         state.error = null;
-        state.userDetail = action.payload;
+        state.userDetail = { ...state.userDetail, ...action.payload };
       })
       .addCase(editUserDetail.rejected, (state, action) => {
         state.loadingUserData = false;
