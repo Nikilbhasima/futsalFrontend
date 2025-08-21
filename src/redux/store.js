@@ -4,6 +4,8 @@ import futsalReducer from "./futsalSlice/futsalSlice";
 import bookReducer from "./bookingSlice/bookingSlice";
 import accountReducer from "./accountManagement/AccountManagementSlice";
 import passwordReducer from "./passwordReset/PasswordResetSlice";
+import createFutsalReducer from "./createFutsal/CreateFutsalSlice";
+import groundReducer from "./createFutsal/CreateFutsalSlice";
 export default configureStore({
   reducer: {
     auth: authReducer,
@@ -11,5 +13,7 @@ export default configureStore({
     book: bookReducer,
     account: accountReducer,
     reset: passwordReducer,
+    createFutsal: createFutsalReducer,
+    ground: groundReducer,
   },
 });

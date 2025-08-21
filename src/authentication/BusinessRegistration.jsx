@@ -82,7 +82,7 @@ function BusinessRegistration() {
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
               <TextFieldComponent
                 id="username"
-                label="Futsal Name"
+                label="Owner Name"
                 name="username"
                 value={values.username}
                 onChange={handleChange}

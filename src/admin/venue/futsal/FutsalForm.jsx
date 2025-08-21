@@ -1,9 +1,10 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import TextFieldComponent from "../../ReusedComponent/TextFieldComponent";
+import TextFieldComponent from "../../../ReusedComponent/TextFieldComponent";
 import { useState } from "react";
-import { uploadToCloudnary } from "../../uitls/uploadToCoudinary";
+import { uploadToCloudnary } from "../../../uitls/uploadToCoudinary";
 import { useDispatch } from "react-redux";
+import { createFutsal } from "../../../redux/createFutsal/CreateFutsalThunks";
 
 const validationSchema = Yup.object().shape({
   futsalName: Yup.string()
@@ -14,7 +15,7 @@ const validationSchema = Yup.object().shape({
   futsalClosingHours: Yup.string().required("Futsal closing time required"),
 });
 
-function FutsalForm() {
+function FutsalForm({ setFutsalDetail, futsalData }) {
   const [selectImage, setSelectImage] = useState(null);
   const dispatch = useDispatch();
   const handleChangeImage = async (e) => {
@@ -28,17 +29,23 @@ function FutsalForm() {
 
   const formik = useFormik({
     initialValues: {
-      futsalName: "",
-      futsalAddress: "",
-      description: "",
-      futsalOpeningHours: "",
-      futsalClosingHours: "",
-      futsalLogo: "",
+      futsalName: futsalData?.futsalName,
+      futsalAddress: futsalData?.futsalAddress,
+      description: futsalData?.description,
+      futsalOpeningHours: futsalData?.futsalOpeningHours,
+      futsalClosingHours: futsalData?.futsalClosingHours,
+      futsalLogo: futsalData?.futsalLogo,
     },
     validationSchema,
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: async (values, { resetForm }) => {
       console.log("form data:", values);
-      resetForm();
+      const response = await dispatch(createFutsal(values));
+      console.log("is futsal created:", response);
+      if (response?.meta?.requestStatus === "fulfilled") {
+        setFutsalDetail(response.payload);
+        resetForm();
+      }
+
       setSelectImage(null);
     },
   });
@@ -143,6 +150,8 @@ function FutsalForm() {
             src={
               selectImage
                 ? URL.createObjectURL(selectImage)
+                : futsalData?.futsalLogo
+                ? futsalData?.futsalLogo
                 : "/images/uploadImage.png"
             }
             alt="logo image"

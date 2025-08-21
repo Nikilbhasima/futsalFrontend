@@ -2,12 +2,12 @@ import React from "react";
 import AdminNavbar from "./navbar/AdminNavbar";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./dashboard/Dashboard";
-import Futsal from "./futsal/Futsal";
-import Ground from "./ground/Ground";
 import Booking from "./booking/Booking";
 import Setting from "./setting/Setting";
 import Help from "./help/Help";
 import Header from "./navbar/Header";
+import Venue from "./venue/Venue";
+import Match from "./match/Match";
 
 function AdminPage() {
   return (
@@ -20,11 +20,11 @@ function AdminPage() {
         <div className=" h-[100%] p-[32px]">
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/futsal" element={<Futsal />} />
-            <Route path="/ground" element={<Ground />} />
             <Route path="/booking" element={<Booking />} />
             <Route path="/setting" element={<Setting />} />
+            <Route path="/match" element={<Match />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/venue" element={<Venue />} />
           </Routes>
         </div>
       </div>

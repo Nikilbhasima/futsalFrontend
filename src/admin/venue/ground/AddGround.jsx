@@ -1,14 +1,17 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import TextFieldComponent from "../../ReusedComponent/TextFieldComponent";
+import TextFieldComponent from "../../../ReusedComponent/TextFieldComponent";
 import { useState } from "react";
-import { uploadToCloudnary } from "../../uitls/uploadToCoudinary";
+import { uploadToCloudnary } from "../../../uitls/uploadToCoudinary";
+import { useDispatch } from "react-redux";
+import { addGround } from "../../../redux/ground/GroundThunks";
 const validationSchema = Yup.object().shape({
   groundType: Yup.string().required("Futsal type required"),
   pricePerHour: Yup.string().required("Price per hour required"),
 });
 function AddGround() {
   const [image, setImage] = useState();
+  const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
       groundType: "",
@@ -16,9 +19,11 @@ function AddGround() {
       image: "",
     },
     validationSchema,
-    onSubmit: (values, { resetForm }) => {
-      console.log("futsal add:", values);
-      resetForm();
+    onSubmit: async (values, { resetForm }) => {
+      const response = await dispatch(addGround(values));
+      if (response.meta.requestStatus === "fulfilled") {
+        resetForm();
+      }
     },
   });
 
@@ -36,7 +41,7 @@ function AddGround() {
         <h2>Enter your futsal details and image</h2>
         <form
           onSubmit={formik.handleSubmit}
-          className="flex flex-col gap-[1rem]"
+          className="flex flex-col gap-[2rem] mt-[1rem]"
         >
           <div className="flex gap-[32px]">
             <TextFieldComponent

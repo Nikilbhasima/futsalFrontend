@@ -102,7 +102,10 @@ function Navbar() {
                           onClick={handleFilter}
                         />
                       ) : (
-                        <IoPersonCircleOutline className="text-[5rem]" />
+                        <IoPersonCircleOutline
+                          className="text-[5rem]"
+                          onClick={handleFilter}
+                        />
                       )}
 
                       <ul

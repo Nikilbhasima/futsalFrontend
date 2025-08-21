@@ -1,10 +1,12 @@
 import React from "react";
 import GroundCard from "./GroundCard";
 
-function GroundDetail() {
+function GroundDetail({ groundList }) {
   return (
     <div className="mt-[28px] flex gap-[1rem]">
-      <GroundCard /> <GroundCard />
+      {groundList?.map((data, index) => {
+        return <GroundCard key={index} data={data} />;
+      })}
     </div>
   );
 }
