@@ -4,7 +4,11 @@ import TextFieldComponent from "../../../ReusedComponent/TextFieldComponent";
 import { useState } from "react";
 import { uploadToCloudnary } from "../../../uitls/uploadToCoudinary";
 import { useDispatch } from "react-redux";
-import { createFutsal } from "../../../redux/createFutsal/CreateFutsalThunks";
+import {
+  createFutsal,
+  editFutsalDetail,
+} from "../../../redux/createFutsal/CreateFutsalThunks";
+import { Box, Modal } from "@mui/material";
 
 const validationSchema = Yup.object().shape({
   futsalName: Yup.string()
@@ -14,10 +18,27 @@ const validationSchema = Yup.object().shape({
   futsalOpeningHours: Yup.string().required("Futsal Starting time required"),
   futsalClosingHours: Yup.string().required("Futsal closing time required"),
 });
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 430,
+  bgcolor: "#333333",
+  border: "2px solid #000",
+  p: "24px",
+  borderRadius: "10px",
+  color: "#27D483",
+};
 
 function FutsalForm({ setFutsalDetail, futsalData }) {
+  console.log("value of futsal:", futsalData);
   const [selectImage, setSelectImage] = useState(null);
   const dispatch = useDispatch();
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+  const [backendCallMessage, setBackendCallMessage] = useState("");
   const handleChangeImage = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -29,21 +50,30 @@ function FutsalForm({ setFutsalDetail, futsalData }) {
 
   const formik = useFormik({
     initialValues: {
-      futsalName: futsalData?.futsalName,
-      futsalAddress: futsalData?.futsalAddress,
-      description: futsalData?.description,
-      futsalOpeningHours: futsalData?.futsalOpeningHours,
-      futsalClosingHours: futsalData?.futsalClosingHours,
-      futsalLogo: futsalData?.futsalLogo,
+      futsalName: futsalData?.futsalName || "",
+      futsalAddress: futsalData?.futsalAddress || "",
+      description: futsalData?.description || "",
+      futsalOpeningHours: futsalData?.futsalOpeningHours || "",
+      futsalClosingHours: futsalData?.futsalClosingHours || "",
+      futsalLogo: futsalData?.futsalLogo || null,
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      console.log("form data:", values);
-      const response = await dispatch(createFutsal(values));
+      let response;
+      if (!futsalData || Object.keys(futsalData).length === 0) {
+        response = await dispatch(createFutsal(values));
+      } else {
+        response = await dispatch(editFutsalDetail(values));
+      }
+
       console.log("is futsal created:", response);
       if (response?.meta?.requestStatus === "fulfilled") {
         setFutsalDetail(response.payload);
-        resetForm();
+        setBackendCallMessage("Futsal added successfully!");
+        handleOpenModal();
+      } else {
+        setBackendCallMessage("Fail to add futsal!");
+        handleOpenModal();
       }
 
       setSelectImage(null);
@@ -169,6 +199,9 @@ function FutsalForm({ setFutsalDetail, futsalData }) {
           Click on Above Image to upload or change logo
         </label>
       </div>
+      <Modal open={openModal} onClose={handleCloseModal}>
+        <Box sx={style}>{backendCallMessage}</Box>
+      </Modal>
     </div>
   );
 }

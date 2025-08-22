@@ -1,13 +1,16 @@
 import { FaRegEdit } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { setGroundDetail } from "../../../redux/ground/GroundSlice";
 
-function GroundCard({ data }) {
+function GroundCard({ data, setAddGround }) {
+  const dispatch = useDispatch();
   return (
     <div className="bg-tertary rounded-[10px] overflow-hidden max-w-[400px] w-[350px] ">
       <div>
         <img
-          src="/images/messi.png"
+          src={data?.image || null}
           alt="ground image"
-          className="max-h-[200px] w-[100%] object-cover object-center"
+          className="max-h-[200px] h-[200px] w-[100%] object-cover object-center"
         />
       </div>
       <div className="py-[10px] px-[10px] mt-[10px]">
@@ -32,7 +35,13 @@ function GroundCard({ data }) {
         </div>
       </div>
       <div className="px-[10px] pb-[20px]">
-        <button className="bg-primary py-[12px] px-[32px] rounded-[10px] hover:-translate-y-[3px] transition-all duration-300 ease-in flex gap-[10px] justify-start items-center">
+        <button
+          className="bg-primary py-[12px] px-[32px] rounded-[10px] hover:-translate-y-[3px] transition-all duration-300 ease-in flex gap-[10px] justify-start items-center"
+          onClick={() => {
+            setAddGround((pre) => !pre);
+            dispatch(setGroundDetail(data));
+          }}
+        >
           Edit <FaRegEdit className="text-[20px]" />
         </button>
       </div>

@@ -1,28 +1,70 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import TextFieldComponent from "../../../ReusedComponent/TextFieldComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { uploadToCloudnary } from "../../../uitls/uploadToCoudinary";
-import { useDispatch } from "react-redux";
-import { addGround } from "../../../redux/ground/GroundThunks";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addGround,
+  editGroundDetail,
+} from "../../../redux/ground/GroundThunks";
+import { Box, Modal } from "@mui/material";
+import { clearGroundDetail } from "../../../redux/ground/GroundSlice";
 const validationSchema = Yup.object().shape({
   groundType: Yup.string().required("Futsal type required"),
   pricePerHour: Yup.string().required("Price per hour required"),
 });
-function AddGround() {
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 430,
+  bgcolor: "#333333",
+  border: "2px solid #000",
+  p: "24px",
+  borderRadius: "10px",
+  color: "#27D483",
+};
+function AddGround({ setGroundList }) {
   const [image, setImage] = useState();
   const dispatch = useDispatch();
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+  const [backendCallMessage, setBackendCallMessage] = useState("");
+  const { groundDetail } = useSelector((state) => state.ground);
   const formik = useFormik({
     initialValues: {
-      groundType: "",
-      pricePerHour: "",
-      image: "",
+      id: groundDetail?.id || null,
+      groundType: groundDetail?.groundType || "",
+      pricePerHour: groundDetail?.pricePerHour || "",
+      image: groundDetail?.image || "",
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      const response = await dispatch(addGround(values));
+      console.log("ground values:", values);
+      let response;
+      if (!groundDetail) {
+        console.log("add");
+        response = await dispatch(addGround(values));
+      } else {
+        console.log("edit");
+        response = await dispatch(editGroundDetail(values));
+      }
       if (response.meta.requestStatus === "fulfilled") {
+        setGroundList((pre) =>
+          pre.filter((data) => data?.id != groundDetail?.id)
+        );
+        setGroundList((pre) => [...pre, response.payload]);
+        setImage(null);
         resetForm();
+        setBackendCallMessage("Ground Successfully added!");
+        handleOpenModal();
+        dispatch(clearGroundDetail());
+      } else {
+        setBackendCallMessage("Fail to add ground");
+        handleOpenModal();
       }
     },
   });
@@ -35,6 +77,7 @@ function AddGround() {
       formik.setFieldValue("image", uploadedFile);
     }
   };
+  // dispatch(clearGroundDetail());
   return (
     <div className="mt-[28px]  max-w-[60%]">
       <div className="bg-tertary p-[24px] rounded-[10px]">
@@ -88,15 +131,26 @@ function AddGround() {
               onChange={handleImageUpload}
             />
           </div>
-
-          <button
-            type="submit"
-            className="bg-primary py-[12px] px-[32px] rounded-[10px] w-fit hover:-translate-y-[5px] transition-all duration-300 ease-in"
-          >
-            Add
-          </button>
+          {!groundDetail ? (
+            <button
+              type="submit"
+              className="bg-primary py-[12px] px-[32px] rounded-[10px] w-fit hover:-translate-y-[5px] transition-all duration-300 ease-in"
+            >
+              Add
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="bg-primary py-[12px] px-[32px] rounded-[10px] w-fit hover:-translate-y-[5px] transition-all duration-300 ease-in"
+            >
+              Update
+            </button>
+          )}
         </form>
       </div>
+      <Modal open={openModal} onClose={handleCloseModal}>
+        <Box sx={style}>{backendCallMessage}</Box>
+      </Modal>
     </div>
   );
 }

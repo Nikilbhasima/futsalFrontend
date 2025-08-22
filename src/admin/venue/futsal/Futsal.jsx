@@ -16,23 +16,29 @@ function Futsal() {
   const getFutsalDetail = async () => {
     const response = await dispatch(ownerFutsal());
     if (response.meta.requestStatus === "fulfilled") {
-      console.log("why not got futsal data:", response);
       setFutsalDetail(response.payload);
     }
-
-    console.log("futsal data:", response);
   };
   return (
     <div>
       <div className="flex justify-between items-center">
         <h2 className="text-[40px] font-semibold">Venue Detail</h2>
         {isEditing ? (
-          <button
-            className="flex items-center gap-[12px] text-primary text-[16px] hover:text-secondary hover:bg-primary p-[12px] rounded-[10px] transition-all duration-400 ease-in"
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            Edit Detail <TbEdit className="text-[20px]" />
-          </button>
+          futsalDetail === "" ? (
+            <button
+              className="flex items-center gap-[12px] text-primary text-[16px] hover:text-secondary hover:bg-primary p-[12px] rounded-[10px] transition-all duration-400 ease-in"
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              Add Futsal <TbEdit className="text-[20px]" />
+            </button>
+          ) : (
+            <button
+              className="flex items-center gap-[12px] text-primary text-[16px] hover:text-secondary hover:bg-primary p-[12px] rounded-[10px] transition-all duration-400 ease-in"
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              Edit Detail <TbEdit className="text-[20px]" />
+            </button>
+          )
         ) : (
           <button
             className="flex items-center gap-[12px] text-primary text-[16px] hover:text-secondary hover:bg-danger p-[12px] rounded-[10px] transition-all duration-400 ease-in"
@@ -43,15 +49,22 @@ function Futsal() {
           </button>
         )}
       </div>
-
-      {isEditing ? (
-        <FutsalDetail futsalData={futsalDetail} />
-      ) : (
-        <FutsalForm
-          setFutsalDetail={setFutsalDetail}
-          futsalData={futsalDetail}
-        />
-      )}
+      <div className="mt-[1rem]">
+        {isEditing ? (
+          futsalDetail === "" ? (
+            <div className="text-primary text-center bg-tertary rounded-[10px] py-[12px]">
+              Please add you futsal detail?
+            </div>
+          ) : (
+            <FutsalDetail futsalData={futsalDetail} />
+          )
+        ) : (
+          <FutsalForm
+            setFutsalDetail={setFutsalDetail}
+            futsalData={futsalDetail}
+          />
+        )}
+      </div>
     </div>
   );
 }

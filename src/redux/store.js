@@ -5,7 +5,7 @@ import bookReducer from "./bookingSlice/bookingSlice";
 import accountReducer from "./accountManagement/AccountManagementSlice";
 import passwordReducer from "./passwordReset/PasswordResetSlice";
 import createFutsalReducer from "./createFutsal/CreateFutsalSlice";
-import groundReducer from "./createFutsal/CreateFutsalSlice";
+import groundReducer from "./ground/GroundSlice";
 export default configureStore({
   reducer: {
     auth: authReducer,

@@ -53,3 +53,29 @@ export const ownerFutsal = createAsyncThunk(
     }
   }
 );
+
+export const editFutsalDetail = createAsyncThunk(
+  "createFutsal/editFutsalDetail",
+  async (value, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("JWT_TOKEN");
+      const response = await axios.post(
+        "http://localhost:8080/api/futsal/editFutsalDetail",
+        value,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      const errorStatus = error.response?.status;
+      return rejectWithValue({
+        message: errorMessage,
+        status: errorStatus,
+      });
+    }
+  }
+);

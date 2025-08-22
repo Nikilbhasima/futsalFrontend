@@ -5,6 +5,7 @@ import AddGround from "./AddGround";
 import { MdCancel } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { getGroundList } from "../../../redux/ground/GroundThunks";
+import { clearGroundDetail } from "../../../redux/ground/GroundSlice";
 
 function Ground() {
   const [addGround, setAddGround] = useState(true);
@@ -26,7 +27,10 @@ function Ground() {
         {addGround ? (
           <button
             className="flex items-center gap-[12px] text-primary text-[16px] hover:text-secondary hover:bg-primary p-[12px] rounded-[10px] transition-all duration-400 ease-in"
-            onClick={() => setAddGround(!addGround)}
+            onClick={() => {
+              setAddGround(!addGround);
+              dispatch(clearGroundDetail());
+            }}
           >
             Add Ground <IoAddCircle className="text-[20px]" />
           </button>
@@ -39,7 +43,19 @@ function Ground() {
           </button>
         )}
       </div>
-      {addGround ? <GroundDetail groundList={groundList} /> : <AddGround />}
+      <div className="mt-[1rem]">
+        {addGround ? (
+          groundList.length === 0 ? (
+            <div className="text-primary text-center bg-tertary rounded-[10px] py-[12px] ">
+              Please add you futsal detail?
+            </div>
+          ) : (
+            <GroundDetail groundList={groundList} setAddGround={setAddGround} />
+          )
+        ) : (
+          <AddGround setGroundList={setGroundList} />
+        )}
+      </div>
     </div>
   );
 }

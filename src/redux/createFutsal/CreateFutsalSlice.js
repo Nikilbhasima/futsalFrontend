@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createFutsal, ownerFutsal } from "./CreateFutsalThunks";
+import {
+  createFutsal,
+  editFutsalDetail,
+  ownerFutsal,
+} from "./CreateFutsalThunks";
 
 const initialState = {
   futsalDetail: "",
@@ -34,6 +38,18 @@ const createFutsalSlice = createSlice({
       .addCase(ownerFutsal.rejected, (state, action) => {
         state.futsalLoading = false;
         state.error = action.payload?.message || "failed to create futsal";
+      })
+      .addCase(editFutsalDetail.pending, (state) => {
+        state.futsalLoading = true;
+      })
+      .addCase(editFutsalDetail.fulfilled, (state, action) => {
+        state.futsalLoading = false;
+        state.futsalDetail = action.payload;
+      })
+      .addCase(editFutsalDetail.rejected, (state, action) => {
+        state.futsalLoading = false;
+        state.error =
+          action.payload?.message || "failed to update futsal detail";
       });
   },
 });
