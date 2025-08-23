@@ -17,7 +17,7 @@ function AdminPage() {
       </div>
       <div className="flex flex-col ml-[8px]">
         <Header />
-        <div className=" h-[100%] p-[32px]">
+        <div className=" h-[100%] p-[12px] sm:p-[24px] md:p-[32px]">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/booking" element={<Booking />} />

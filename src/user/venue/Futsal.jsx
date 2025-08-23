@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { GiSettingsKnobs } from "react-icons/gi";
 import { SlCalender } from "react-icons/sl";
 import { FaStar } from "react-icons/fa6";
@@ -6,9 +6,36 @@ import { FaRegStarHalfStroke } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 function Futsal({ bookingType, data }) {
   const navigate = useNavigate();
+  const [selectImage, setSelectImage] = useState(0);
+  console.log("futsal data:", data);
   return (
     <div className=" w-full  overflow-hidden grid md:grid-cols-[2fr_3fr_1fr] items-center md:items-start rounded-[10px] bg-[#333333] pb-[20px] md:pb-[0px] md:pr-[10px]">
-      <div className="  h-[7rem] sm:h-[8rem] md:h-[100%] bg-[url(/images/futsalGround.png)] bg-cover bg-center"></div>
+      <div
+        className="  h-[7rem] sm:h-[8rem] md:h-[100%]  bg-cover bg-center relative"
+        style={{
+          backgroundImage: `url(${data?.futsalGroundList?.[selectImage]?.image})`,
+        }}
+      >
+        {data?.futsalGroundList?.length > 1 && (
+          <div className=" absolute right-5 bottom-5 flex gap-[1rem]">
+            {data?.futsalGroundList?.map((data, index) => {
+              return (
+                <button
+                  className={`py-[8px] px-[12px] border-[2px] border-primary outline-none ${
+                    index === selectImage
+                      ? `bg-primary`
+                      : `bg-[rgba(0,0,0,0.4)]`
+                  }`}
+                  key={index}
+                  onClick={() => setSelectImage(index)}
+                >
+                  {data?.groundType}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
       <div className="bg-[#333333]  p-[15px] lg:p-[20px] lg:pl-[32px] grid lg:gap-[5px]">
         <p className="text-[20px] font-semibold text-[#27D483]">
           {data.futsalName}

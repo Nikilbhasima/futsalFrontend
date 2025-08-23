@@ -52,6 +52,7 @@ function AddGround({ setGroundList }) {
         console.log("edit");
         response = await dispatch(editGroundDetail(values));
       }
+      console.log("response Second:", response);
       if (response.meta.requestStatus === "fulfilled") {
         setGroundList((pre) =>
           pre.filter((data) => data?.id != groundDetail?.id)

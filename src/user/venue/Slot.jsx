@@ -72,7 +72,9 @@ function Slot() {
           bookingDate: selectDate,
         })
       );
-      setListOfBookedGround(listOfData.payload || []);
+      if (listOfData.payload != null) {
+        setListOfBookedGround(listOfData.payload || []);
+      }
     } catch (error) {
       console.error("Error fetching booked grounds:", error);
       setError("Failed to load booking information. Please try again.");

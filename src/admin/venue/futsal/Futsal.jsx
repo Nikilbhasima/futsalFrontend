@@ -15,6 +15,7 @@ function Futsal() {
   }, []);
   const getFutsalDetail = async () => {
     const response = await dispatch(ownerFutsal());
+    console.log("futsal detail:", futsalDetail);
     if (response.meta.requestStatus === "fulfilled") {
       setFutsalDetail(response.payload);
     }

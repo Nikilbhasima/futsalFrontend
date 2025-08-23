@@ -4,7 +4,7 @@ import { NavLink, Outlet, useParams } from "react-router-dom";
 function Venue() {
   const param = useParams();
   const bookingType = param.bookingType;
-  console.log("form venue", bookingType);
+
   return (
     <>
       <div className="pt-[40px] px-[5px]  md:px-[20px] max-w-[1320px] m-auto ">
