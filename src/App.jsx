@@ -10,8 +10,8 @@ import LoadingPacmandDesign from "./loader/LoadingPacmandDesign";
 function App() {
   const [role, setRole] = useState([]);
   const dispatch = useDispatch();
-  const { jwt } = useSelector((state) => state.auth);
-  const { loading } = useSelector((state) => state.auth);
+  const { jwt, loading } = useSelector((state) => state.auth);
+  const { accountSuccess } = useSelector((state) => state.account);
 
   const jwtFromLocal = localStorage.getItem("JWT_TOKEN");
 
@@ -25,14 +25,14 @@ function App() {
     } else {
       setRole([]);
     }
-  }, [jwt]);
+  }, [jwt, accountSuccess]);
 
   return (
     <div className="relative">
       {!role || (role.length === 0 && <HomeNavbar />)}
       {Array.isArray(role) && role.includes("ROLE_OWNER") && <AdminPage />}
       {Array.isArray(role) && role.includes("ROLE_USER") && <HomeNavbar />}
-      <LoadingPacmandDesign onLoader={loading} />
+      <LoadingPacmandDesign />
     </div>
   );
 }

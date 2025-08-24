@@ -13,11 +13,11 @@ function Booking() {
   const [buttonId, setButtonId] = useState(0);
   const [listOfBookings, setListOfBookings] = useState([]);
   const [listOfGround, setListOfGround] = useState([]);
+  const [bookingStatus, setBookingStatus] = useState();
 
   const getOfFutsalGround = async () => {
     try {
       const response = await dispatch(getGroundList());
-
       if (response.meta.requestStatus != "rejected") {
         setListOfGround(response.payload);
         setGroundId(response?.payload?.[0]?.id);
@@ -44,7 +44,6 @@ function Booking() {
           })
         );
         if (response.meta.requestStatus === "fulfilled") {
-          console.log("list of booking:", response.payload);
           setListOfBookings(response.payload);
         }
       }
@@ -55,14 +54,13 @@ function Booking() {
 
   useEffect(() => {
     getListOfBookings();
-    console.log("list of booking:", listOfBookings);
   }, [selectDate, groundId]);
 
   useEffect(() => {
     setSelectDate(getCurrentDate());
     getOfFutsalGround();
-    console.log("ground id:", groundId);
   }, []);
+
   return (
     <div>
       <h2 className="pt-[20px] text-[40px] text-[#27D483] font-semibold">
@@ -78,7 +76,6 @@ function Booking() {
               value={selectDate}
               name="selectDate"
               onChange={handleChangeDate}
-              min={getCurrentDate()}
               className="text-[#39908F] border-none outline-none placeholder:text-[#39908F] bg-white text-[16px] p-[12px] sm:py-[12px] sm:px-[32px] rounded-[10px]"
             />
           </div>
@@ -105,13 +102,28 @@ function Booking() {
                   : "opacity-100 scale-y-100 h-auto translate-y-1 pointer-events-auto"
               }`}
             >
-              <li className="py-[12px] px-[5px] sm:px-[12]px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+              <li
+                onClick={() => setBookingStatus("")}
+                className="py-[12px] px-[5px] sm:px-[12]px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light"
+              >
+                show All
+              </li>
+              <li
+                onClick={() => setBookingStatus("completed")}
+                className="py-[12px] px-[5px] sm:px-[12]px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light"
+              >
                 Completed
               </li>
-              <li className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+              <li
+                onClick={() => setBookingStatus("pending")}
+                className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light"
+              >
                 Pending
               </li>
-              <li className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light">
+              <li
+                onClick={() => setBookingStatus("playing")}
+                className="py-[12px] px-[5px] sm:px-[12] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light"
+              >
                 Playing
               </li>
             </ul>
@@ -144,9 +156,14 @@ function Booking() {
         </div>
       </div>
       <div>
-        {listOfBookings?.map((data, index) => {
-          return <BookingDetail key={index} data={data} />;
-        })}
+        {listOfBookings
+          ?.filter((data) => {
+            if (!bookingStatus) return true;
+            return data?.status === bookingStatus;
+          })
+          .map((data, index) => {
+            return <BookingDetail key={index} data={data} />;
+          })}
       </div>
     </div>
   );

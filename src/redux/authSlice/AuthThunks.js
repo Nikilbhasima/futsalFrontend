@@ -9,7 +9,6 @@ export const registerUser = createAsyncThunk(
         "http://localhost:8080/api/v1/auth/register",
         registrationData
       );
-
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;

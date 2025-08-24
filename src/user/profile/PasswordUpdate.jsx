@@ -60,10 +60,12 @@ function PasswordUpdate({ open, handleClose }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
   const [showPassword3, setShowPassword3] = useState(false);
+  const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   const [displayMessage, setDisplayMessage] = useState(false);
   const handleOpen = () => setDisplayMessage(true);
   const handleCloses = () => setDisplayMessage(false);
+
   return (
     <>
       <Dialog
@@ -98,9 +100,14 @@ function PasswordUpdate({ open, handleClose }) {
                 if (response.meta.requestStatus === "fulfilled") {
                   resetForm();
                   handleClose();
+                  setMessage(" Password Change Successfull!");
                   setTimeout(() => {
                     handleOpen();
                   }, 500);
+                }
+                if (response.meta.requestStatus === "rejected") {
+                  setMessage("Please Enter the correct password");
+                  handleOpen();
                 }
               } catch (error) {
                 console.log(error);
@@ -173,9 +180,7 @@ function PasswordUpdate({ open, handleClose }) {
         </Box>
       </Dialog>
       <Modal open={displayMessage} onClose={handleCloses}>
-        <Box sx={{ ...style2, color: "#27D483" }}>
-          Password Change Successfull!
-        </Box>
+        <Box sx={{ ...style2, color: "#27D483" }}>{message}</Box>
       </Modal>
     </>
   );

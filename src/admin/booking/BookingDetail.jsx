@@ -8,12 +8,13 @@ import { MdOutlineBookmarkAdded } from "react-icons/md";
 import { MdOutlineSports } from "react-icons/md";
 
 function BookingDetail({ data }) {
+  console.log(data);
   return (
-    <div className=" flex gap-[4px] md:gap-[1rem] bg-tertary p-[8px] lg:py-[24px] lg:px-[32px] rounded-[10px] mt-[32px]">
+    <div className=" flex gap-[4px] md:gap-[1rem] bg-tertary p-[8px] lg:py-[24px] lg:px-[32px] rounded-[10px] mt-[32px] ">
       <img
-        src="images/profile.png"
+        src={data?.challengerDto?.image || "/images/profile.png"}
         alt="user photo"
-        className="w-[40px] sm:w-[50px] md:w-[77px] bg-primary rounded-[50%] sm:p-[4px]"
+        className="w-[40px] sm:w-[50px] md:w-[77px] md:h-[77px]  rounded-[50%] sm:p-[4px] object-cover"
       />
       <ul className="flex items-center justify-between text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px] w-full">
         <li>{data?.challengerDto?.username}</li>

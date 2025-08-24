@@ -69,6 +69,7 @@ function BookingModel({
   }, [playingTime]);
 
   const handleBookFutsal = async () => {
+    console.log("playing time", playingTime);
     dispatch(setloading());
     const currentBookingDetail = {
       starting_time: playingTime?.starting_time,

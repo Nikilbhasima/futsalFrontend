@@ -60,7 +60,6 @@ function MyBooking() {
     try {
       const response = await dispatch(cancelFutsalBooking(id));
       if (response.meta.requestStatus === "fulfilled") {
-        console.log("i wasn't called", response.payload);
         handleClose();
         handleOpen2();
         await getUserBooking();

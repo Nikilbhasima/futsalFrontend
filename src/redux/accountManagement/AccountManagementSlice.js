@@ -9,12 +9,17 @@ const initialState = {
   userDetail: null,
   loadingUserData: false,
   error: null,
+  accountSuccess: false,
 };
 
 const accountManagementSlice = createSlice({
   name: "account",
   initialState,
-  reducers: {},
+  reducers: {
+    clearAccountSuccess: (state) => {
+      state.accountSuccess = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getUserDetail.pending, (state) => {
@@ -37,6 +42,7 @@ const accountManagementSlice = createSlice({
       .addCase(editUserDetail.fulfilled, (state, action) => {
         state.loadingUserData = false;
         state.error = null;
+        state.accountSuccess = true;
         state.userDetail = { ...state.userDetail, ...action.payload };
       })
       .addCase(editUserDetail.rejected, (state, action) => {
@@ -59,4 +65,5 @@ const accountManagementSlice = createSlice({
   },
 });
 
+export const { clearAccountSuccess } = accountManagementSlice.actions;
 export default accountManagementSlice.reducer;

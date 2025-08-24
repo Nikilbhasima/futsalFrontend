@@ -216,7 +216,7 @@ function Slot() {
 
       {/* Available slot of futsal Ground */}
       {selectGround && selectDate && (
-        <div className="mt-[60px] grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-[1rem] sm:gap-[2rem] md:justify-start">
+        <div className="mt-[60px] grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-[1rem] sm:gap-[2rem] md:justify-start  min-h-[10rem]">
           {loading ? (
             <div className="col-span-full text-center py-8">
               Loading time slots...

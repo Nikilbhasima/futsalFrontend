@@ -22,11 +22,12 @@ function TimeSlot({
       setSlot(slot);
     }
   }, [futsalList]);
+
   const isSlotBooked = (slotStartTime, slotEndTime) => {
     if (listOfBookedGround?.length != 0) {
       for (let booking of listOfBookedGround) {
-        const bookingStart = booking.starting_time.substring(0, 5);
-        const bookingEnd = booking.ending_time.substring(0, 5);
+        const bookingStart = booking?.starting_time.substring(0, 5);
+        const bookingEnd = booking?.ending_time.substring(0, 5);
 
         if (bookingStart === slotStartTime && bookingEnd === slotEndTime) {
           return true;
@@ -36,6 +37,7 @@ function TimeSlot({
 
     return false;
   };
+  console.log("time slot are:", slot);
   return (
     <>
       {slot.map((data, index) => {

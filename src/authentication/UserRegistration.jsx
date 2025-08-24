@@ -1,6 +1,6 @@
 import React, { use, useEffect, useRef, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { Box } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import { HiOutlineUser } from "react-icons/hi2";
 import { MdOutlineLocalPhone, MdOutlineEmail } from "react-icons/md";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -36,12 +36,27 @@ const validationSchema = Yup.object({
 });
 // Icon color
 const iconColor = { color: "#27D483" };
-
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 430,
+  bgcolor: "#333333",
+  border: "2px solid #000",
+  p: "24px",
+  borderRadius: "10px",
+  color: "#27D483",
+};
 function UserRegistration() {
   const dispatch = useDispatch();
   const { loading, error, jwt, success } = useSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [messageModal, setMessageModal] = useState(false);
+  const showMessageModal = () => setMessageModal(true);
+  const hideMessageModal = () => setMessageModal(false);
 
   return (
     <>
@@ -58,11 +73,15 @@ function UserRegistration() {
         onSubmit={async (values, { resetForm }) => {
           try {
             const result = await dispatch(registerUser(values));
-            console.log("result:", result);
             if (result.meta.requestStatus === "fulfilled") {
               resetForm();
               dispatch(clearSuccess());
-              console.log("loading:", success);
+              setErrorMessage(result.payload.message);
+              showMessageModal();
+            }
+            if (result.meta.requestStatus === "rejected") {
+              setErrorMessage(result.payload.message);
+              showMessageModal();
             }
           } catch (error) {
             console.error("Registration error:", error);
@@ -164,6 +183,9 @@ function UserRegistration() {
         <FcGoogle className="text-[25px]" />
         Sign up with Google
       </div>
+      <Modal open={messageModal} onClose={hideMessageModal}>
+        <Box sx={style}>{errorMessage}</Box>
+      </Modal>
     </>
   );
 }

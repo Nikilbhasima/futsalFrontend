@@ -12,7 +12,9 @@ import { Box, Modal } from "@mui/material";
 import { clearGroundDetail } from "../../../redux/ground/GroundSlice";
 const validationSchema = Yup.object().shape({
   groundType: Yup.string().required("Futsal type required"),
-  pricePerHour: Yup.string().required("Price per hour required"),
+  pricePerHour: Yup.string()
+    .required("Price per hour required")
+    .matches(/^[0-9]+$/, "Price per hour must be a number"),
 });
 const style = {
   position: "absolute",
@@ -78,7 +80,6 @@ function AddGround({ setGroundList }) {
       formik.setFieldValue("image", uploadedFile);
     }
   };
-  // dispatch(clearGroundDetail());
   return (
     <div className="mt-[28px]  max-w-[60%]">
       <div className="bg-tertary p-[24px] rounded-[10px]">
