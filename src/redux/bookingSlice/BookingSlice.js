@@ -7,6 +7,7 @@ import {
   cancelFutsalChallenge,
   getListOfChallenges,
   getMyChallenge,
+  updatePhysicalPayment,
   userBookings,
 } from "./BookingThunks";
 
@@ -126,6 +127,19 @@ const bookingSlice = createSlice({
       .addCase(cancelFutsalChallenge.rejected, (state, action) => {
         action.loadingBooking = false;
         state.error = action.payload?.message || "Failed to cancel Challenge";
+      })
+      .addCase(updatePhysicalPayment.pending, (state) => {
+        state.loadingBooking = true;
+        state.error = null;
+      })
+      .addCase(updatePhysicalPayment.fulfilled, (state, action) => {
+        state.loadingBooking = false;
+        state.error = false;
+        state.bookings = action.payload;
+      })
+      .addCase(updatePhysicalPayment.rejected, (state, action) => {
+        action.loadingBooking = false;
+        state.error = action.payload?.message || "Failed to update Payment";
       });
   },
 });
