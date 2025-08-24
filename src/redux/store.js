@@ -6,6 +6,7 @@ import accountReducer from "./accountManagement/AccountManagementSlice";
 import passwordReducer from "./passwordReset/PasswordResetSlice";
 import createFutsalReducer from "./createFutsal/CreateFutsalSlice";
 import groundReducer from "./ground/GroundSlice";
+import graphReducer from "./graphData/GraphDataSlice";
 export default configureStore({
   reducer: {
     auth: authReducer,
@@ -15,5 +16,6 @@ export default configureStore({
     reset: passwordReducer,
     createFutsal: createFutsalReducer,
     ground: groundReducer,
+    graph: graphReducer,
   },
 });

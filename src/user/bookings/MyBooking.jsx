@@ -137,7 +137,7 @@ function MyBooking() {
                     <p className="text-[16px] font-semibold leading-4">
                       Playing Date:
                       <span className="font-light ml-[5px]">
-                        {data?.booking_date}
+                        {data?.playing_date}
                       </span>
                     </p>
 
