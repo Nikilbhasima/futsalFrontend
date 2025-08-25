@@ -8,8 +8,8 @@ import { GiRunningNinja } from "react-icons/gi";
 export const mainNavList = [
   { to: "/", label: "Dashboard", icon: MdOutlineDashboard },
   { to: "/venue", label: "Venue", icon: TbListDetails },
-  { to: "/booking", label: "Booking", icon: FaAddressBook },
-  { to: "/match", label: "Match", icon: GiRunningNinja },
+  { to: "/booking", label: "Booking Detail", icon: FaAddressBook },
+  { to: "/match", label: "Create Booking", icon: GiRunningNinja },
 ];
 
 export const secNavList = [

@@ -108,7 +108,11 @@ function BookingDetail({ data }) {
         </div>
 
         <div>
-          <div className="flex gap-[8px] items-center bg-primary p-[12px] rounded-full w-fit">
+          <div
+            className={`flex gap-[8px] items-center p-[12px] rounded-full w-fit border-[5px] outline-none ${
+              data?.status === "completed" && `border-primary`
+            } ${data?.status === "pending" && ` border-orange-400`}`}
+          >
             <IoCheckmarkDoneOutline />
             <span>{data?.status}</span>
           </div>

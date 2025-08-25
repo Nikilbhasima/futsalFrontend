@@ -10,6 +10,7 @@ function TimeSlot({
   futsalData,
   futsalList,
   listOfBookedGround,
+  selectDate,
 }) {
   const [slot, setSlot] = useState([]);
   useEffect(() => {
@@ -24,20 +25,29 @@ function TimeSlot({
   }, [futsalList]);
 
   const isSlotBooked = (slotStartTime, slotEndTime) => {
+    const now = new Date();
+    const formattedTime = `${String(now.getHours()).padStart(2, "0")}:${String(
+      now.getMinutes()
+    ).padStart(2, "0")}`;
+    const today = new Date().toISOString().split("T")[0];
     if (listOfBookedGround?.length != 0) {
       for (let booking of listOfBookedGround) {
         const bookingStart = booking?.starting_time.substring(0, 5);
         const bookingEnd = booking?.ending_time.substring(0, 5);
-
-        if (bookingStart === slotStartTime && bookingEnd === slotEndTime) {
+        if (
+          (today === selectDate && slotStartTime < formattedTime) ||
+          (bookingStart === slotStartTime && bookingEnd === slotEndTime)
+        ) {
           return true;
         }
       }
+    } else if (today === selectDate && slotStartTime < formattedTime) {
+      return true;
+    } else {
+      return false;
     }
-
-    return false;
   };
-  console.log("time slot are:", slot);
+
   return (
     <>
       {slot.map((data, index) => {

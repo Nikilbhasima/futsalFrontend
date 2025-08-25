@@ -69,7 +69,6 @@ function ChallengeModel({
           groundId: groundId,
         })
       );
-      console.log("challenge response:", response);
       if (response.meta.requestStatus === "fulfilled") {
         handleClose2();
         await getListOfBookedGround();

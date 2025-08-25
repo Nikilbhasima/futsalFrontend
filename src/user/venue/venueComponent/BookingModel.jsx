@@ -69,7 +69,6 @@ function BookingModel({
   }, [playingTime]);
 
   const handleBookFutsal = async () => {
-    console.log("playing time", playingTime);
     dispatch(setloading());
     const currentBookingDetail = {
       starting_time: playingTime?.starting_time,
@@ -85,7 +84,7 @@ function BookingModel({
           groundId: groundId,
         })
       );
-      console.log("booking response:", response.payload);
+
       // Call to refresh the booking list only if booking was successful
       if (response.meta.requestStatus === "fulfilled") {
         await getListOfBookedGround();

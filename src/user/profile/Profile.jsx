@@ -63,7 +63,7 @@ function Profile() {
             src={
               userInformation.image
                 ? userInformation.image
-                : "./images/messi.png"
+                : "./images/profile.png"
             }
             className=" rounded-[10px] md:rounded-[10px] h-[10rem] w-[70%] md:h-[70%] md:w-[70%] m-auto object-cover object-top transition  hover:scale-105 ease-in-out duration-300"
             alt=""

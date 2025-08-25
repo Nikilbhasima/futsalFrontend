@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 function Futsal({ bookingType, data }) {
   const navigate = useNavigate();
   const [selectImage, setSelectImage] = useState(0);
-  console.log("futsal data:", data);
   return (
     <div className=" w-full  overflow-hidden grid md:grid-cols-[2fr_3fr_1fr] items-center md:items-start rounded-[10px] bg-[#333333] pb-[20px] md:pb-[0px] md:pr-[10px]">
       <div

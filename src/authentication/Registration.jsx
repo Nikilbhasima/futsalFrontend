@@ -12,8 +12,7 @@ function Registration() {
           className="text-[20px] text-[#27D483] font-light"
           onClick={() => navigate("/authenticate/login")}
         />
-
-        <div className="relative flex m-auto text-[16px] w-[400px] bg-[#212121] gap-[1rem]   py-[12px] rounded-[30px]">
+        {/* <div className="relative flex m-auto text-[16px] w-[400px] bg-[#212121] gap-[1rem]   py-[12px] rounded-[30px]">
           <div
             className="text-center w-[50%] z-10"
             onClick={() => {
@@ -37,6 +36,9 @@ function Registration() {
               isUser ? "left-0" : "left-1/2"
             }`}
           ></div>
+        </div> */}
+        <div className="text-center text-primary text-[24px] font-semibold w-full">
+          Registration Form
         </div>
       </div>
       <Outlet />

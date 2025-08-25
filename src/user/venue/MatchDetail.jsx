@@ -27,7 +27,6 @@ const style = {
 };
 
 function MatchDetail({ data, isUserLogin, getListOfChallengesData }) {
-  console.log("match detail:", data);
   const [successMessage, setSuccessMessage] = useState(false);
   const handleSuccessMessage = () => setSuccessMessage(true);
   const handleFailMessage = () => setSuccessMessage(false);
@@ -39,7 +38,6 @@ function MatchDetail({ data, isUserLogin, getListOfChallengesData }) {
   const dispatch = useDispatch();
 
   const handleAcceptChallenge = async () => {
-    console.log("futsal id:", data.id);
     try {
       const response = await dispatch(acceptChallenge(data.id));
       if (response.meta.requestStatus === "fulfilled") {
@@ -50,7 +48,6 @@ function MatchDetail({ data, isUserLogin, getListOfChallengesData }) {
           handleFailMessage2();
         }, 1000);
       }
-      console.log("print challenge response:", response);
     } catch (error) {
       console.log(error);
     }

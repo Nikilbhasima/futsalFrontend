@@ -138,7 +138,6 @@ function BrowseVenue() {
             return matchesSearch && matchesGround;
           })
           ?.map((data, index) => {
-            console.log("futsal data:", data);
             return <Futsal bookingType={bookingType} key={index} data={data} />;
           })}
       </div>

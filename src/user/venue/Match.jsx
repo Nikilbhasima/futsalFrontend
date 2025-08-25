@@ -19,8 +19,6 @@ function Match() {
     const token = localStorage.getItem("JWT_TOKEN");
     const extractedData = extractToken(token);
     setIsUserLogin(extractedData?.sub);
-    console.log("where is user", extractedData);
-    console.log("check data:", challengesData);
   }, []);
 
   const getListOfChallengesData = async () => {

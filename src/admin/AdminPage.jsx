@@ -8,6 +8,7 @@ import Help from "./help/Help";
 import Header from "./navbar/Header";
 import Venue from "./venue/Venue";
 import Match from "./match/Match";
+import Profile from "../user/profile/Profile";
 
 function AdminPage() {
   return (
@@ -17,7 +18,7 @@ function AdminPage() {
       </div>
       <div className="flex flex-col ml-[8px]">
         <Header />
-        <div className=" h-[100%] p-[32px]">
+        <div className="p-[12px] h-[100%] lg:p-[16px] md:p-[24px] lg:p-[32px]">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/booking" element={<Booking />} />
@@ -25,6 +26,7 @@ function AdminPage() {
             <Route path="/match" element={<Match />} />
             <Route path="/help" element={<Help />} />
             <Route path="/venue" element={<Venue />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
       </div>

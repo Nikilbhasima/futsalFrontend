@@ -19,7 +19,6 @@ function Slot() {
   const [error, setError] = useState("");
   const { bookingType } = useOutletContext();
   const param = useParams();
-
   const futsalId = param.futsalId;
   const [selectDate, setSelectDate] = useState("");
   const [selectGround, setSelectGround] = useState(null);
@@ -124,7 +123,6 @@ function Slot() {
 
   // Handle ground selection
   const handleGroundSelect = (groundId) => {
-    console.log("i have selected ground:", groundId);
     setSelectGround(groundId);
     setError("");
   };
@@ -231,6 +229,7 @@ function Slot() {
               futsalData={futsalData}
               futsalList={futsalList}
               listOfBookedGround={listOfBookedGround}
+              selectDate={selectDate}
             />
           )}
         </div>
