@@ -15,6 +15,8 @@ import UserRegistration from "../../authentication/UserRegistration";
 import BusinessRegistration from "../../authentication/BusinessRegistration";
 import Challenge from "../challenge/Challenge";
 import Profile from "../profile/Profile";
+import PaymentSuccess from "../bookings/PaymentSuccess";
+import PaymentFailed from "../bookings/PaymentFailed";
 
 function HomeNavbar() {
   return (
@@ -43,6 +45,8 @@ function HomeNavbar() {
         </Route>
         <Route path="/challenge" element={<Challenge />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/failure" element={<PaymentFailed />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </>

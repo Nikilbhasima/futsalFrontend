@@ -7,6 +7,7 @@ import passwordReducer from "./passwordReset/PasswordResetSlice";
 import createFutsalReducer from "./createFutsal/CreateFutsalSlice";
 import groundReducer from "./ground/GroundSlice";
 import graphReducer from "./graphData/GraphDataSlice";
+import paymentReducer from "./onlinePayment/OnlinePaymentSlice";
 export default configureStore({
   reducer: {
     auth: authReducer,
@@ -17,5 +18,6 @@ export default configureStore({
     createFutsal: createFutsalReducer,
     ground: groundReducer,
     graph: graphReducer,
+    paymnet: paymentReducer,
   },
 });
