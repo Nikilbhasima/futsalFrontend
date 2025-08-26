@@ -137,7 +137,6 @@ function EditForm({ open, handleClose, userDetail, setUserInformation }) {
             }}
             validationSchema={validationSchema}
             onSubmit={async (values) => {
-              console.log("user edit data", values);
               try {
                 const response = await dispatch(editUserDetail(values));
                 if (response.payload) {

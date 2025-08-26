@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import BookingDetail from "./BookingDetail";
 import { useDispatch } from "react-redux";
@@ -34,7 +34,7 @@ function Booking() {
   const getCurrentDate = () => {
     return new Date().toISOString().split("T")[0];
   };
-  const getListOfBookings = async () => {
+  const getListOfBookings = useCallback(async () => {
     try {
       if (groundId != null) {
         const response = await dispatch(
@@ -50,11 +50,11 @@ function Booking() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [dispatch, groundId, selectDate]);
 
   useEffect(() => {
     getListOfBookings();
-  }, [selectDate, groundId]);
+  }, [getListOfBookings]);
 
   useEffect(() => {
     setSelectDate(getCurrentDate());
@@ -162,7 +162,13 @@ function Booking() {
             return data?.status === bookingStatus;
           })
           .map((data, index) => {
-            return <BookingDetail key={index} data={data} />;
+            return (
+              <BookingDetail
+                key={index}
+                data={data}
+                getListOfBookings={getListOfBookings}
+              />
+            );
           })}
       </div>
     </div>

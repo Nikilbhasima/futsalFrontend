@@ -5,8 +5,10 @@ import {
   bookingList,
   cancelFutsalBooking,
   cancelFutsalChallenge,
+  getAdminBookingNumber,
   getListOfChallenges,
   getMyChallenge,
+  getNumberOfBooking,
   updatePhysicalPayment,
   userBookings,
 } from "./BookingThunks";
@@ -140,6 +142,34 @@ const bookingSlice = createSlice({
       .addCase(updatePhysicalPayment.rejected, (state, action) => {
         action.loadingBooking = false;
         state.error = action.payload?.message || "Failed to update Payment";
+      })
+      .addCase(getNumberOfBooking.pending, (state) => {
+        state.loadingBooking = true;
+        state.error = null;
+      })
+      .addCase(getNumberOfBooking.fulfilled, (state, action) => {
+        state.loadingBooking = false;
+        state.error = false;
+        state.bookings = action.payload;
+      })
+      .addCase(getNumberOfBooking.rejected, (state, action) => {
+        action.loadingBooking = false;
+        state.error =
+          action.payload?.message || "Failed to get Number of booking";
+      })
+      .addCase(getAdminBookingNumber.pending, (state) => {
+        state.loadingBooking = true;
+        state.error = null;
+      })
+      .addCase(getAdminBookingNumber.fulfilled, (state, action) => {
+        state.loadingBooking = false;
+        state.error = false;
+        state.bookings = action.payload;
+      })
+      .addCase(getAdminBookingNumber.rejected, (state, action) => {
+        action.loadingBooking = false;
+        state.error =
+          action.payload?.message || "Failed to get Number of booking";
       });
   },
 });

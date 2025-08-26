@@ -15,7 +15,7 @@ export const initiatePayment = createAsyncThunk(
           },
         }
       );
-      console.log("payment initation response:", response.data);
+
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
@@ -42,7 +42,7 @@ export const verifyPayment = createAsyncThunk(
           },
         }
       );
-      console.log("verification response:", response.data);
+
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;

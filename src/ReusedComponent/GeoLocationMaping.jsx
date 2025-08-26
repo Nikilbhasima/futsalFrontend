@@ -25,7 +25,6 @@ function GeoLocationMaping({ end }) {
           const { latitude, longitude } = position.coords;
           setUserLocation([longitude, latitude]);
           setLoading(false);
-          console.log("User location:", longitude, latitude);
         },
         (error) => {
           console.error("Error getting location:", error);
@@ -56,8 +55,6 @@ function GeoLocationMaping({ end }) {
           ","
         )}?overview=full&geometries=geojson`;
 
-        console.log("Fetching route from:", userLocation, "to:", end);
-
         const res = await fetch(url);
         const data = await res.json();
 
@@ -65,7 +62,6 @@ function GeoLocationMaping({ end }) {
         if (data.routes && data.routes[0]) {
           const route = data.routes[0].geometry;
 
-          console.log("Route data:", data.routes[0]);
           setNavigationData(data.routes[0]);
           setRouteGeoJson({
             type: "Feature",

@@ -25,8 +25,7 @@ const style = {
   borderRadius: "10px",
 };
 
-function BookingDetail({ data }) {
-  console.log(data);
+function BookingDetail({ data, getListOfBookings, key }) {
   const dispatach = useDispatch();
   const [messageModal, setMessageModal] = useState(false);
   const viewMessageModal = () => setMessageModal(true);
@@ -41,9 +40,9 @@ function BookingDetail({ data }) {
   const handlePhysicalPayment = async () => {
     try {
       const response = await dispatach(updatePhysicalPayment(data.id));
-      console.log("check response:", response);
       if (response.meta.requestStatus === "fulfilled") {
         moveToggleButton();
+        getListOfBookings();
       }
     } catch (error) {
       console.log(error);
@@ -59,7 +58,10 @@ function BookingDetail({ data }) {
   }, [data?.paymentStatus]);
   return (
     <>
-      <div className="grid grid-row-3 gap-[1rem] md:grid md:grid-cols-[1fr_11fr] lg:grid lg:grid-cols-[1fr_10fr_1fr]   bg-tertary p-[8px] lg:py-[24px] lg:px-[32px] rounded-[10px] mt-[32px] ">
+      <div
+        key={key}
+        className="grid grid-row-3 gap-[1rem] md:grid md:grid-cols-[1fr_11fr] lg:grid lg:grid-cols-[1fr_10fr_1fr]   bg-tertary p-[8px] lg:py-[24px] lg:px-[32px] rounded-[10px] mt-[32px] "
+      >
         <img
           src={data?.challengerDto?.image || "/images/profile.png"}
           alt="user photo"

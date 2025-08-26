@@ -45,16 +45,13 @@ function AddGround({ setGroundList }) {
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      console.log("ground values:", values);
       let response;
       if (!groundDetail) {
-        console.log("add");
         response = await dispatch(addGround(values));
       } else {
-        console.log("edit");
         response = await dispatch(editGroundDetail(values));
       }
-      console.log("response Second:", response);
+
       if (response.meta.requestStatus === "fulfilled") {
         setGroundList((pre) =>
           pre.filter((data) => data?.id != groundDetail?.id)

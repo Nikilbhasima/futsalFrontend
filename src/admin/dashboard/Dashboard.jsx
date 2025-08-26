@@ -14,6 +14,8 @@ import { getBargraphData } from "../../redux/graphData/GraphDataThunks";
 import PieChartDiagram from "./PieChartDiagram";
 import { useNavigate } from "react-router-dom";
 import { TbListDetails } from "react-icons/tb";
+import axios from "axios";
+import { getAdminBookingNumber } from "../../redux/bookingSlice/BookingThunks";
 // Register chart.js components
 ChartJS.register(
   CategoryScale,
@@ -28,11 +30,11 @@ function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userDetail } = useSelector((state) => state.account);
-  console.log("user detail:", userDetail);
   // Initialize state before using it
   const [barGraphData, setBarGraphData] = useState({});
   const [label, setLabel] = useState([]);
   const [value, setValues] = useState([]);
+  const [numberOfBooking, setNumberOfBooking] = useState({});
 
   useEffect(() => {
     getBarGraphDatas();
@@ -84,6 +86,9 @@ function Dashboard() {
     ],
   };
 
+  useEffect(() => {
+    getAdminBookingNumbers();
+  }, []);
   const options = {
     responsive: true,
     plugins: {
@@ -91,21 +96,32 @@ function Dashboard() {
       title: { display: true, text: "Weekly Booking" },
     },
   };
+
+  const getAdminBookingNumbers = async () => {
+    try {
+      const response = await dispatch(getAdminBookingNumber());
+      if (response.meta.requestStatus === "fulfilled") {
+        setNumberOfBooking(response.payload);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="h-[100%]">
       <section className="grid sm:grid-cols-1 md:grid-cols-2 gap-[2rem]">
         <div className="grid grid-cols-2 gap-[12px] ">
           <div className="bg-tertary rounded-[10px] p-[24px] grid gap-[4px]">
             <h2 className="text-[18px]">Todays Game</h2>
-            <p className="text-[32px]">10</p>
+            <p className="text-[32px]">{numberOfBooking?.Todays}</p>
           </div>
           <div className="bg-tertary rounded-[10px] p-[24px] grid gap-[4px]">
             <h2 className="text-[18px]">Total Bookings</h2>
-            <p className="text-[32px]">100</p>
+            <p className="text-[32px]">{numberOfBooking?.Total}</p>
           </div>
-          <div className="bg-tertary rounded-[10px] p-[24px] grid gap-[4px] col-span-2">
+          <div className="bg-tertary rounded-[10px] p-[24px] grid gap-[4px] col-span-2 ">
             <h2 className="text-[18px]">Queue Booking</h2>
-            <p className="text-[32px]">20</p>
+            <p className="text-[32px]">{numberOfBooking?.Pending}</p>
           </div>
         </div>
         {/*    part */}

@@ -11,7 +11,6 @@ const groundSlice = createSlice({
   initialState,
   reducers: {
     setGroundDetail: (state, action) => {
-      console.log("is there data in action.payload:", action.payload);
       state.groundDetail = action.payload;
     },
     clearGroundDetail: (state) => {

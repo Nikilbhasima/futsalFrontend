@@ -38,7 +38,7 @@ const PaymentSuccess = () => {
       if (params.get("data")) {
         try {
           const decodedData = JSON.parse(atob(params.get("data")));
-          console.log("Decoded eSewa response:", decodedData);
+
           transactionUuid = decodedData.transaction_uuid;
         } catch (e) {
           console.error("Failed to decode Base64 data:", e);

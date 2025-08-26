@@ -15,7 +15,6 @@ function PieChartDiagram() {
   const getPieChartDatas = async () => {
     try {
       const response = await dispatch(getPieChartData());
-      console.log("response of pie chart:", response.payload);
       setLabels(Object.keys(response.payload));
       setValues(Object.values(response.payload));
     } catch (error) {

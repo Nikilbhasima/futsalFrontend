@@ -39,7 +39,6 @@ function MyBooking() {
     try {
       const response = await dispatch(userBookings("book"));
       setUserBookingList(response.payload);
-      console.log("book", response.payload);
     } catch (error) {
       console.log(error);
     }
@@ -58,6 +57,7 @@ function MyBooking() {
   const [bookindId, setBookingId] = useState(null);
 
   const cancelBookingById = async (id) => {
+    console.log("id to cancled:", id);
     try {
       const response = await dispatch(cancelFutsalBooking(id));
       if (response.meta.requestStatus === "fulfilled") {
@@ -65,7 +65,6 @@ function MyBooking() {
         handleOpen2();
         await getUserBooking();
       }
-      console.log("cancelation response:", response);
     } catch (error) {
       console.log(error);
     }
@@ -114,13 +113,13 @@ function MyBooking() {
             return !filterMatch || data.status === filterMatch;
           })
           .map((data, index) => {
-            console.log("checking data:", data);
             return (
               <MyBookingCard
                 data={data}
                 index={index}
                 handleOpen={handleOpen}
                 numberOfSlot={numberOfSlot}
+                setBookingId={setBookingId}
               />
             );
           })}

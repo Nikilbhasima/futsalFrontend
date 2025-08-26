@@ -50,7 +50,7 @@ function Challenge() {
   const getListOfChallengesData = async () => {
     try {
       const response = await dispatch(getMyChallenge());
-      console.log("challenge data are:", response.payload);
+
       if (response.meta.requestStatus === "rejected") {
         setChallengesData([]);
       }
@@ -65,7 +65,7 @@ function Challenge() {
   const handleCancelChallenge = async () => {
     try {
       const response = await dispatch(cancelFutsalChallenge(cancelId));
-      console.log("cancel challenge response::", response.payload);
+
       handleFailMessage();
       handleSuccessMessage2();
       setTimeout(async () => {

@@ -6,11 +6,13 @@ import { MdLockOutline } from "react-icons/md";
 import PasswordUpdate from "./PasswordUpdate";
 import { useDispatch } from "react-redux";
 import { getUserDetail } from "../../redux/accountManagement/AccountManagementThunks";
+import { getNumberOfBooking } from "../../redux/bookingSlice/BookingThunks";
 
 function Profile() {
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [userInformation, setUserInformation] = useState({});
+  const [numberOfBookings, setNumberOfBookings] = useState({});
   const dispatch = useDispatch();
   const handleClickOpen = () => {
     setOpen(true);
@@ -19,7 +21,6 @@ function Profile() {
     setOpen(false);
   };
   const handleClickOpen2 = () => {
-    console.log("open password update modal");
     setOpen2(true);
   };
   const handleClose2 = () => {
@@ -32,8 +33,19 @@ function Profile() {
   const handleGetUserDetail = async () => {
     try {
       const response = await dispatch(getUserDetail());
+      getNumberOfBookingS();
       setUserInformation(response.payload);
-      console.log("i have got response:", response.payload);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getNumberOfBookingS = async () => {
+    try {
+      const response = await dispatch(getNumberOfBooking());
+      if (response.meta.requestStatus === "fulfilled") {
+        setNumberOfBookings(response.payload);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -94,7 +106,7 @@ function Profile() {
           </div>
 
           <div className="flex justify-between relative">
-            <div className="flex flex-col justify-center items-center p-[32px] bg-[#212121] rounded-[10px] w-[30%] hover:-translate-y-2 transition duration-300 ease-in-out">
+            {/* <div className="flex flex-col justify-center items-center p-[32px] bg-[#212121] rounded-[10px] w-[30%] hover:-translate-y-2 transition duration-300 ease-in-out">
               <span className="text-[32px] text-center text-[#27D483]">0</span>
               <span className="text-[16px] text-center opacity-60">
                 Booking
@@ -111,7 +123,21 @@ function Profile() {
               <span className="text-[16px] text-center opacity-60">
                 Canceled
               </span>
-            </div>
+            </div> */}
+
+            {Object.entries(numberOfBookings).map(([key, value], index) => (
+              <div
+                key={index}
+                className="flex flex-col justify-center items-center p-[32px] bg-[#212121] rounded-[10px] w-[30%] hover:-translate-y-2 transition duration-300 ease-in-out"
+              >
+                <span className="text-[32px] text-center text-[#27D483]">
+                  {value}
+                </span>
+                <span className="text-[16px] text-center opacity-60">
+                  {key}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
         <div className="bg-[#333333]  p-[16px] rounded-[10px] security md:col-span-2 flex flex-col gap-[10px]">

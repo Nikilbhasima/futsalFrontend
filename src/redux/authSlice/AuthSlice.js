@@ -49,7 +49,6 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        console.log(action);
         state.loading = false;
         state.jwt = action.payload.token;
         state.error = null;

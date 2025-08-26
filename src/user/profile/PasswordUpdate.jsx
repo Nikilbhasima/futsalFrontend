@@ -93,10 +93,9 @@ function PasswordUpdate({ open, handleClose }) {
             }}
             validationSchema={validationSchema}
             onSubmit={async (values, { resetForm }) => {
-              console.log("user registration data", values);
               try {
                 const response = await dispatch(changePassword(values));
-                console.log("change response::", response);
+
                 if (response.meta.requestStatus === "fulfilled") {
                   resetForm();
                   handleClose();

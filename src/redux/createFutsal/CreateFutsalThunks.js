@@ -41,7 +41,7 @@ export const ownerFutsal = createAsyncThunk(
           },
         }
       );
-      console.log("trying to fetch futsal data:", response.data);
+
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;

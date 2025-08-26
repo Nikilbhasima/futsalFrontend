@@ -19,7 +19,7 @@ function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { success, jwt } = useSelector((state) => state.auth);
+  const { success } = useSelector((state) => state.auth);
   const { userDetail } = useSelector((state) => state.account);
 
   useEffect(() => {
@@ -130,7 +130,6 @@ function Navbar() {
                         <li
                           className="py-[12px] px-[12px] text-black text-left hover:bg-[#27D483] cursor-pointer text-[14px] font-light flex justify-between items-center"
                           onClick={() => {
-                            console.log("logout");
                             dispatch(logout());
                             navigate("/");
                           }}

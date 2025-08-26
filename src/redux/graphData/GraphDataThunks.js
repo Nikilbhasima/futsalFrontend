@@ -14,7 +14,7 @@ export const getBargraphData = createAsyncThunk(
           },
         }
       );
-      console.log("is graph data available:", response.data);
+
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;

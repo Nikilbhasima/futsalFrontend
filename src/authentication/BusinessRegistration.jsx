@@ -68,7 +68,7 @@ function BusinessRegistration() {
         onSubmit={async (values, { resetForm }) => {
           try {
             const response = await dispatch(registerUser(values));
-            console.log("user registration data", response);
+
             if (response.meta.requestStatus === "fulfilled") {
               resetForm();
             }

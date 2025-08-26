@@ -20,10 +20,9 @@ function MyBookingCard({
   data,
   handleOpen,
   setBookingId,
-  index,
   numberOfSlot,
+  index,
 }) {
-  console.log("booking data:", data);
   const dispatch = useDispatch();
   const [paymentModal, setPaymentModal] = useState(false);
   const showPaymentModal = () => setPaymentModal(true);
@@ -49,7 +48,7 @@ function MyBookingCard({
       const response = await dispatch(
         initiatePayment({ formData: formDatas, bookingId: data.id })
       );
-      console.log("response for success", response.payload);
+
       if (response.payload.status && response.payload.formData) {
         const form = document.createElement("form");
         form.method = "POST";
@@ -139,7 +138,7 @@ function MyBookingCard({
               <button
                 className="py-[12px] px-[32px] rounded-[10px] bg-[#E63946] text-[white] font-medium  hover:bg-[#CC0000] hover:-translate-y-[4px] ease-out duration-1000 w-fit h-fit"
                 onClick={() => {
-                  handleOpen(true);
+                  handleOpen();
                   setBookingId(data.id);
                 }}
               >

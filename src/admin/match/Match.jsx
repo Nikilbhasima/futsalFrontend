@@ -35,7 +35,6 @@ function Match() {
         setListOfGround(response.payload);
         setGroundId(response?.payload?.[0]?.id);
       }
-      console.log("ground list resonse:", response);
     } catch (error) {
       console.log(error);
     }

@@ -32,7 +32,6 @@ const style = {
 };
 
 function FutsalForm({ setFutsalDetail, futsalData }) {
-  console.log("value of futsal:", futsalData);
   const [selectImage, setSelectImage] = useState(null);
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
@@ -66,7 +65,6 @@ function FutsalForm({ setFutsalDetail, futsalData }) {
         response = await dispatch(editFutsalDetail(values));
       }
 
-      console.log("is futsal created:", response);
       if (response?.meta?.requestStatus === "fulfilled") {
         setFutsalDetail(response.payload);
         setBackendCallMessage("Futsal added successfully!");

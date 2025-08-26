@@ -66,7 +66,7 @@ function PasswordResetWithOTP({ isForgetPasswordVisible, hideForgetPassword }) {
       const response = await dispatch(
         validateOTP({ email: formData.email, otp: otp })
       );
-      console.log("is otp valid:", response.requestStatus);
+
       if (response.meta.requestStatus === "fulfilled") {
         setOtp(Array(6).fill(""));
 

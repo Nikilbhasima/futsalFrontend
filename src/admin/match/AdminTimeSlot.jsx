@@ -49,7 +49,6 @@ function AdminTimeSlot({
   });
   useEffect(() => {
     if (futsalData != null) {
-      console.log("hello");
       const slot = generateTimeSlots(
         futsalData?.futsalOpeningHours,
         futsalData?.futsalClosingHours,
@@ -94,8 +93,6 @@ function AdminTimeSlot({
         60
       );
       setNumberOfSlot(data.length);
-      console.log("hello===");
-      console.log(numberOfSlot);
     }
   };
   const handleBookFutsal = async () => {
