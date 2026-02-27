@@ -43,6 +43,7 @@ function MyBookingCard({
     customerPhone: data?.challengerDto?.phoneNumber,
   });
 
+  // initiate payment
   const handlePaymentInitiation = async () => {
     try {
       const response = await dispatch(

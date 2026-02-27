@@ -18,12 +18,12 @@ function TextFieldComponent({
   name,
   value,
   onChange,
-  onBlur, // Added onBlur prop
+  onBlur,
   icon,
   type,
-  error, // Added error prop
-  helperText, // Added helperText prop
-  ...props // Spread other props
+  error,
+  helperText,
+  ...props
 }) {
   return (
     <TextField

@@ -1,157 +1,282 @@
-import Map, { Source, Layer, Marker } from "@vis.gl/react-maplibre";
+import React, { useState, useEffect } from "react";
+import { MdErrorOutline } from "react-icons/md";
+import { Map, Marker, Source, Layer } from "@vis.gl/react-maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useEffect, useState } from "react";
+import axios from "axios";
 
-const osrmUrl = "https://router.project-osrm.org/route/v1/foot";
+const MAPTILER_KEY = "G0JzaoaaWpzTHgeOAjWx";
+const OSRM_URL = "https://router.project-osrm.org/route/v1/driving";
 
-function GeoLocationMaping({ end }) {
-  const [routeGeoJson, setRouteGeoJson] = useState(null);
-  const [navigationData, setNavigationData] = useState(null);
-  const [userLocation, setUserLocation] = useState(null); // Changed from [] to null
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+function RouteForm() {
+  const [routeDetail, setRouteDetail] = useState({
+    routeName: "",
+    sourceCity: "",
+    destinationCity: "",
+    distance: "",
+    duration: "",
+    price: "",
+    latitudeS: "",
+    longitudeS: "",
+    latitudeD: "",
+    longitudeD: "",
+  });
 
-  // Get user's current location
-  useEffect(() => {
-    const getCurrentLocation = () => {
-      if (!navigator.geolocation) {
-        setError("Geolocation is not supported by this browser");
-        setLoading(false);
-        return;
-      }
+  const [suggestions, setSuggestions] = useState({
+    source: [],
+    destination: [],
+  });
+  const [errors, setErrors] = useState({});
+  const [routeGeoJSON, setRouteGeoJSON] = useState(null); // store the route line
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation([longitude, latitude]);
-          setLoading(false);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          setError("Unable to get your location");
-          setLoading(false);
-          // Fallback to default location
-          setUserLocation([85.3068, 27.7043]);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 60000,
-        }
-      );
-    };
+  // Handle input change and suggestions
+  const handleRouteDetailChange = (e) => {
+    const { name, value } = e.target;
+    setRouteDetail((pre) => ({ ...pre, [name]: value }));
 
-    getCurrentLocation();
-  }, []);
-
-  // Get route when user location is available
-  useEffect(() => {
-    if (!userLocation || userLocation.length !== 2) return;
-
-    const getRoute = async () => {
-      try {
-        // Use userLocation instead of hardcoded start
-        const url = `${osrmUrl}/${userLocation.join(",")};${end.join(
-          ","
-        )}?overview=full&geometries=geojson`;
-
-        const res = await fetch(url);
-        const data = await res.json();
-
-        // Check if route exists
-        if (data.routes && data.routes[0]) {
-          const route = data.routes[0].geometry;
-
-          setNavigationData(data.routes[0]);
-          setRouteGeoJson({
-            type: "Feature",
-            geometry: route,
-          });
-        } else {
-          console.error("No route found");
-        }
-      } catch (error) {
-        console.error("Error fetching route:", error);
-      }
-    };
-
-    getRoute();
-  }, [userLocation]); // This will trigger when userLocation changes
-
-  const routeLayer = {
-    id: "route",
-    type: "line",
-    paint: {
-      "line-color": "#ff0000",
-      "line-width": 4,
-    },
+    if (name === "sourceCity") fetchSuggestions("source", value);
+    if (name === "destinationCity") fetchSuggestions("destination", value);
   };
 
+  // Fetch geocoding suggestions
+  const fetchSuggestions = async (type, query) => {
+    if (!query) {
+      setSuggestions((prev) => ({ ...prev, [type]: [] }));
+      return;
+    }
+    try {
+      const res = await axios.get(
+        `https://api.maptiler.com/geocoding/${encodeURIComponent(
+          query
+        )}.json?key=${MAPTILER_KEY}`
+      );
+      setSuggestions((prev) => ({ ...prev, [type]: res.data.features || [] }));
+    } catch (err) {
+      console.error("Geocoding error:", err);
+    }
+  };
+
+  // When user selects a suggestion
+  const handleSelectLocation = (type, place) => {
+    const [longitude, latitude] = place.center;
+    setRouteDetail((prev) => ({
+      ...prev,
+      [type === "source" ? "sourceCity" : "destinationCity"]: place.place_name,
+      [type === "source" ? "latitudeS" : "latitudeD"]: latitude,
+      [type === "source" ? "longitudeS" : "longitudeD"]: longitude,
+    }));
+    setSuggestions((prev) => ({ ...prev, [type]: [] }));
+  };
+
+  // Fetch and draw OSRM route when both source & destination are selected
+  useEffect(() => {
+    const { latitudeS, longitudeS, latitudeD, longitudeD } = routeDetail;
+
+    if (latitudeS && longitudeS && latitudeD && longitudeD) {
+      const fetchRoute = async () => {
+        try {
+          const res = await axios.get(
+            `${OSRM_URL}/${longitudeS},${latitudeS};${longitudeD},${latitudeD}?overview=full&geometries=geojson`
+          );
+
+          const data = res.data.routes[0];
+          const routeGeo = {
+            type: "Feature",
+            geometry: data.geometry,
+          };
+
+          setRouteGeoJSON(routeGeo);
+
+          // Optional: set distance/duration automatically
+          setRouteDetail((prev) => ({
+            ...prev,
+            distance: (data.distance / 1000).toFixed(2) + " km",
+            duration: (data.duration / 60).toFixed(2) + " min",
+          }));
+        } catch (err) {
+          console.error("OSRM route fetch error:", err);
+        }
+      };
+      fetchRoute();
+    }
+  }, [
+    routeDetail.latitudeS,
+    routeDetail.longitudeS,
+    routeDetail.latitudeD,
+    routeDetail.longitudeD,
+  ]);
+
+  const ErrorText = ({ message }) => (
+    <div className="min-h-[20px]">
+      <span
+        className={`text-[12px] ml-[8px] text-[#DC2626] flex items-center gap-[4px] transition-opacity duration-200 ${
+          message ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <MdErrorOutline className="text-[16px]" />
+        {message || "placeholder"}
+      </span>
+    </div>
+  );
+
   return (
-    <div>
-      {/* Loading state */}
-      {loading && (
-        <div className="py-4 text-center">
-          <p>Getting your location...</p>
-        </div>
-      )}
+    <>
+      <div className="flex justify-between items-center mb-[24px]">
+        <h2 className="text-[22px] md:text-[24px] lg:text-[32px] font-semibold">
+          Add Route
+        </h2>
+      </div>
 
-      {/* Error state */}
-      {error && (
-        <div className="py-4 text-center text-red-500">
-          <p>{error}</p>
-        </div>
-      )}
+      <form className="flex flex-col gap-[20px]">
+        {/* Basic Info */}
+        <div className="flex gap-[20px] w-full">
+          <div className="flex flex-col w-full">
+            <label>Route Name</label>
+            <input
+              type="text"
+              name="routeName"
+              value={routeDetail.routeName}
+              onChange={handleRouteDetailChange}
+              placeholder="Enter Route Name"
+              className="border-[2px] border-black/50 outline-none mt-[8px] rounded-[10px] px-[16px] py-[8px]"
+            />
+          </div>
 
-      {/* Display route information */}
-      {navigationData && (
-        <div className="py-4 flex gap-5 mb-4">
-          <p className="text-lg font-bold flex gap-2">
-            Distance 📏:
-            <span className="font-normal">
-              {(navigationData.distance / 1000).toFixed(2)} km
-            </span>
-          </p>
-          <p className="text-lg font-bold flex gap-2">
-            Duration ⏱:
-            <span className="font-normal">
-              {(navigationData.duration / 60).toFixed(1)} minutes
-            </span>
-          </p>
+          <div className="flex flex-col w-full">
+            <label>Ticket Price</label>
+            <input
+              type="text"
+              name="price"
+              value={routeDetail.price}
+              onChange={handleRouteDetailChange}
+              placeholder="Enter Ticket Price"
+              className="border-[2px] border-black/50 outline-none mt-[8px] rounded-[10px] px-[16px] py-[8px]"
+            />
+          </div>
         </div>
-      )}
 
-      <div style={{ height: "500px", width: "100%" }}>
-        {userLocation && (
+        {/* Source and Destination */}
+        <div className="flex gap-[20px] w-full">
+          <div className="mb-[16px] relative w-full">
+            <label>Source City</label>
+            <input
+              type="text"
+              name="sourceCity"
+              value={routeDetail.sourceCity}
+              onChange={handleRouteDetailChange}
+              placeholder="Enter source location"
+              className="border-[2px] w-full border-black/50 outline-none mt-[8px] rounded-[10px] px-[16px] py-[8px]"
+            />
+            {suggestions.source.length > 0 && (
+              <ul className="absolute bg-white border w-full mt-1 rounded-lg shadow-lg z-10 max-h-[150px] overflow-y-auto">
+                {suggestions.source.map((place) => (
+                  <li
+                    key={place.id}
+                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleSelectLocation("source", place)}
+                  >
+                    {place.place_name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="mb-[16px] relative w-full">
+            <label>Destination City</label>
+            <input
+              type="text"
+              name="destinationCity"
+              value={routeDetail.destinationCity}
+              onChange={handleRouteDetailChange}
+              placeholder="Enter destination location"
+              className="border-[2px] w-full border-black/50 outline-none mt-[8px] rounded-[10px] px-[16px] py-[8px]"
+            />
+            {suggestions.destination.length > 0 && (
+              <ul className="absolute bg-white border w-full mt-1 rounded-lg shadow-lg z-10 max-h-[150px] overflow-y-auto">
+                {suggestions.destination.map((place) => (
+                  <li
+                    key={place.id}
+                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleSelectLocation("destination", place)}
+                  >
+                    {place.place_name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+
+        {/* Map Display */}
+        <div className="flex flex-col gap-[20px] w-full">
+          <label>Route Map</label>
           <Map
             initialViewState={{
-              longitude: userLocation[0], // Use user's actual longitude
-              latitude: userLocation[1], // Use user's actual latitude
-              zoom: 15,
+              longitude: 85.324,
+              latitude: 27.7172,
+              zoom: 9,
             }}
-            mapStyle="https://api.maptiler.com/maps/streets/style.json?key=G0JzaoaaWpzTHgeOAjWx"
+            style={{ width: "100%", height: "400px", borderRadius: "12px" }}
+            mapStyle={`https://api.maptiler.com/maps/streets/style.json?key=${MAPTILER_KEY}`}
           >
-            {/* User's Current Location Marker (Blue) */}
-            <Marker
-              longitude={userLocation[0]}
-              latitude={userLocation[1]}
-              color="blue"
-            />
-
-            {/* Destination Marker (Red) */}
-            <Marker longitude={end[0]} latitude={end[1]} color="red" />
-
-            {/* Route Line */}
-            {routeGeoJson && (
-              <Source id="route" type="geojson" data={routeGeoJson}>
-                <Layer {...routeLayer} />
+            {/* Source Marker */}
+            {routeDetail.latitudeS && routeDetail.longitudeS && (
+              <Marker
+                longitude={routeDetail.longitudeS}
+                latitude={routeDetail.latitudeS}
+                color="green"
+              />
+            )}
+            {/* Destination Marker */}
+            {routeDetail.latitudeD && routeDetail.longitudeD && (
+              <Marker
+                longitude={routeDetail.longitudeD}
+                latitude={routeDetail.latitudeD}
+                color="red"
+              />
+            )}
+            {/* Draw route line */}
+            {routeGeoJSON && (
+              <Source id="route" type="geojson" data={routeGeoJSON}>
+                <Layer
+                  id="routeLine"
+                  type="line"
+                  paint={{
+                    "line-color": "#0074D9",
+                    "line-width": 4,
+                  }}
+                />
               </Source>
             )}
           </Map>
-        )}
-      </div>
-    </div>
+        </div>
+
+        {/* Auto-filled Distance & Duration */}
+        <div className="flex gap-[20px]">
+          <div className="flex flex-col w-full">
+            <label>Distance</label>
+            <input
+              type="text"
+              name="distance"
+              value={routeDetail.distance}
+              readOnly
+              className="border-[2px] border-black/50 outline-none mt-[8px] rounded-[10px] px-[16px] py-[8px] bg-gray-100"
+            />
+          </div>
+          <div className="flex flex-col w-full">
+            <label>Duration</label>
+            <input
+              type="text"
+              name="duration"
+              value={routeDetail.duration}
+              readOnly
+              className="border-[2px] border-black/50 outline-none mt-[8px] rounded-[10px] px-[16px] py-[8px] bg-gray-100"
+            />
+          </div>
+        </div>
+      </form>
+    </>
   );
 }
 
-export default GeoLocationMaping;
+export default RouteForm;
